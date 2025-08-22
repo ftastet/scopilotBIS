@@ -151,6 +151,11 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
   onToggleHidden,
   onReorderSections
 }) => {
+  // Defensive check to prevent crashes when project is undefined
+  if (!project || !project.data || !project.data[phase]) {
+    return null;
+  }
+
   const [newSectionTitle, setNewSectionTitle] = useState('');
   const [newSectionPlaceholder, setNewSectionPlaceholder] = useState('');
   const [newSectionTooltip, setNewSectionTooltip] = useState('');
