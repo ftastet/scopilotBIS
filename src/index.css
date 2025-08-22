@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-gray-50 text-gray-900;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500;
+  }
+  
+  .btn-success {
+    @apply bg-green-600 text-white hover:bg-green-700 focus:ring-green-500;
+  }
+  
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+}
+
+/* RichTextEditor custom styles */
+.quill-editor-wrapper .ql-editor {
+  min-height: 120px;
+}
+
+.quill-editor-wrapper .ql-toolbar {
+  background-color: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Read-only editor styles */
+.quill-editor-wrapper .ql-container.ql-disabled {
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.quill-editor-wrapper .ql-editor.ql-disabled {
+  color: #6b7280;
+}
+
+.quill-editor-wrapper.read-only .ql-toolbar {
+  display: none;
+}
+
+.quill-editor-wrapper.read-only .ql-container {
+  border-top: 1px solid #e5e7eb;
+}
+
+.is-exporting-pdf .ql-toolbar {
+  display: none !important;
+}
+
+/* Default display for scenarios container */
+.pdf-scenarios-layout {
+  display: grid;
+  grid-template-columns: 1fr; /* Default for small screens */
+  gap: 2rem; /* Equivalent to gap-8 */
+}
+
+@media (min-width: 1024px) { /* lg breakpoint */
+  .pdf-scenarios-layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Override for PDF export */
+.is-exporting-pdf .pdf-scenarios-layout {
+  display: flex !important; /* Force flex display */
+  flex-direction: column !important; /* Stack children vertically */
+}

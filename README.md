@@ -1,1 +1,1 @@
-# scopilotBIS
+scopilot
