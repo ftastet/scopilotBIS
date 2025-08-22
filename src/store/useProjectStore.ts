@@ -1,22 +1,25 @@
 import { create } from 'zustand';
-import { 
-  collection, 
-  doc, 
-  getDocs, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  query, 
-  where, 
-  orderBy, 
+import {
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  orderBy,
   onSnapshot,
   getDoc
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuthStore } from './useAuthStore';
-import { Project, ProjectData, ChecklistItem, ProjectSection } from '../types';
+import { Project, ProjectData, ChecklistItem, ProjectSection, ScenarioContentData } from '../types';
+import { calculateCurrentPhase, updateProjectInFirestore } from './projectHelpers';
+import { createChecklistSlice, type ChecklistSlice } from './checklistStore';
+import { createSectionSlice, type SectionSlice } from './sectionStore';
+import { createScenarioSlice, type ScenarioSlice } from './scenarioStore';
 
-interface ProjectState {
+interface ProjectBaseState {
   projects: Project[];
   currentProject: Project | null;
   isLoadingProjects: boolean;
@@ -27,18 +30,9 @@ interface ProjectState {
   updateProject: (id: string, updates: Partial<ProjectData>) => Promise<void>;
   updateProjectDetails: (id: string, name: string, description: string) => Promise<void>;
   deleteProject: (id: string) => Promise<void>;
-  addChecklistItem: (projectId: string, phase: 'initial' | 'options' | 'final', text: string) => Promise<void>;
-  deleteChecklistItem: (projectId: string, phase: 'initial' | 'options' | 'final', itemId: string) => Promise<void>;
-  toggleChecklistItemHidden: (projectId: string, phase: 'initial' | 'options' | 'final', itemId: string, isHidden: boolean) => Promise<void>;
-  reorderChecklistItems: (projectId: string, phase: 'initial' | 'options' | 'final', sourceIndex: number, destinationIndex: number) => Promise<void>;
-  addProjectSection: (projectId: string, phase: 'initial' | 'options' | 'final', newSection: Omit<ProjectSection, 'id' | 'order'>) => Promise<void>;
-  updateProjectSection: (projectId: string, phase: 'initial' | 'options' | 'final', sectionId: string, updates: Partial<ProjectSection>) => Promise<void>;
-  deleteProjectSection: (projectId: string, phase: 'initial' | 'options' | 'final', sectionId: string) => Promise<void>;
-  toggleProjectSectionHidden: (projectId: string, phase: 'initial' | 'options' | 'final', sectionId: string, isHidden: boolean) => Promise<void>;
-  reorderProjectSections: (projectId: string, phase: 'initial' | 'options' | 'final', sourceIndex: number, destinationIndex: number) => Promise<void>;
-  updateScenarioSectionContent: (projectId: string, scenarioId: 'A' | 'B', sectionId: string, updates: { content?: string; internalOnly?: boolean }) => Promise<void>;
-  updateOptionsSelectedScenario: (projectId: string, scenarioId: string) => Promise<void>;
 }
+
+export type ProjectState = ProjectBaseState & ChecklistSlice & SectionSlice & ScenarioSlice;
 
 const createDefaultChecklist = (phase: 'initial' | 'options' | 'final'): ChecklistItem[] => {
   const checklists = {
@@ -274,7 +268,7 @@ const createDefaultProject = (name: string, description: string, userId: string)
       validationComment: '',
       approvedBy: [],
       sections: createDefaultSections('initial')
-    },
+    } as any,
     options: {
       checklist: createDefaultChecklist('options'),
       validated: false,
@@ -293,21 +287,14 @@ const createDefaultProject = (name: string, description: string, userId: string)
       validationComment: '',
       approvedBy: [],
       sections: createDefaultSections('final')
-    },
+    } as any,
     stakeholders: [],
     notes: ''
   }
   });
 };
 
-// Fonction utilitaire pour calculer la phase courante basée sur les validations
-const calculateCurrentPhase = (data: ProjectData): 'initial' | 'options' | 'final' => {
-  if (!data.initial.validated) return 'initial';
-  if (!data.options.validated) return 'options';
-  return 'final';
-};
-
-export const useProjectStore = create<ProjectState>((set, get) => ({
+export const useProjectStore = create<ProjectState>((set, get, store) => ({
   projects: [],
   currentProject: null,
   isLoadingProjects: false,
@@ -398,31 +385,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
 
   updateProject: async (id: string, updates: Partial<ProjectData>) => {
     try {
-      const projectRef = doc(db, 'projects', id);
-      const currentProject = get().projects.find(p => p.id === id);
-      
-      if (!currentProject) throw new Error('Projet non trouvé');
-      
-      const updatedData = { ...currentProject.data, ...updates };
-      const currentPhase = calculateCurrentPhase(updatedData);
-      
-      await updateDoc(projectRef, {
-        data: updatedData,
-        currentPhase
-      });
-
-      // Mettre à jour le projet courant si c'est celui qui est modifié
-      const { currentProject: current } = get();
-      if (current?.id === id) {
-        console.log('updateProject - updating currentProject selectedScenario:', updatedData.options?.selectedScenarioId);
-        set({
-          currentProject: {
-            ...current,
-            data: updatedData,
-            currentPhase
-          }
-        });
-      }
+      await updateProjectInFirestore(id, updates, get, set);
     } catch (error) {
       console.error('Erreur lors de la mise à jour du projet:', error);
       throw error;
@@ -464,343 +427,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       throw error;
     }
   },
-
-  addChecklistItem: async (projectId: string, phase: 'initial' | 'options' | 'final', text: string) => {
-    try {
-      const project = get().projects.find(p => p.id === projectId);
-      if (!project) throw new Error('Projet non trouvé');
-
-      const newItem: ChecklistItem = {
-        id: `${phase}-${Date.now()}`,
-        text,
-        checked: false,
-        isDefault: false,
-        isHidden: false
-      };
-
-      const updatedChecklist = [...project.data[phase].checklist, newItem];
-      const updatedPhaseData = {
-        ...project.data[phase],
-        checklist: updatedChecklist
-      };
-
-      await get().updateProject(projectId, {
-        [phase]: updatedPhaseData
-      });
-    } catch (error) {
-      console.error('Erreur lors de l\'ajout de l\'élément de checklist:', error);
-      throw error;
-    }
-  },
-
-  deleteChecklistItem: async (projectId: string, phase: 'initial' | 'options' | 'final', itemId: string) => {
-    try {
-      const project = get().projects.find(p => p.id === projectId);
-      if (!project) throw new Error('Projet non trouvé');
-
-      const updatedChecklist = project.data[phase].checklist.filter(item => 
-        !(item.id === itemId && !item.isDefault)
-      );
-      
-      const updatedPhaseData = {
-        ...project.data[phase],
-        checklist: updatedChecklist
-      };
-
-      await get().updateProject(projectId, {
-        [phase]: updatedPhaseData
-      });
-    } catch (error) {
-      console.error('Erreur lors de la suppression de l\'élément de checklist:', error);
-      throw error;
-    }
-  },
-
-  toggleChecklistItemHidden: async (projectId: string, phase: 'initial' | 'options' | 'final', itemId: string, isHidden: boolean) => {
-    try {
-      const project = get().projects.find(p => p.id === projectId);
-      if (!project) throw new Error('Projet non trouvé');
-
-      const updatedChecklist = project.data[phase].checklist.map(item =>
-        item.id === itemId ? { ...item, isHidden } : item
-      );
-      
-      const updatedPhaseData = {
-        ...project.data[phase],
-        checklist: updatedChecklist
-      };
-
-      await get().updateProject(projectId, {
-        [phase]: updatedPhaseData
-      });
-    } catch (error) {
-      console.error('Erreur lors du basculement de la visibilité de l\'élément de checklist:', error);
-      throw error;
-    }
-  },
-
-  reorderChecklistItems: async (projectId: string, phase: 'initial' | 'options' | 'final', sourceIndex: number, destinationIndex: number) => {
-    try {
-      const project = get().projects.find(p => p.id === projectId);
-      if (!project) throw new Error('Projet non trouvé');
-
-      const checklist = [...project.data[phase].checklist];
-      const [reorderedItem] = checklist.splice(sourceIndex, 1);
-      checklist.splice(destinationIndex, 0, reorderedItem);
-      
-      const updatedPhaseData = {
-        ...project.data[phase],
-        checklist
-      };
-
-      await get().updateProject(projectId, {
-        [phase]: updatedPhaseData
-      });
-    } catch (error) {
-      console.error('Erreur lors de la réorganisation des éléments de checklist:', error);
-      throw error;
-    }
-  },
-
-  addProjectSection: async (projectId: string, phase: 'initial' | 'options' | 'final', newSection: Omit<ProjectSection, 'id' | 'order'>) => {
-    try {
-      const project = get().projects.find(p => p.id === projectId);
-      if (!project) throw new Error('Projet non trouvé');
-
-      const sections = project.data[phase].sections;
-      const maxOrder = sections.length > 0 ? Math.max(...sections.map(s => s.order)) : -1;
-
-      
-      const newProjectSection: ProjectSection = {
-        id: `${phase}-section-${Date.now()}`,
-        order: maxOrder + 1,
-        ...newSection
-      };
-      
-      const updatedSections = [...sections, newProjectSection];
-      
-      if (phase === 'options') {
-        // Pour la phase options, ajouter aussi les contenus par défaut pour chaque scénario
-        const updatedScenarios = {
-          A: {
-            ...project.data.options.scenarios.A,
-            sectionContents: {
-              ...project.data.options.scenarios.A.sectionContents,
-              [newProjectSection.id]: { content: '', internalOnly: false }
-            }
-          },
-          B: {
-            ...project.data.options.scenarios.B,
-            sectionContents: {
-              ...project.data.options.scenarios.B.sectionContents,
-              [newProjectSection.id]: { content: '', internalOnly: false }
-            }
-          }
-        };
-        
-        const updatedPhaseData = {
-          ...project.data[phase],
-          sections: updatedSections,
-          scenarios: updatedScenarios
-        };
-        
-        await get().updateProject(projectId, {
-          [phase]: updatedPhaseData
-        });
-      } else {
-        const updatedPhaseData = {
-        ...project.data[phase],
-        sections: updatedSections
-      };
-
-      await get().updateProject(projectId, {
-        [phase]: updatedPhaseData
-      });
-      }
-    } catch (error) {
-      console.error('Erreur lors de l\'ajout de la section:', error);
-      throw error;
-    }
-  },
-      
-  updateProjectSection: async (projectId: string, phase: 'initial' | 'options' | 'final', sectionId: string, updates: Partial<ProjectSection>) => {
-    try {
-      const project = get().projects.find(p => p.id === projectId);
-      if (!project) throw new Error('Projet non trouvé');
-      
-      const updatedSections = project.data[phase].sections.map(section =>
-        section.id === sectionId ? { ...section, ...updates } : section
-      );
-      
-      const updatedPhaseData = {
-        ...project.data[phase],
-        sections: updatedSections
-      };
-      
-      await get().updateProject(projectId, {
-        [phase]: updatedPhaseData
-      });
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour de la section:', error);
-      throw error;
-    }
-  },
-
-  deleteProjectSection: async (projectId: string, phase: 'initial' | 'options' | 'final', sectionId: string) => {
-    try {
-      const project = get().projects.find(p => p.id === projectId);
-      if (!project) throw new Error('Projet non trouvé');
-      
-      const updatedSections = project.data[phase].sections.filter(section => 
-        !(section.id === sectionId && !section.isDefault)
-      );
-      
-      if (phase === 'options') {
-        // Pour la phase options, supprimer aussi les contenus de chaque scénario
-        const updatedScenarios = {
-          A: {
-            ...project.data.options.scenarios.A,
-            sectionContents: Object.fromEntries(
-              Object.entries(project.data.options.scenarios.A.sectionContents)
-                .filter(([id]) => id !== sectionId)
-            )
-          },
-          B: {
-            ...project.data.options.scenarios.B,
-            sectionContents: Object.fromEntries(
-              Object.entries(project.data.options.scenarios.B.sectionContents)
-                .filter(([id]) => id !== sectionId)
-            )
-          }
-        };
-        
-        const updatedPhaseData = {
-          ...project.data[phase],
-          sections: updatedSections,
-          scenarios: updatedScenarios
-        };
-        
-        await get().updateProject(projectId, {
-          [phase]: updatedPhaseData
-        });
-      } else {
-        const updatedPhaseData = {
-        ...project.data[phase],
-        sections: updatedSections
-      };
-      
-      await get().updateProject(projectId, {
-        [phase]: updatedPhaseData
-      });
-      }
-    } catch (error) {
-      console.error('Erreur lors de la suppression de la section:', error);
-      throw error;
-    }
-  },
-
-  toggleProjectSectionHidden: async (projectId: string, phase: 'initial' | 'options' | 'final', sectionId: string, isHidden: boolean) => {
-    try {
-      const project = get().projects.find(p => p.id === projectId);
-      if (!project) throw new Error('Projet non trouvé');
-      
-      const updatedSections = project.data[phase].sections.map(section =>
-        section.id === sectionId ? { ...section, isHidden } : section
-      );
-      
-      const updatedPhaseData = {
-        ...project.data[phase],
-        sections: updatedSections
-      };
-      
-      await get().updateProject(projectId, {
-        [phase]: updatedPhaseData
-      });
-    } catch (error) {
-      console.error('Erreur lors du basculement de la visibilité de la section:', error);
-      throw error;
-    }
-  },
-
-  reorderProjectSections: async (projectId: string, phase: 'initial' | 'options' | 'final', sourceIndex: number, destinationIndex: number) => {
-    try {
-      const project = get().projects.find(p => p.id === projectId);
-      if (!project) throw new Error('Projet non trouvé');
-      
-      const sections = [...project.data[phase].sections];
-      const [reorderedSection] = sections.splice(sourceIndex, 1);
-      sections.splice(destinationIndex, 0, reorderedSection);
-      
-      // Mettre à jour les ordres
-      const updatedSections = sections.map((section, index) => ({
-        ...section,
-        order: index
-      }));
-      
-      const updatedPhaseData = {
-        ...project.data[phase],
-        sections: updatedSections
-      };
-      
-      await get().updateProject(projectId, {
-        [phase]: updatedPhaseData
-      });
-    } catch (error) {
-      console.error('Erreur lors de la réorganisation des sections:', error);
-      throw error;
-    }
-  },
-
-  updateScenarioSectionContent: async (projectId: string, scenarioId: 'A' | 'B', sectionId: string, updates: { content?: string; internalOnly?: boolean }) => {
-    try {
-      const project = get().projects.find(p => p.id === projectId);
-      if (!project) throw new Error('Projet non trouvé');
-      
-      const currentContent = project.data.options.scenarios[scenarioId]?.sectionContents[sectionId] || { content: '', internalOnly: false };
-      const updatedContent = { ...currentContent, ...updates };
-      
-      const updatedScenarios = {
-        ...project.data.options.scenarios,
-        [scenarioId]: {
-          ...project.data.options.scenarios[scenarioId],
-          sectionContents: {
-            ...project.data.options.scenarios[scenarioId]?.sectionContents,
-            [sectionId]: updatedContent
-          }
-        }
-      };
-      
-      const updatedPhaseData = {
-        ...project.data.options,
-        scenarios: updatedScenarios
-      };
-      
-      await get().updateProject(projectId, {
-        options: updatedPhaseData
-      });
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour du contenu de section du scénario:', error);
-      throw error;
-    }
-  },
-
-  updateOptionsSelectedScenario: async (projectId: string, scenarioId: string) => {
-    try {
-      console.log('updateOptionsSelectedScenario called - projectId:', projectId, 'scenarioId:', scenarioId);
-      const project = get().projects.find(p => p.id === projectId);
-      if (!project) throw new Error('Projet non trouvé');
-      
-      const updatedPhaseData = {
-        ...project.data.options,
-        selectedScenarioId: scenarioId
-      };
-      
-      await get().updateProject(projectId, {
-        options: updatedPhaseData
-      });
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour du scénario sélectionné:', error);
-      throw error;
-    }
-  }
+  ...createChecklistSlice(set, get, store),
+  ...createSectionSlice(set, get, store),
+  ...createScenarioSlice(set, get, store),
 }));
