@@ -1,63 +1,104 @@
 import React, { useState } from 'react';
-import { useProjectStore } from '../store/useProjectStore';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Calendar, Folder, ChevronRight, Edit2, Trash2, BarChart3, CheckCircle } from 'lucide-react';
+import {
+  Plus,
+  Calendar,
+  Folder,
+  ChevronRight,
+  Edit2,
+  Trash2,
+  BarChart3,
+  CheckCircle
+} from 'lucide-react';
 import Button from '../components/UI/Button';
 import Modal from '../components/UI/Modal';
 import Input from '../components/UI/Input';
 import Textarea from '../components/UI/Textarea';
+import { useProjectStore } from '../store/useProjectStore';
 import { Project } from '../types';
 
+interface EditingProject {
+  id: string;
+  name: string;
+  description: string;
+}
+
+interface Progress {
+  completed: number;
+  total: number;
+  percentage: number;
+}
+
 const Dashboard: React.FC = () => {
-  const { projects, isLoadingProjects, createProject, updateProjectDetails, deleteProject } = useProjectStore();
+  const {
+    projects,
+    isLoadingProjects,
+    createProject,
+    updateProjectDetails,
+    deleteProject
+  } = useProjectStore();
+
   const navigate = useNavigate();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projectName, setProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [editingProjectId, setEditingProjectId] = useState('');
-  const [editingProjectName, setEditingProjectName] = useState('');
-  const [editingProjectDescription, setEditingProjectDescription] = useState('');
 
-  const handleCreateProject = async () => {
-    if (projectName.trim() && projectDescription.trim()) {
-      try {
-        const projectId = await createProject(projectName.trim(), projectDescription.trim());
-        setProjectName('');
-        setProjectDescription('');
-        setIsModalOpen(false);
-        navigate(`/project/${projectId}`);
-      } catch (error) {
-        console.error('Erreur lors de la création du projet:', error);
-        alert('Erreur lors de la création du projet. Veuillez réessayer.');
-      }
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingProject, setEditingProject] = useState<EditingProject | null>(
+    null
+  );
+
+  const handleCreateProject = async (): Promise<void> => {
+    if (!projectName.trim() || !projectDescription.trim()) return;
+
+    try {
+      const projectId = await createProject(
+        projectName.trim(),
+        projectDescription.trim()
+      );
+      setProjectName('');
+      setProjectDescription('');
+      setIsModalOpen(false);
+      navigate(`/project/${projectId}`);
+    } catch (error) {
+      console.error('Erreur lors de la création du projet:', error);
+      alert('Erreur lors de la création du projet. Veuillez réessayer.');
     }
   };
 
-  const handleEditProject = (project: any) => {
-    setEditingProjectId(project.id);
-    setEditingProjectName(project.name);
-    setEditingProjectDescription(project.description || '');
+  const handleEditProject = (project: Project): void => {
+    setEditingProject({
+      id: project.id,
+      name: project.name,
+      description: project.description || ''
+    });
     setIsEditModalOpen(true);
   };
 
-  const handleSaveEdit = () => {
-    if (editingProjectName.trim() && editingProjectDescription.trim()) {
-      updateProjectDetails(editingProjectId, editingProjectName.trim(), editingProjectDescription.trim())
-        .then(() => {
-          setIsEditModalOpen(false);
-          setEditingProjectId('');
-          setEditingProjectName('');
-          setEditingProjectDescription('');
-        })
-        .catch((error) => {
-          console.error('Erreur lors de la modification du projet:', error);
-          alert('Erreur lors de la modification du projet. Veuillez réessayer.');
-        });
+  const handleSaveEdit = async (): Promise<void> => {
+    if (
+      !editingProject ||
+      !editingProject.name.trim() ||
+      !editingProject.description.trim()
+    )
+      return;
+
+    try {
+      await updateProjectDetails(
+        editingProject.id,
+        editingProject.name.trim(),
+        editingProject.description.trim()
+      );
+      setIsEditModalOpen(false);
+      setEditingProject(null);
+    } catch (error) {
+      console.error('Erreur lors de la modification du projet:', error);
+      alert('Erreur lors de la modification du projet. Veuillez réessayer.');
     }
   };
 
-  const handleDeleteProject = (projectId: string) => {
+  const handleDeleteProject = (projectId: string): void => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
       deleteProject(projectId).catch((error) => {
         console.error('Erreur lors de la suppression du projet:', error);
@@ -66,78 +107,158 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('fr-FR');
-  };
+  const formatDate = (dateString: string): string =>
+    new Date(dateString).toLocaleDateString('fr-FR');
 
-  const getPhaseLabel = (phase: string) => {
-    // Vérifier si le projet est complètement validé (phase finale validée)
-    const project = projects.find(p => p.currentPhase === phase);
-    if (phase === 'final' && project?.data.final.validated) {
+  const getPhaseLabel = (project: Project): string => {
+    if (project.currentPhase === 'final' && project.data.final.validated) {
       return 'Projet cadré et validé';
     }
-    
-    const labels = {
+
+    const labels: Record<Project['currentPhase'], string> = {
       initial: 'Opportunité',
       options: 'Scénarios',
       final: 'Engagement'
     };
-    return labels[phase as keyof typeof labels] || phase;
+
+    return labels[project.currentPhase] || project.currentPhase;
   };
 
-  const getPhaseColor = (phase: string) => {
-    // Utiliser la couleur verte pour les projets validés
-    const project = projects.find(p => p.currentPhase === phase);
-    if (phase === 'final' && project?.data.final.validated) {
+  const getPhaseColor = (project: Project): string => {
+    if (project.currentPhase === 'final' && project.data.final.validated) {
       return 'bg-green-100 text-green-800';
     }
-    
-    const colors = {
+
+    const colors: Record<Project['currentPhase'], string> = {
       initial: 'bg-blue-100 text-blue-800',
       options: 'bg-orange-100 text-orange-800',
       final: 'bg-green-100 text-green-800'
     };
-    return colors[phase as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+
+    return colors[project.currentPhase] || 'bg-gray-100 text-gray-800';
   };
 
-  const calculateCombinedProgress = (project: Project) => {
+  interface StakeholderInfo {
+    id: string;
+    mandatoryInitial?: boolean;
+    mandatoryOptions?: boolean;
+    mandatoryFinal?: boolean;
+  }
+
+  const calculateCombinedProgress = (project: Project): Progress => {
     const currentPhase = project.currentPhase;
     const phaseData = project.data[currentPhase];
-    
-    // Calculer la progression de la checklist
-    const visibleChecklistItems = phaseData.checklist.filter(item => !item.isHidden);
-    const checklistCompleted = visibleChecklistItems.filter(item => item.checked).length;
+
+    const visibleChecklistItems = phaseData.checklist.filter(
+      (item) => !item.isHidden
+    );
+    const checklistCompleted = visibleChecklistItems.filter(
+      (item) => item.checked
+    ).length;
     const checklistTotal = visibleChecklistItems.length;
-    
-    // Déterminer les parties prenantes obligatoires pour cette phase
-    const mandatoryStakeholders = project.data.stakeholders.filter(s => {
-      if (currentPhase === 'initial') return s.mandatoryInitial;
-      if (currentPhase === 'options') return s.mandatoryOptions;
-      if (currentPhase === 'final') return s.mandatoryFinal;
+
+    const mandatoryStakeholders = project.data.stakeholders.filter((s) => {
+      const stakeholder = s as unknown as StakeholderInfo;
+      if (currentPhase === 'initial') return stakeholder.mandatoryInitial;
+      if (currentPhase === 'options') return stakeholder.mandatoryOptions;
+      if (currentPhase === 'final') return stakeholder.mandatoryFinal;
       return false;
     });
-    
-    // Calculer la progression des approbations
-    const approvedCount = mandatoryStakeholders.filter(s => 
-      phaseData.approvedBy?.includes(s.id)
+
+    const approvedCount = mandatoryStakeholders.filter((s) =>
+      phaseData.approvedBy?.includes((s as StakeholderInfo).id)
     ).length;
     const stakeholdersTotal = mandatoryStakeholders.length;
-    
-    // Totaux combinés
+
     const totalCompleted = checklistCompleted + approvedCount;
     const totalItems = checklistTotal + stakeholdersTotal;
-    const progressPercentage = totalItems > 0 ? (totalCompleted / totalItems) * 100 : 100;
-    
-    return {
-      completed: totalCompleted,
-      total: totalItems,
-      percentage: progressPercentage
-    };
+    const percentage = totalItems > 0 ? (totalCompleted / totalItems) * 100 : 100;
+
+    return { completed: totalCompleted, total: totalItems, percentage };
   };
+
+  const ProjectItem: React.FC<{ project: Project }> = ({ project }) => {
+    const progress = calculateCombinedProgress(project);
+
+    return (
+      <li key={project.id}>
+        <div
+          className="px-6 py-4 hover:bg-gray-50 cursor-pointer transition-colors duration-200"
+          onClick={() => navigate(`/project/${project.id}`)}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex-1 min-w-0">
+              <p className="text-base font-semibold text-gray-900 truncate">
+                {project.name}
+              </p>
+              <div className="flex items-center space-x-4 mt-1">
+                <div className="flex items-center text-sm text-gray-500">
+                  <Calendar className="h-4 w-4 mr-1" />
+                  {formatDate(project.createdAt)}
+                </div>
+                <div className="flex items-center space-x-3">
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPhaseColor(
+                      project
+                    )}`}
+                  >
+                    {project.currentPhase === 'final' &&
+                      project.data.final.validated && (
+                        <CheckCircle className="h-3 w-3 mr-1" />
+                      )}
+                    {getPhaseLabel(project)}
+                  </span>
+                  <div className="flex items-center space-x-2">
+                    <BarChart3 className="h-4 w-4 text-gray-400" />
+                    <div className="w-16 bg-gray-200 rounded-full h-1.5">
+                      <div
+                        className="bg-green-600 h-1.5 rounded-full transition-all duration-300"
+                        style={{ width: `${progress.percentage}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-gray-600 font-medium min-w-[2rem]">
+                      {progress.completed}/{progress.total}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <p className="mt-1 text-sm text-gray-500 truncate">
+                {project.description}
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  icon={Edit2}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditProject(project);
+                  }}
+                />
+                <Button
+                  variant="danger"
+                  size="sm"
+                  icon={Trash2}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteProject(project.id);
+                  }}
+                />
+                <ChevronRight className="h-5 w-5 text-gray-400" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </li>
+    );
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex justify-between items-center mb-8">
-        <div>
+      <div>
           <h1 className="text-3xl font-bold text-gray-900">Mes projets</h1>
           <p className="mt-2 text-gray-600">
             Formalisez vos projets pas à pas, avant démarrage
@@ -154,13 +275,15 @@ const Dashboard: React.FC = () => {
 
       {isLoadingProjects ? (
         <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
           <p className="mt-4 text-gray-600">Chargement des projets...</p>
         </div>
       ) : projects.length === 0 ? (
         <div className="text-center py-12">
           <Folder className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">Aucun projet</h3>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">
+            Aucun projet
+          </h3>
           <p className="mt-1 text-sm text-gray-500">
             Commencez par créer votre premier projet FEL.
           </p>
@@ -177,82 +300,9 @@ const Dashboard: React.FC = () => {
       ) : (
         <div className="bg-white shadow-sm rounded-lg overflow-hidden">
           <ul className="divide-y divide-gray-200">
-            {projects.map((project) => {
-              const progress = calculateCombinedProgress(project);
-              
-              return (
-                <li key={project.id}>
-                <div
-                  className="px-6 py-4 hover:bg-gray-50 cursor-pointer transition-colors duration-200"
-                  onClick={() => navigate(`/project/${project.id}`)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-base font-semibold text-gray-900 truncate">
-                          {project.name}
-                        </p>
-                        <div className="flex items-center space-x-4 mt-1">
-                          <div className="flex items-center text-sm text-gray-500">
-                            <Calendar className="h-4 w-4 mr-1" />
-                            {formatDate(project.createdAt)}
-                          </div>
-                          <div className="flex items-center space-x-3">
-                            <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPhaseColor(project.currentPhase)}`}>
-                              {project.currentPhase === 'final' && project.data.final.validated && (
-                                <CheckCircle className="h-3 w-3 mr-1" />
-                              )}
-                              {getPhaseLabel(project.currentPhase)}
-                            </span>
-                            <div className="flex items-center space-x-2">
-                              <BarChart3 className="h-4 w-4 text-gray-400" />
-                              <div className="flex items-center space-x-2">
-                                <div className="w-16 bg-gray-200 rounded-full h-1.5">
-                                  <div 
-                                    className="bg-green-600 h-1.5 rounded-full transition-all duration-300"
-                                    style={{ width: `${progress.percentage}%` }}
-                                  />
-                                </div>
-                                <span className="text-xs text-gray-600 font-medium min-w-[2rem]">
-                                  {progress.completed}/{progress.total}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <p className="mt-1 text-sm text-gray-500 truncate">
-                          {project.description}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex-shrink-0">
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="secondary"
-                          size="sm"
-                          icon={Edit2}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditProject(project);
-                          }}
-                        />
-                        <Button
-                          variant="danger"
-                          size="sm"
-                          icon={Trash2}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleDeleteProject(project.id);
-                          }}
-                        />
-                        <ChevronRight className="h-5 w-5 text-gray-400" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              );
-            })}
+            {projects.map((project) => (
+              <ProjectItem key={project.id} project={project} />
+            ))}
           </ul>
         </div>
       )}
@@ -262,6 +312,7 @@ const Dashboard: React.FC = () => {
         onClose={() => {
           setIsModalOpen(false);
           setProjectName('');
+          setProjectDescription('');
         }}
         title="Nouveau projet"
       >
@@ -307,24 +358,30 @@ const Dashboard: React.FC = () => {
         isOpen={isEditModalOpen}
         onClose={() => {
           setIsEditModalOpen(false);
-          setEditingProjectId('');
-          setEditingProjectName('');
-          setEditingProjectDescription('');
+          setEditingProject(null);
         }}
         title="Modifier le projet"
       >
         <div className="space-y-4">
           <Input
             label="Nom du projet"
-            value={editingProjectName}
-            onChange={(e) => setEditingProjectName(e.target.value)}
+            value={editingProject?.name ?? ''}
+            onChange={(e) =>
+              setEditingProject((prev) =>
+                prev ? { ...prev, name: e.target.value } : prev
+              )
+            }
             placeholder="Entrez le nom du projet"
             required
           />
           <Textarea
             label="Description du projet"
-            value={editingProjectDescription}
-            onChange={(e) => setEditingProjectDescription(e.target.value)}
+            value={editingProject?.description ?? ''}
+            onChange={(e) =>
+              setEditingProject((prev) =>
+                prev ? { ...prev, description: e.target.value } : prev
+              )
+            }
             placeholder="Décrivez brièvement le projet..."
             rows={3}
             required
@@ -334,9 +391,7 @@ const Dashboard: React.FC = () => {
               variant="secondary"
               onClick={() => {
                 setIsEditModalOpen(false);
-                setEditingProjectId('');
-                setEditingProjectName('');
-                setEditingProjectDescription('');
+                setEditingProject(null);
               }}
             >
               Annuler
@@ -344,7 +399,10 @@ const Dashboard: React.FC = () => {
             <Button
               variant="primary"
               onClick={handleSaveEdit}
-              disabled={!editingProjectName.trim() || !editingProjectDescription.trim()}
+              disabled={
+                !editingProject?.name.trim() ||
+                !editingProject?.description.trim()
+              }
             >
               Enregistrer
             </Button>
@@ -356,3 +414,4 @@ const Dashboard: React.FC = () => {
 };
 
 export default Dashboard;
+
