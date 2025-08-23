@@ -30,7 +30,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
             w-5 h-5 border-2 rounded cursor-pointer transition-colors duration-200
             ${checked 
               ? 'bg-green-600 border-green-600' 
-              : 'border-gray-300 hover:border-gray-400'
+              : 'bg-white border-gray-300 hover:border-gray-400'
             }
             ${disabled 
               ? 'cursor-not-allowed opacity-50' 
