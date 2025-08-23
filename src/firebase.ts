@@ -1,35 +1,30 @@
-import { initializeApp } from 'firebase/app';
+import { FirebaseOptions, getApp, getApps, initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-// Debug environment variables
-console.log('Firebase Config Check:', {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY ? 'Present' : 'Missing',
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ? 'Present' : 'Missing',
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID ? 'Present' : 'Missing',
-});
-
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+// Helper to retrieve required environment variables
+const getEnvVar = (key: string): string => {
+  const value = (import.meta.env as Record<string, string | undefined>)[key];
+  if (!value) {
+    throw new Error(`Missing environment variable: ${key}`);
+  }
+  return value;
 };
 
-// Validate required config
-if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId) {
-  throw new Error('Missing required Firebase configuration. Please check your .env file.');
-}
+const firebaseConfig: FirebaseOptions = {
+  apiKey: getEnvVar('VITE_FIREBASE_API_KEY'),
+  authDomain: getEnvVar('VITE_FIREBASE_AUTH_DOMAIN'),
+  projectId: getEnvVar('VITE_FIREBASE_PROJECT_ID'),
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+};
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase app in a safe, idempotent way
+const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
-// Initialize Firebase Authentication and get a reference to the service
 export const auth = getAuth(app);
-
-// Initialize Cloud Firestore and get a reference to the service
 export const db = getFirestore(app);
 
 export default app;
+
