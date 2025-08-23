@@ -460,7 +460,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeTabColorClass="bg-accent/10 text-accent border-accent"
+        activeTabColorClass="border-orange-600 text-orange-800"
       />
 
       {/* Modals */}

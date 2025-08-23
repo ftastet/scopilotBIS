@@ -268,7 +268,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeTabColorClass="bg-accent/10 text-accent border-accent"
+        activeTabColorClass="border-blue-600 text-blue-800"
       />
 
       <ChecklistEditorModal

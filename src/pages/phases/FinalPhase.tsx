@@ -297,7 +297,7 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeTabColorClass="bg-accent/10 text-accent border-accent"
+        activeTabColorClass="border-green-600 text-green-800"
       />
 
       <ChecklistEditorModal
