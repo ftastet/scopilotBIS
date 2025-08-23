@@ -74,8 +74,8 @@ const StakeholderTable: React.FC<StakeholderTableProps> = ({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-border dark:divide-border-dark">
+          <thead className="bg-muted dark:bg-muted-dark">
             <tr>
               <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Prénom
@@ -98,7 +98,7 @@ const StakeholderTable: React.FC<StakeholderTableProps> = ({
               <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Niveau d'engagement
               </th>
-              <th colSpan={3} className="px-4 py-2 text-center text-xs font-medium text-gray-900 uppercase tracking-wider border-b border-gray-300">
+              <th colSpan={3} className="px-4 py-2 text-center text-xs font-medium text-gray-900 uppercase tracking-wider border-b border-border dark:border-border-dark">
                 Doit valider les phases
               </th>
               <th rowSpan={2} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -117,9 +117,9 @@ const StakeholderTable: React.FC<StakeholderTableProps> = ({
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-surface divide-y divide-border dark:bg-surface-dark dark:divide-border-dark">
             {stakeholders.map((stakeholder) => (
-              <tr key={stakeholder.id} className="hover:bg-gray-50">
+              <tr key={stakeholder.id} className="hover:bg-muted dark:hover:bg-muted-dark">
                 <td className="px-4 py-4">
                   <div className="text-sm font-medium text-gray-900">
                     {stakeholder.firstName}

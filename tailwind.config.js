@@ -8,10 +8,15 @@ export default {
     extend: {
       colors: {
         primary: '#1e40af',
-        secondary: '#f3f4f6',
-        background: '#f9fafb',
-        text: '#111827',
         accent: '#f59e0b',
+        surface: '#ffffff',
+        'surface-dark': '#1f2937',
+        muted: '#f3f4f6',
+        'muted-dark': '#374151',
+        border: '#d1d5db',
+        'border-dark': '#4b5563',
+        text: '#111827',
+        'text-dark': '#f9fafb',
       },
       width: {
         '144': '36rem', // 576px (320px * 1.8 = 576px)

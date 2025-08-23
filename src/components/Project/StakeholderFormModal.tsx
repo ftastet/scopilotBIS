@@ -115,7 +115,7 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
     <Modal isOpen={isOpen} onClose={handleClose} title={title}>
       <div className="space-y-6">
         {/* Informations personnelles */}
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className="bg-muted p-4 rounded-lg dark:bg-muted-dark">
           <h4 className="text-sm font-medium text-gray-900 mb-4">Informations personnelles</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
@@ -172,7 +172,7 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
         </div>
 
         {/* Rôle et engagement */}
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className="bg-muted p-4 rounded-lg dark:bg-muted-dark">
           <h4 className="text-sm font-medium text-gray-900 mb-4">Rôle et engagement</h4>
           <div className="space-y-4">
             <Input
@@ -195,7 +195,7 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
               <select
                 value={formData.engagementLevel}
                 onChange={(e) => setFormData(prev => ({ ...prev, engagementLevel: e.target.value }))}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full px-3 py-2 border border-border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:border-border-dark"
               >
                 {engagementOptions.map(option => (
                   <option key={option} value={option}>
@@ -208,7 +208,7 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
         </div>
 
         {/* Participation aux phases */}
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className="bg-muted p-4 rounded-lg dark:bg-muted-dark">
           <h4 className="text-sm font-medium text-gray-900 mb-4">Doit valider les phases :</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Checkbox
@@ -233,7 +233,7 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+        <div className="flex justify-end space-x-3 pt-4 border-t border-border dark:border-border-dark">
           <Button
             variant="secondary"
             onClick={handleClose}

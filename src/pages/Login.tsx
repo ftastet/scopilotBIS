@@ -56,12 +56,12 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
+      <div className="max-w-md w-full space-y-8 p-8 bg-surface rounded-xl shadow-lg dark:bg-surface-dark">
         <div className="text-center">
           <div className="mx-auto h-12 w-12 bg-blue-600 rounded-lg flex items-center justify-center">
             <LogIn className="h-6 w-6 text-white" />
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">Scopilot</h2>
+          <h2 className="mt-6 text-3xl font-bold text-text dark:text-text-dark">Scopilot</h2>
           <p className="mt-2 text-sm text-gray-600 italic">Cadrez. Engagez. Avancez.</p>
         </div>
         

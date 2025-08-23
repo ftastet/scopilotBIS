@@ -20,10 +20,11 @@ const Input: React.FC<InputProps> = ({
       )}
       <input
         className={`
-          block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm
+          block w-full rounded-md border border-border bg-surface px-3 py-2 shadow-sm
           placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary
           ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}
           ${className}
+          dark:bg-surface-dark dark:border-border-dark
         `}
         {...props}
       />

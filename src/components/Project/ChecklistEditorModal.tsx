@@ -72,8 +72,8 @@ const SortableItem: React.FC<SortableItemProps> = ({
       ref={setNodeRef}
       style={style}
       className={`
-        flex items-center space-x-3 p-3 bg-white border border-gray-200 rounded-lg
-        ${item.isHidden ? 'opacity-60 bg-gray-50' : ''}
+        flex items-center space-x-3 p-3 bg-surface border border-border rounded-lg dark:bg-surface-dark dark:border-border-dark
+        ${item.isHidden ? 'opacity-60 bg-muted dark:bg-muted-dark' : ''}
         ${isDragging ? 'shadow-lg' : 'shadow-sm'}
       `}
     >
@@ -193,7 +193,7 @@ const ChecklistEditorModal: React.FC<ChecklistEditorModalProps> = ({
           </div>
         )}
 
-        <div className="bg-gray-50 p-3 rounded-lg">
+        <div className="bg-muted p-3 rounded-lg dark:bg-muted-dark">
           <div className="flex justify-between items-center text-sm">
             <span className="text-gray-600">
               Éléments visibles: <strong>{visibleCount}</strong> sur <strong>{totalCount}</strong>
@@ -239,7 +239,7 @@ const ChecklistEditorModal: React.FC<ChecklistEditorModalProps> = ({
         </div>
 
         {!isDisabled && (
-          <div className="border-t border-gray-200 pt-4">
+          <div className="border-t border-border pt-4 dark:border-border-dark">
             <h4 className="text-sm font-medium text-gray-900 mb-3">Ajouter un nouvel élément</h4>
             <div className="flex space-x-3">
               <div className="flex-1">
@@ -272,7 +272,7 @@ const ChecklistEditorModal: React.FC<ChecklistEditorModalProps> = ({
           </div>
         )}
 
-        <div className="flex justify-end pt-4 border-t border-gray-200">
+        <div className="flex justify-end pt-4 border-t border-border dark:border-border-dark">
           <Button
             variant="secondary"
             onClick={onClose}

@@ -43,7 +43,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
   return (
     <div className={`space-y-1 ${className}`}>
       {label && (
-        <label className="flex items-center text-sm font-medium text-gray-700">
+        <label className="flex items-center text-sm font-medium text-text dark:text-text-dark">
           <span>{label}</span>
           {showPlaceholderAsTooltip && placeholder && (
             <TooltipIcon content={placeholder} />
@@ -51,7 +51,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         </label>
       )}
       <div className={`
-        ${error ? 'border-red-300' : 'border-gray-300'}
+        ${error ? 'border-red-300' : 'border-border dark:border-border-dark'}
         rounded-md quill-editor-wrapper ${readOnly ? 'read-only' : ''}
       `}>
         <ReactQuill

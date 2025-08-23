@@ -163,7 +163,7 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
             </Button>
             
             {/* Séparateur */}
-            <div className="h-6 border-l border-gray-300 mx-2"></div>
+            <div className="h-6 border-l border-border mx-2 dark:border-border-dark"></div>
             
             {/* Bouton Générer PDF */}
             <Button
@@ -178,7 +178,7 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
           </div>
         </div>
 
-        <div ref={pdfContentRef} className="space-y-6 max-h-[50vh] overflow-y-auto border border-gray-200 rounded-lg p-4 bg-white">
+        <div ref={pdfContentRef} className="space-y-6 max-h-[50vh] overflow-y-auto border border-border rounded-lg p-4 bg-surface dark:border-border-dark dark:bg-surface-dark">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-gray-900 mb-2">{project.name}</h1>
             <h2 className="text-lg font-semibold text-gray-700">{getPhaseLabel()}</h2>
@@ -212,7 +212,7 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
               ))}
 
             {project.data.notes && (
-              <div className="space-y-2 border-t border-gray-200 pt-6">
+              <div className="space-y-2 border-t border-border pt-6 dark:border-border-dark">
                 <h3 className="text-lg font-medium text-gray-900">Notes du projet</h3>
                 <div className="read-only">
                   <RichTextEditor

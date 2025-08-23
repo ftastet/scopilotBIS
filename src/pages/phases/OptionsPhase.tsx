@@ -44,7 +44,7 @@ const ScenarioForm: React.FC<ScenarioFormProps> = React.memo(
     const isSelected = selectedScenario === scenarioId;
 
     return (
-      <div className={`border rounded-lg p-6 ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+      <div className={`border rounded-lg p-6 ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-border dark:border-border-dark'}`}>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">{scenarioTitle}</h3>
           <Button onClick={onSelect} variant={isSelected ? 'primary' : 'secondary'} size="sm">
@@ -215,7 +215,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
                 onOpenEditor={() => setIsChecklistEditorOpen(true)}
               />
             </div>
-            <div className="border-l border-gray-200 pl-6">
+            <div className="border-l border-border pl-6 dark:border-border-dark">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-lg font-medium text-gray-900">Contenu phase approuvé par :</h3>
                 <div className="flex items-center space-x-3">
@@ -405,7 +405,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
             ))}
           </div>
 
-          <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+          <div className="mt-8 p-4 bg-muted rounded-lg dark:bg-muted-dark">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-medium">Sélection du scénario</h3>

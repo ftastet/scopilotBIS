@@ -138,8 +138,8 @@ const Project: React.FC = () => {
                     ${isActive
                       ? `bg-${phase.color}-100 text-${phase.color}-800 shadow-md`
                       : canAccess
-                        ? `bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50 hover:border-gray-400 shadow-sm`
-                        : `bg-gray-100 text-gray-400 border-2 border-gray-200 cursor-not-allowed opacity-60`
+                        ? `bg-surface text-gray-700 border-2 border-border hover:bg-muted hover:border-border-dark shadow-sm dark:bg-surface-dark dark:text-text-dark dark:border-border-dark dark:hover:bg-muted-dark`
+                        : `bg-muted text-gray-400 border-2 border-border cursor-not-allowed opacity-60 dark:bg-muted-dark dark:border-border-dark`
                     }
                     ${status === 'completed' ? `ring-3 ring-green-500 ring-opacity-60 shadow-lg` : ''}
                   `}

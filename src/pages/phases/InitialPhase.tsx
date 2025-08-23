@@ -105,7 +105,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
                 onOpenEditor={() => setIsChecklistEditorOpen(true)}
               />
             </div>
-            <div className="border-l border-gray-200 pl-6">
+            <div className="border-l border-border pl-6 dark:border-border-dark">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-lg font-medium text-gray-900">Contenu phase approuvé par :</h3>
                 <div className="flex items-center space-x-3">

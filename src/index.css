@@ -8,7 +8,7 @@
   }
   
   body {
-    @apply bg-background text-text;
+    @apply bg-surface text-text dark:bg-surface-dark dark:text-text-dark;
   }
 }
 
@@ -18,15 +18,15 @@
   }
   
   .btn-primary {
-    @apply bg-primary text-background hover:bg-primary/90 focus:ring-accent;
+    @apply bg-primary text-surface hover:bg-primary/90 focus:ring-accent;
   }
 
   .btn-secondary {
-    @apply bg-white border border-gray-300 text-text hover:bg-gray-50 hover:border-gray-400 focus:ring-secondary shadow-sm;
+    @apply bg-surface border border-border text-text hover:bg-muted hover:border-border-dark focus:ring-muted shadow-sm dark:bg-surface-dark dark:text-text-dark dark:border-border-dark dark:hover:bg-muted-dark dark:hover:border-border;
   }
   
   .card {
-    @apply bg-secondary text-text rounded-lg shadow-sm;
+    @apply bg-muted text-text rounded-lg shadow-sm dark:bg-muted-dark dark:text-text-dark;
   }
 }
 

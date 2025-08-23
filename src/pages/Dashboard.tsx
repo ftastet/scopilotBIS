@@ -172,7 +172,7 @@ const Dashboard: React.FC = () => {
       final: 'bg-green-100 text-green-800'
     };
 
-    return colors[project.currentPhase] || 'bg-gray-100 text-gray-800';
+    return colors[project.currentPhase] || 'bg-muted text-gray-800 dark:bg-muted-dark dark:text-text-dark';
   };
 
   interface StakeholderInfo {
@@ -220,7 +220,7 @@ const Dashboard: React.FC = () => {
     return (
       <li
         key={project.id}
-        className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200"
+        className="bg-surface rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 dark:bg-surface-dark"
       >
         <div
           className="p-6 cursor-pointer flex flex-col h-full"
