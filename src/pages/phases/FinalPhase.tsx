@@ -158,6 +158,7 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
                       className="bg-accent h-2 rounded-full transition-all duration-300"
                       style={{ width: `${approvalRate}%` }}
                     />
+                  </div>
                   <span className="text-sm text-gray-600 font-medium min-w-[3rem]">
                     {approvedCount}/{mandatoryStakeholders.length}
                   </span>
