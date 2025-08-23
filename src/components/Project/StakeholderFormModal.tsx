@@ -5,6 +5,7 @@ import Input from '../UI/Input';
 import Checkbox from '../UI/Checkbox';
 import Button from '../UI/Button';
 import { Save, X } from 'lucide-react';
+import { useAlertStore } from '../../store/useAlertStore';
 
 interface StakeholderFormModalProps {
   isOpen: boolean;
@@ -40,6 +41,14 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
     mandatoryFinal: false
   });
 
+  const [errors, setErrors] = useState({
+    firstName: '',
+    lastName: '',
+    role: ''
+  });
+
+  const showAlert = useAlertStore(state => state.show);
+
   const engagementOptions = [
     '',
     'Informé',
@@ -64,6 +73,7 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
           mandatoryOptions: stakeholder.mandatoryOptions,
           mandatoryFinal: stakeholder.mandatoryFinal
         });
+        setErrors({ firstName: '', lastName: '', role: '' });
       } else {
         setFormData({
           firstName: '',
@@ -77,18 +87,25 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
           mandatoryOptions: false,
           mandatoryFinal: false
         });
+        setErrors({ firstName: '', lastName: '', role: '' });
       }
     }
   }, [isOpen, stakeholder]);
 
   const handleSave = () => {
-    if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.role.trim()) {
-      return;
-    }
+    const newErrors = {
+      firstName: formData.firstName.trim() ? '' : 'Le prénom est requis',
+      lastName: formData.lastName.trim() ? '' : 'Le nom est requis',
+      role: formData.role.trim() ? '' : 'Le rôle est requis'
+    };
+    setErrors(newErrors);
+    if (Object.values(newErrors).some(Boolean)) return;
     onSave(formData);
+    showAlert('Partie prenante enregistrée', 'Les informations ont été sauvegardées.');
   };
 
   const handleClose = () => {
+    setErrors({ firstName: '', lastName: '', role: '' });
     onClose();
   };
 
@@ -104,15 +121,27 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
             <Input
               label="Prénom *"
               value={formData.firstName}
-              onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+              onChange={(e) => {
+                setFormData(prev => ({ ...prev, firstName: e.target.value }));
+                if (errors.firstName) {
+                  setErrors(prev => ({ ...prev, firstName: '' }));
+                }
+              }}
               placeholder="Prénom"
+              error={errors.firstName}
               required
             />
             <Input
               label="Nom *"
               value={formData.lastName}
-              onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+              onChange={(e) => {
+                setFormData(prev => ({ ...prev, lastName: e.target.value }));
+                if (errors.lastName) {
+                  setErrors(prev => ({ ...prev, lastName: '' }));
+                }
+              }}
               placeholder="Nom"
+              error={errors.lastName}
               required
             />
           </div>
@@ -149,8 +178,14 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
             <Input
               label="Rôle sur le projet *"
               value={formData.role}
-              onChange={(e) => setFormData(prev => ({ ...prev, role: e.target.value }))}
+              onChange={(e) => {
+                setFormData(prev => ({ ...prev, role: e.target.value }));
+                if (errors.role) {
+                  setErrors(prev => ({ ...prev, role: '' }));
+                }
+              }}
               placeholder="Chef de projet, Sponsor, Expert métier..."
+              error={errors.role}
               required
             />
             <div>

@@ -5,6 +5,7 @@ import Input from '../UI/Input';
 import Button from '../UI/Button';
 import Checkbox from '../UI/Checkbox';
 import { Plus, Trash2, GripVertical, Eye, EyeOff } from 'lucide-react';
+import { useAlertStore } from '../../store/useAlertStore';
 import {
   DndContext,
   closestCenter,
@@ -131,8 +132,10 @@ const ChecklistEditorModal: React.FC<ChecklistEditorModalProps> = ({
   onReorderItems
 }) => {
   const [newItemText, setNewItemText] = useState('');
+  const [newItemError, setNewItemError] = useState('');
   const checklist = project.data[phase].checklist;
   const isDisabled = project.data[phase].validated;
+  const showAlert = useAlertStore(state => state.show);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -153,10 +156,14 @@ const ChecklistEditorModal: React.FC<ChecklistEditorModalProps> = ({
   };
 
   const handleAddItem = () => {
-    if (newItemText.trim()) {
-      onAddItem(newItemText.trim());
-      setNewItemText('');
+    if (!newItemText.trim()) {
+      setNewItemError('Le texte est requis');
+      return;
     }
+    onAddItem(newItemText.trim());
+    setNewItemText('');
+    setNewItemError('');
+    showAlert('Élément ajouté', "L'élément a été ajouté à la checklist.");
   };
 
   const getPhaseLabel = () => {
@@ -238,8 +245,14 @@ const ChecklistEditorModal: React.FC<ChecklistEditorModalProps> = ({
               <div className="flex-1">
                 <Input
                   value={newItemText}
-                  onChange={(e) => setNewItemText(e.target.value)}
+                  onChange={(e) => {
+                    setNewItemText(e.target.value);
+                    if (newItemError) {
+                      setNewItemError('');
+                    }
+                  }}
                   placeholder="Texte du nouvel élément..."
+                  error={newItemError}
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       handleAddItem();
