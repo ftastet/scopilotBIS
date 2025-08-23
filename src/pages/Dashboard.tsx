@@ -14,6 +14,7 @@ import Modal from '../components/UI/Modal';
 import Input from '../components/UI/Input';
 import Textarea from '../components/UI/Textarea';
 import { useProjectStore } from '../store/useProjectStore';
+import { useAlertStore } from '../store/useAlertStore';
 import { Project } from '../types';
 
 interface EditingProject {
@@ -37,6 +38,7 @@ const Dashboard: React.FC = () => {
     deleteProject
   } = useProjectStore();
 
+  const showAlert = useAlertStore(state => state.show);
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,11 +61,12 @@ const Dashboard: React.FC = () => {
       setProjectName('');
       setProjectDescription('');
       setIsModalOpen(false);
-      alert('Projet créé avec succès.');
-      navigate(`/project/${projectId}`);
+      showAlert('Projet créé', 'Le projet a été créé avec succès.', () => {
+        navigate(`/project/${projectId}`);
+      });
     } catch (error) {
       console.error('Erreur lors de la création du projet:', error);
-      alert('Erreur lors de la création du projet. Veuillez réessayer.');
+      showAlert('Erreur', 'Erreur lors de la création du projet. Veuillez réessayer.');
     }
   };
 
@@ -94,7 +97,7 @@ const Dashboard: React.FC = () => {
       setEditingProject(null);
     } catch (error) {
       console.error('Erreur lors de la modification du projet:', error);
-      alert('Erreur lors de la modification du projet. Veuillez réessayer.');
+      showAlert('Erreur', 'Erreur lors de la modification du projet. Veuillez réessayer.');
     }
   };
 
@@ -102,11 +105,11 @@ const Dashboard: React.FC = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
       deleteProject(projectId)
         .then(() => {
-          alert('Projet supprimé avec succès.');
+          showAlert('Projet supprimé', 'Le projet a été supprimé avec succès.');
         })
         .catch((error) => {
           console.error('Erreur lors de la suppression du projet:', error);
-          alert('Erreur lors de la suppression du projet. Veuillez réessayer.');
+          showAlert('Erreur', 'Erreur lors de la suppression du projet. Veuillez réessayer.');
         });
     }
   };

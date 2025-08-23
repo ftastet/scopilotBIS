@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useProjectStore } from '../../store/useProjectStore';
 import { Project, OptionsPhaseData, ScenarioContentData, ProjectSection } from '../../types';
+import { useAlertStore } from '../../store/useAlertStore';
 import Tabs from '../../components/UI/Tabs';
 import Checklist from '../../components/Project/Checklist';
 import ChecklistEditorModal from '../../components/Project/ChecklistEditorModal';
@@ -87,6 +88,8 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
     reorderProjectSections
   } = useProjectStore();
   
+  const showAlert = useAlertStore(state => state.show);
+
   const [activeTab, setActiveTab] = useState('validation');
   const [isSectionEditorOpen, setIsSectionEditorOpen] = useState(false);
   const [isInitialPhaseModalOpen, setIsInitialPhaseModalOpen] = useState(false);
@@ -251,7 +254,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
                     options: { ...project.data.options, validated: false },
                     final: { ...project.data.final, validated: false }
                   });
-                  alert('Phase options dévalidée.');
+                  showAlert('Phase dévalidée', 'La phase scénarios a été dévalidée.');
                 } else {
                   const selectedScenarioId = project.data.options.selectedScenarioId;
                   if (selectedScenarioId && project.data.options.scenarios[selectedScenarioId]) {
@@ -337,11 +340,11 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
                       options: { ...project.data.options, validated: true }
                     });
                   }
-                  alert('Phase options validée.');
+                  showAlert('Phase validée', 'La phase scénarios a été validée avec succès.');
                 }
               } catch (error) {
                 console.error('Erreur lors de la mise à jour de la phase options:', error);
-                alert('Erreur lors de la mise à jour de la phase. Veuillez réessayer.');
+                showAlert('Erreur', 'Erreur lors de la mise à jour de la phase. Veuillez réessayer.');
               }
             }}
             onCommentChange={(validationComment) => updateOptionsData({ validationComment })}

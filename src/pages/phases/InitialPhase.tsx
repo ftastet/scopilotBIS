@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useProjectStore } from '../../store/useProjectStore';
 import { Project, InitialPhaseData, ProjectSection } from '../../types';
+import { useAlertStore } from '../../store/useAlertStore';
 import Tabs from '../../components/UI/Tabs';
 import Checklist from '../../components/Project/Checklist';
 import ChecklistEditorModal from '../../components/Project/ChecklistEditorModal';
@@ -33,6 +34,8 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
     toggleProjectSectionHidden,
     reorderProjectSections
   } = useProjectStore();
+
+  const showAlert = useAlertStore(state => state.show);
 
   const [activeTab, setActiveTab] = useState('validation');
   const [isChecklistEditorOpen, setIsChecklistEditorOpen] = useState(false);
@@ -149,16 +152,16 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
                     options: { ...options, validated: false },
                     final: { ...final, validated: false }
                   });
-                  alert('Phase initiale dévalidée.');
+                  showAlert('Phase dévalidée', 'La phase initiale a été dévalidée.');
                 } else {
                   await updateProject(projectId, {
                     initial: { ...initial, validated: true }
                   });
-                  alert('Phase initiale validée.');
+                  showAlert('Phase validée', 'La phase initiale a été validée avec succès.');
                 }
               } catch (error) {
                 console.error('Erreur lors de la mise à jour de la phase initiale:', error);
-                alert('Erreur lors de la mise à jour de la phase. Veuillez réessayer.');
+                showAlert('Erreur', 'Erreur lors de la mise à jour de la phase. Veuillez réessayer.');
               }
             }}
             onCommentChange={(validationComment) =>

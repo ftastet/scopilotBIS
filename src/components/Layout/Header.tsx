@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useProjectStore } from '../../store/useProjectStore';
+import { useAlertStore } from '../../store/useAlertStore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, Home, Folder } from 'lucide-react';
 import Button from '../UI/Button';
@@ -8,17 +9,19 @@ import Button from '../UI/Button';
 const Header: React.FC = () => {
   const { user, logout } = useAuthStore();
   const currentProject = useProjectStore(state => state.currentProject);
+  const showAlert = useAlertStore(state => state.show);
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleLogout = async () => {
     try {
       await logout();
-      alert('Déconnexion réussie.');
-      navigate('/login');
+      showAlert('Déconnexion réussie', 'Vous avez été déconnecté avec succès.', () => {
+        navigate('/login');
+      });
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
-      alert('Erreur lors de la déconnexion. Veuillez réessayer.');
+      showAlert('Erreur', 'Erreur lors de la déconnexion. Veuillez réessayer.');
     }
   };
 

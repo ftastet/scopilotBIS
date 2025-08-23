@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { useProjectStore } from '../../store/useProjectStore';
 import { Project, FinalPhaseData, Stakeholder } from '../../types';
+import { useAlertStore } from '../../store/useAlertStore';
 import Tabs from '../../components/UI/Tabs';
 import Checklist from '../../components/Project/Checklist';
 import ChecklistEditorModal from '../../components/Project/ChecklistEditorModal';
@@ -33,6 +34,8 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
     toggleProjectSectionHidden,
     reorderProjectSections
   } = useProjectStore();
+
+  const showAlert = useAlertStore(state => state.show);
 
   const [activeTab, setActiveTab] = useState('validation');
   const [isChecklistEditorOpen, setIsChecklistEditorOpen] = useState(false);
@@ -188,10 +191,13 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
                 await updateProject(project.id, {
                   final: { ...final, validated }
                 });
-                alert(validated ? 'Phase finale validée.' : 'Phase finale dévalidée.');
+               showAlert(
+                 validated ? 'Phase validée' : 'Phase dévalidée',
+                 validated ? 'La phase engagement a été validée avec succès.' : 'La phase engagement a été dévalidée.'
+               );
               } catch (error) {
                 console.error('Erreur lors de la mise à jour de la phase finale:', error);
-                alert('Erreur lors de la mise à jour de la phase. Veuillez réessayer.');
+               showAlert('Erreur', 'Erreur lors de la mise à jour de la phase. Veuillez réessayer.');
               }
             }}
             onCommentChange={validationComment => updateFinalData({ validationComment })}
