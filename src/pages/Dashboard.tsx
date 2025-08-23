@@ -119,7 +119,7 @@ const Dashboard: React.FC = () => {
 
   const getPhaseLabel = (project: Project): string => {
     if (project.currentPhase === 'final' && project.data.final.validated) {
-      return 'Cadré et validé';
+      return 'Projet cadré et validé';
     }
 
     const labels: Record<Project['currentPhase'], string> = {
