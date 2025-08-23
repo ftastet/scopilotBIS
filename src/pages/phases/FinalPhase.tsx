@@ -183,9 +183,16 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
           <PhaseValidation
             validated={final.validated}
             validationComment={final.validationComment}
-            onValidationChange={validated => {
-              // Validation/dévalidation simple de la phase finale uniquement
-              updateFinalData({ validated });
+            onValidationChange={async (validated) => {
+              try {
+                await updateProject(project.id, {
+                  final: { ...final, validated }
+                });
+                alert(validated ? 'Phase finale validée.' : 'Phase finale dévalidée.');
+              } catch (error) {
+                console.error('Erreur lors de la mise à jour de la phase finale:', error);
+                alert('Erreur lors de la mise à jour de la phase. Veuillez réessayer.');
+              }
             }}
             onCommentChange={validationComment => updateFinalData({ validationComment })}
             checklistCompleted={checklistCompleted}

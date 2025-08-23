@@ -20,6 +20,7 @@ const Login: React.FC = () => {
     
     try {
       await login(email, password);
+      alert('Connexion réussie.');
       navigate('/dashboard');
     } catch (error: any) {
       // Gestion des erreurs Firebase spécifiques

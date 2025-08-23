@@ -141,18 +141,27 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
           <PhaseValidation
             validated={initial.validated}
             validationComment={initial.validationComment}
-            onValidationChange={validated => {
-              if (!validated) {
-                updateProject(projectId, {
-                  initial: { ...initial, validated: false },
-                  options: { ...options, validated: false },
-                  final: { ...final, validated: false }
-                });
-              } else {
-                updateInitialData({ validated: true });
+            onValidationChange={async (validated) => {
+              try {
+                if (!validated) {
+                  await updateProject(projectId, {
+                    initial: { ...initial, validated: false },
+                    options: { ...options, validated: false },
+                    final: { ...final, validated: false }
+                  });
+                  alert('Phase initiale dévalidée.');
+                } else {
+                  await updateProject(projectId, {
+                    initial: { ...initial, validated: true }
+                  });
+                  alert('Phase initiale validée.');
+                }
+              } catch (error) {
+                console.error('Erreur lors de la mise à jour de la phase initiale:', error);
+                alert('Erreur lors de la mise à jour de la phase. Veuillez réessayer.');
               }
             }}
-            onCommentChange={validationComment =>
+            onCommentChange={(validationComment) =>
               updateInitialData({ validationComment })
             }
             checklistCompleted={checklistCompleted}

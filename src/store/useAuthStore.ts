@@ -56,6 +56,7 @@ export const useAuthStore = create<AuthState & AuthActions>((set) => ({
       await signOut(auth);
     } catch (error: unknown) {
       console.error('Erreur de déconnexion:', error);
+      throw error;
     } finally {
       set({ user: null, isAuthenticated: false });
     }

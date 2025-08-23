@@ -11,9 +11,15 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      alert('Déconnexion réussie.');
+      navigate('/login');
+    } catch (error) {
+      console.error('Erreur lors de la déconnexion:', error);
+      alert('Erreur lors de la déconnexion. Veuillez réessayer.');
+    }
   };
 
   const isOnDashboard = location.pathname === '/dashboard';
