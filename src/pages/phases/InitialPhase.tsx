@@ -116,6 +116,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
                     />
                   </div>
                   <span className="text-sm text-muted font-medium min-w-[3rem]">
+                  <span className="text-sm text-gray-600 font-medium min-w-[3rem]">
                     {approvedCount}/{mandatoryStakeholders.length}
                   </span>
                 </div>
@@ -134,7 +135,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
                     />
                   ))
                 ) : (
-                  <p className="text-sm text-muted italic">
+                  <p className="text-sm text-text italic">
                     Aucune partie prenante obligatoire pour cette phase
                   </p>
                 )}
