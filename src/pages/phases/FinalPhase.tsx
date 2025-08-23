@@ -139,9 +139,9 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
       id: 'validation',
       label: 'Validation',
       content: (
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-6">
-            <div>
+        <div className="space-y-8">
+          <div className="grid grid-cols-2 gap-8">
+            <div className="bg-card p-6 rounded-lg shadow-sm">
               <Checklist
                 items={final.checklist}
                 onItemChange={handleChecklistChange}
@@ -149,17 +149,17 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
                 onOpenEditor={() => setIsChecklistEditorOpen(true)}
               />
             </div>
-            <div className="border-l border-gray-200 pl-6">
+            <div className="bg-card p-6 rounded-lg shadow-sm">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-medium text-gray-900">Contenu phase approuvé par :</h3>
+                <h3 className="text-lg font-medium text-foreground">Contenu phase approuvé par :</h3>
                 <div className="flex items-center space-x-3">
-                  <div className="w-32 bg-gray-200 rounded-full h-2">
+                  <div className="w-32 bg-muted rounded-full h-2">
                     <div
-                      className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                      className="bg-accent h-2 rounded-full transition-all duration-300"
                       style={{ width: `${approvalRate}%` }}
                     />
                   </div>
-                  <span className="text-sm text-gray-600 font-medium min-w-[3rem]">
+                  <span className="text-sm text-muted font-medium min-w-[3rem]">
                     {approvedCount}/{mandatoryStakeholders.length}
                   </span>
                 </div>
@@ -176,7 +176,7 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
                     />
                   ))
                 ) : (
-                  <p className="text-sm text-gray-500 italic">
+                  <p className="text-sm text-muted italic">
                     Aucune partie prenante obligatoire pour cette phase
                   </p>
                 )}
@@ -211,9 +211,9 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
       id: 'details',
       label: 'Engagement',
       content: (
-        <div className="space-y-6">
+        <div className="space-y-8">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900">Détails de l'engagement</h3>
+            <h3 className="text-lg font-medium text-foreground">Détails de l'engagement</h3>
             <div className="flex space-x-3">
               <Button
                 variant="secondary"
@@ -232,12 +232,12 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 gap-8">
             {visibleSections.map(section => (
               <div key={section.id} className={section.internalOnly ? 'internal-content-block' : ''}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
-                    <label className="block text-lg font-medium text-gray-700">
+                    <label className="block text-lg font-medium text-foreground">
                       {section.title}
                     </label>
                     {section.tooltipContent && (
@@ -279,7 +279,7 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
       label: 'Notes',
       content: (
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900">Notes du projet</h3>
+          <h3 className="text-lg font-medium text-foreground">Notes du projet</h3>
           <Textarea
             value={notes}
             onChange={e => updateNotes(e.target.value)}
@@ -292,12 +292,12 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Tabs
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeTabColorClass="bg-green-100 text-green-800 border-green-500"
+        activeTabColorClass="bg-accent/10 text-accent border-accent"
       />
 
       <ChecklistEditorModal

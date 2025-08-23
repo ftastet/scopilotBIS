@@ -218,52 +218,48 @@ const Dashboard: React.FC = () => {
     const progress = calculateCombinedProgress(project);
 
     return (
-      <li
-        key={project.id}
-        className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200"
-      >
+      <li key={project.id} className="card hover:shadow-md transition-shadow">
         <div
           className="p-6 cursor-pointer flex flex-col h-full"
           onClick={() => navigate(`/project/${project.id}`)}
         >
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1 min-w-0">
-              <p className="text-lg font-semibold text-gray-900 truncate">
+              <h3 className="text-lg font-semibold text-foreground truncate">
                 {project.name}
-              </p>
-              <p className="mt-1 text-sm text-gray-500 truncate">
+              </h3>
+              <p className="mt-1 text-sm text-muted truncate">
                 {project.description}
               </p>
             </div>
-            <div className="flex-shrink-0">
-              <div className="flex items-center space-x-2">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  icon={Edit2}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleEditProject(project);
-                  }}
-                />
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  icon={Trash2}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteProject(project.id);
-                  }}
-                />
-              </div>
+            <div className="flex-shrink-0 flex items-center space-x-2">
+              <Button
+                variant="secondary"
+                size="sm"
+                icon={Edit2}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleEditProject(project);
+                }}
+              />
+              <Button
+                variant="secondary"
+                size="sm"
+                icon={Trash2}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteProject(project.id);
+                }}
+              />
             </div>
           </div>
-          <div className="mt-auto flex items-center justify-between text-sm text-gray-500">
-            <div className="flex items-center">
-              <Calendar className="h-4 w-4 mr-1" />
-              {formatDate(project.createdAt)}
-            </div>
-            <div className="flex items-center space-x-3">
+
+          <div className="mt-auto space-y-3">
+            <div className="flex items-center justify-between text-sm text-muted">
+              <div className="flex items-center">
+                <Calendar className="h-4 w-4 mr-1" />
+                {formatDate(project.createdAt)}
+              </div>
               <span
                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPhaseColor(
                   project
@@ -275,18 +271,18 @@ const Dashboard: React.FC = () => {
                   )}
                 {getPhaseLabel(project)}
               </span>
-              <div className="flex items-center space-x-2">
-                <BarChart3 className="h-4 w-4 text-gray-400" />
-                <div className="w-16 bg-gray-200 rounded-full h-1.5">
-                  <div
-                    className="bg-green-600 h-1.5 rounded-full transition-all duration-300"
-                    style={{ width: `${progress.percentage}%` }}
-                  />
-                </div>
-                <span className="text-xs text-gray-600 font-medium min-w-[2rem]">
-                  {progress.completed}/{progress.total}
-                </span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <BarChart3 className="h-4 w-4 text-muted" />
+              <div className="w-full bg-muted rounded-full h-1.5">
+                <div
+                  className="bg-accent h-1.5 rounded-full transition-all duration-300"
+                  style={{ width: `${progress.percentage}%` }}
+                />
               </div>
+              <span className="text-xs text-muted font-medium min-w-[2rem]">
+                {progress.completed}/{progress.total}
+              </span>
             </div>
           </div>
         </div>
@@ -297,9 +293,9 @@ const Dashboard: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex justify-between items-center mb-8">
-      <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mes projets</h1>
-          <p className="mt-2 text-gray-600">
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">Mes projets</h1>
+          <p className="mt-2 text-muted">
             Formalisez vos projets pas à pas, avant démarrage
           </p>
         </div>
@@ -314,16 +310,16 @@ const Dashboard: React.FC = () => {
 
       {isLoadingProjects ? (
         <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
-          <p className="mt-4 text-gray-600">Chargement des projets...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-accent mx-auto" />
+          <p className="mt-4 text-muted">Chargement des projets...</p>
         </div>
       ) : projects.length === 0 ? (
         <div className="text-center py-12">
-          <Folder className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">
+          <Folder className="mx-auto h-12 w-12 text-muted" />
+          <h3 className="mt-2 text-sm font-medium text-foreground">
             Aucun projet
           </h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-muted">
             Commencez par créer votre premier projet FEL.
           </p>
           <div className="mt-6">
