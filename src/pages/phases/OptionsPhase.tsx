@@ -229,7 +229,6 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
                   <span className="text-sm text-gray-600 font-medium min-w-[3rem]">
                     {approvedCount}/{mandatoryStakeholders.length}
                   </span>
-                  </span>
                 </div>
               </div>
               <div className="space-y-2">
