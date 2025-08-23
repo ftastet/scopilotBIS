@@ -93,8 +93,9 @@ const Dashboard: React.FC = () => {
     const phaseData = project.data[currentPhase];
     
     // Calculer la progression de la checklist
-    const checklistCompleted = phaseData.checklist.filter(item => item.checked).length;
-    const checklistTotal = phaseData.checklist.length;
+    const visibleChecklistItems = phaseData.checklist.filter(item => !item.isHidden);
+    const checklistCompleted = visibleChecklistItems.filter(item => item.checked).length;
+    const checklistTotal = visibleChecklistItems.length;
     
     // Déterminer les parties prenantes obligatoires pour cette phase
     const mandatoryStakeholders = project.data.stakeholders.filter(s => {

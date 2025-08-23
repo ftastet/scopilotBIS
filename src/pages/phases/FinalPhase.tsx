@@ -82,7 +82,9 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
     project.data.final.approvedBy?.includes(s.id)
   ).length;
 
-  const checklistCompleted = project.data.final.checklist.every(item => item.checked);
+  const checklistCompleted = project.data.final.checklist
+    .filter(item => !item.isHidden)
+    .every(item => item.checked);
   const stakeholdersApproved = mandatoryStakeholders.length === 0 || approvedCount === mandatoryStakeholders.length;
 
   const tabs = [

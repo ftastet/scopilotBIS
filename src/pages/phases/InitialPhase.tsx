@@ -84,7 +84,9 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
     project.data.initial.approvedBy?.includes(s.id)
   ).length;
 
-  const checklistCompleted = project.data.initial.checklist.every(item => item.checked);
+  const checklistCompleted = project.data.initial.checklist
+    .filter(item => !item.isHidden)
+    .every(item => item.checked);
   const stakeholdersApproved = mandatoryStakeholders.length === 0 || approvedCount === mandatoryStakeholders.length;
 
   const tabs = [

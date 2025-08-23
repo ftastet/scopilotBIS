@@ -166,7 +166,9 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
     project.data.options.approvedBy?.includes(s.id)
   ).length;
 
-  const checklistCompleted = project.data.options.checklist.every(item => item.checked);
+  const checklistCompleted = project.data.options.checklist
+    .filter(item => !item.isHidden)
+    .every(item => item.checked);
   const stakeholdersApproved = mandatoryStakeholders.length === 0 || approvedCount === mandatoryStakeholders.length;
   const scenarioSelected = project.data.options.selectedScenarioId !== '';
 
