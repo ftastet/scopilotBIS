@@ -14,14 +14,15 @@ const Textarea: React.FC<TextareaProps> = ({
   return (
     <div className="space-y-1">
       {label && (
-        <label className="block text-sm font-medium text-text">
+        <label className="block text-sm font-medium text-text dark:text-text-dark">
           {label}
         </label>
       )}
       <textarea
         className={`
-          block w-full rounded-md border border-gray-300 bg-white px-3 py-2 shadow-sm
+          block w-full rounded-md border border-gray-300 bg-background px-3 py-2 shadow-sm
           placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary
+          dark:bg-background-dark dark:border-gray-600 dark:text-text-dark dark:placeholder-gray-500 dark:focus:ring-primary-dark dark:focus:border-primary-dark
           ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}
           ${className}
         `}
