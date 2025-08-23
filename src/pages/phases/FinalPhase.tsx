@@ -149,17 +149,17 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
                 onOpenEditor={() => setIsChecklistEditorOpen(true)}
               />
             </div>
-            <div className="border-l border-gray-200 pl-6">
+            <div className="border-l border-secondary dark:border-background pl-6">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-medium text-gray-900">Contenu phase approuvé par :</h3>
+                <h3 className="text-lg font-medium text-text dark:text-background">Contenu phase approuvé par :</h3>
                 <div className="flex items-center space-x-3">
-                  <div className="w-32 bg-gray-200 rounded-full h-2">
+                  <div className="w-32 bg-secondary dark:bg-text rounded-full h-2">
                     <div
                       className="bg-green-600 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${approvalRate}%` }}
                     />
                   </div>
-                  <span className="text-sm text-gray-600 font-medium min-w-[3rem]">
+                  <span className="text-sm text-text/80 dark:text-background/80 font-medium min-w-[3rem]">
                     {approvedCount}/{mandatoryStakeholders.length}
                   </span>
                 </div>
@@ -176,7 +176,7 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
                     />
                   ))
                 ) : (
-                  <p className="text-sm text-gray-500 italic">
+                  <p className="text-sm text-text/60 dark:text-background/60 italic">
                     Aucune partie prenante obligatoire pour cette phase
                   </p>
                 )}
@@ -213,7 +213,7 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
       content: (
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900">Détails de l'engagement</h3>
+            <h3 className="text-lg font-medium text-text dark:text-background">Détails de l'engagement</h3>
             <div className="flex space-x-3">
               <Button
                 variant="secondary"
@@ -237,7 +237,7 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
               <div key={section.id} className={section.internalOnly ? 'internal-content-block' : ''}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
-                    <label className="block text-lg font-medium text-gray-700">
+                    <label className="block text-lg font-medium text-text dark:text-background">
                       {section.title}
                     </label>
                     {section.tooltipContent && (
@@ -279,7 +279,7 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
       label: 'Notes',
       content: (
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900">Notes du projet</h3>
+          <h3 className="text-lg font-medium text-text dark:text-background">Notes du projet</h3>
           <Textarea
             value={notes}
             onChange={e => updateNotes(e.target.value)}

@@ -29,10 +29,10 @@ const App: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background dark:bg-background-dark flex items-center justify-center">
+      <div className="min-h-screen bg-background dark:bg-text flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary dark:border-primary-dark mx-auto" />
-          <p className="mt-4 text-text dark:text-text-dark">Chargement...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
+          <p className="mt-4 text-text/60 dark:text-background/60">Chargement...</p>
         </div>
       </div>
     );
@@ -43,7 +43,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div className="min-h-screen bg-background dark:bg-background-dark pt-16">
+      <div className="min-h-screen bg-background dark:bg-text pt-16">
         {isAuthenticated && <Header />}
         <Routes>
           <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />

@@ -38,7 +38,7 @@ const Project: React.FC = () => {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Projet non trouvé</h1>
+          <h1 className="text-2xl font-bold text-text dark:text-background mb-4">Projet non trouvé</h1>
           <Button
             variant="primary"
             icon={ArrowLeft}
@@ -138,8 +138,8 @@ const Project: React.FC = () => {
                     ${isActive
                       ? `bg-${phase.color}-100 text-${phase.color}-800 shadow-md`
                       : canAccess
-                        ? `bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50 hover:border-gray-400 shadow-sm`
-                        : `bg-gray-100 text-gray-400 border-2 border-gray-200 cursor-not-allowed opacity-60`
+                        ? `bg-background dark:bg-text text-text dark:text-background border-2 border-secondary dark:border-background hover:bg-background dark:hover:bg-text hover:border-text dark:hover:border-background shadow-sm`
+                        : `bg-secondary dark:bg-text text-text/40 dark:text-background/40 border-2 border-secondary dark:border-background cursor-not-allowed opacity-60`
                     }
                     ${status === 'completed' ? `ring-3 ring-green-500 ring-opacity-60 shadow-lg` : ''}
                   `}
@@ -150,7 +150,7 @@ const Project: React.FC = () => {
                       ? 'bg-green-500 text-white' 
                       : isActive 
                         ? `bg-${phase.color}-100 border-2 border-${phase.color}-800 text-${phase.color}-800`
-                        : 'bg-gray-300 text-gray-600'
+                        : 'bg-secondary dark:bg-text text-text/60 dark:text-background/60'
                     }
                   `}>
                     {status === 'completed' ? '✓' : index + 1}
@@ -158,7 +158,7 @@ const Project: React.FC = () => {
                   <span className="whitespace-nowrap">{phase.label}</span>
                 </Button>
                 {index < phases.length - 1 && (
-                  <ChevronRight className="h-6 w-6 text-gray-400 mx-2" />
+                  <ChevronRight className="h-6 w-6 text-text/40 dark:text-background/40 mx-2" />
                 )}
               </React.Fragment>
             );
