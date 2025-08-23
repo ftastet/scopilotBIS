@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { HelpCircle } from 'lucide-react';
+import Button from './Button';
 
 interface TooltipIconProps {
   content: string;
@@ -11,16 +12,17 @@ const TooltipIcon: React.FC<TooltipIconProps> = ({ content, className = '' }) =>
 
   return (
     <div className={`relative inline-block ${className}`}>
-      <button
+      <Button
         type="button"
-        className="ml-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+        variant="secondary"
+        size="sm"
+        icon={HelpCircle}
+        className="ml-2 p-1 border-0 bg-transparent text-gray-400 hover:text-gray-600"
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         onFocus={() => setIsVisible(true)}
         onBlur={() => setIsVisible(false)}
-      >
-        <HelpCircle className="h-4 w-4" />
-      </button>
+      />
       
       {isVisible && (
         <div className="absolute left-0 top-6 z-50 w-144 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg">

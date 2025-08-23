@@ -16,8 +16,8 @@ export default {
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))',
         },
-        primary: '#1e40af',
-        secondary: '#f3f4f6',
+        primary: '#3b82f6',
+        secondary: '#f9fafb',
         text: '#111827',
       },
       width: {
