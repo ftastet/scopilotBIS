@@ -3,12 +3,30 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: 210 20% 98%; /* light gray */
+    --foreground: 222 47% 11%; /* dark gray text */
+    --muted: 210 16% 86%;
+    --card: 0 0% 100%;
+    --accent: 238 84% 67%; /* indigo accent */
+    --accent-foreground: 0 0% 100%;
+  }
+
+  .dark {
+    --background: 220 15% 12%; /* anthracite */
+    --foreground: 0 0% 98%; /* light text */
+    --muted: 217 15% 28%;
+    --card: 220 15% 18%;
+    --accent: 238 84% 67%; /* same accent */
+    --accent-foreground: 0 0% 100%;
+  }
+
   html {
     font-family: 'Inter', system-ui, sans-serif;
   }
-  
+
   body {
-    @apply bg-background text-text;
+    @apply bg-background text-foreground;
   }
 }
 
