@@ -13,7 +13,7 @@ const TooltipIcon: React.FC<TooltipIconProps> = ({ content, className = '' }) =>
     <div className={`relative inline-block ${className}`}>
       <button
         type="button"
-        className="ml-2 text-gray-400 hover:text-gray-600 transition-colors duration-200"
+        className="ml-2 text-text/40 dark:text-background/40 hover:text-text dark:hover:text-background transition-colors duration-200"
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         onFocus={() => setIsVisible(true)}
@@ -23,8 +23,8 @@ const TooltipIcon: React.FC<TooltipIconProps> = ({ content, className = '' }) =>
       </button>
       
       {isVisible && (
-        <div className="absolute left-0 top-6 z-50 w-144 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg">
-          <div className="absolute -top-1 left-2 w-2 h-2 bg-gray-800 transform rotate-45"></div>
+        <div className="absolute left-0 top-6 z-50 w-144 p-3 bg-text dark:bg-background text-white text-xs rounded-lg shadow-lg">
+          <div className="absolute -top-1 left-2 w-2 h-2 bg-text dark:bg-background transform rotate-45"></div>
           <div className="whitespace-pre-wrap">{content}</div>
         </div>
       )}

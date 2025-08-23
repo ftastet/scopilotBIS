@@ -29,7 +29,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, modalCl
               </h3>
               <button
                 onClick={onClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-text/40 dark:text-background/40 hover:text-text dark:hover:text-background transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>

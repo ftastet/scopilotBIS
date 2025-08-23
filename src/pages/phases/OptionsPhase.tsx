@@ -217,15 +217,15 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
             </div>
             <div className="border-l border-border pl-6 dark:border-border-dark">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-medium text-gray-900">Contenu phase approuvé par :</h3>
+                <h3 className="text-lg font-medium text-text dark:text-background">Contenu phase approuvé par :</h3>
                 <div className="flex items-center space-x-3">
-                  <div className="w-32 bg-gray-200 rounded-full h-2">
+                  <div className="w-32 bg-secondary dark:bg-text rounded-full h-2">
                     <div
                       className="bg-green-600 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${approvalProgress}%` }}
                     />
                   </div>
-                  <span className="text-sm text-gray-600 font-medium min-w-[3rem]">
+                  <span className="text-sm text-text/80 dark:text-background/80 font-medium min-w-[3rem]">
                     {approvedCount}/{mandatoryStakeholders.length}
                   </span>
                 </div>
@@ -362,7 +362,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
       content: (
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900">Développement des scénarios</h3>
+            <h3 className="text-lg font-medium text-text dark:text-background">Développement des scénarios</h3>
             <div className="flex space-x-3">
               <Button
                 variant="secondary"
@@ -409,8 +409,8 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-medium">Sélection du scénario</h3>
-                <p className="text-sm text-gray-600">
-                  {scenarioSelected 
+                <p className="text-sm text-text/60 dark:text-background/60">
+                  {scenarioSelected
                     ? `Scénario ${selectedScenario} sélectionné. Vous pouvez continuer vers la validation.`
                     : "Veuillez sélectionner un scénario pour continuer."
                   }
@@ -442,7 +442,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
       label: 'Notes',
       content: (
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900">Notes du projet</h3>
+          <h3 className="text-lg font-medium text-text dark:text-background">Notes du projet</h3>
           <Textarea
             value={project.data.notes || ''}
             onChange={(e) => updateNotes(e.target.value)}

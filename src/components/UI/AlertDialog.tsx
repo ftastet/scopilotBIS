@@ -47,10 +47,10 @@ const AlertDialog: React.FC = () => {
         </div>
         
         <div className="space-y-2">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-text dark:text-background">
             {title}
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-text/60 dark:text-background/60">
             {message}
           </p>
         </div>
