@@ -2,7 +2,7 @@ import React from 'react';
 import { DivideIcon as LucideIcon } from 'lucide-react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'success' | 'danger';
+  variant?: 'primary' | 'secondary';
   size?: 'sm' | 'md' | 'lg';
   icon?: LucideIcon;
   children?: React.ReactNode;
@@ -21,8 +21,6 @@ const Button: React.FC<ButtonProps> = ({
   const variantClasses = {
     primary: 'btn-primary',
     secondary: 'btn-secondary',
-    success: 'btn-success',
-    danger: 'btn-danger'
   };
   
   const sizeClasses = {
@@ -31,12 +29,12 @@ const Button: React.FC<ButtonProps> = ({
     lg: 'px-6 py-3 text-base'
   };
 
-  const classes = `
-    ${baseClasses}
-    ${variantClasses[variant]}
-    ${sizeClasses[size]}
-    ${className}
-  `.trim().replace(/\s+/g, ' ');
+  const classes = [
+    baseClasses,
+    variantClasses[variant],
+    sizeClasses[size],
+    className,
+  ].join(' ').trim();
 
   return (
     <button className={classes} {...props}>

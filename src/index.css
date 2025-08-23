@@ -25,14 +25,6 @@
     @apply bg-white border border-gray-300 text-text hover:bg-gray-50 hover:border-gray-400 focus:ring-secondary shadow-sm;
   }
   
-  .btn-success {
-    @apply bg-green-600 text-white hover:bg-green-700 focus:ring-green-500;
-  }
-  
-  .btn-danger {
-    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
-  }
-
   .card {
     @apply bg-secondary text-text rounded-lg shadow-sm;
   }

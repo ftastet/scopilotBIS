@@ -129,12 +129,13 @@ const Project: React.FC = () => {
             
             return (
               <React.Fragment key={phase.id}>
-                <button
+                <Button
                   onClick={() => handlePhaseChange(phase.id as 'initial' | 'options' | 'final')}
                   disabled={!canAccess}
+                  variant="secondary"
                   className={`
                     flex items-center justify-center px-5 py-2 rounded-xl text-base font-semibold transition-all duration-300 transform hover:scale-105 w-full
-                    ${isActive 
+                    ${isActive
                       ? `bg-${phase.color}-100 text-${phase.color}-800 shadow-md`
                       : canAccess
                         ? `bg-white text-gray-700 border-2 border-gray-300 hover:bg-gray-50 hover:border-gray-400 shadow-sm`
@@ -155,7 +156,7 @@ const Project: React.FC = () => {
                     {status === 'completed' ? '✓' : index + 1}
                   </span>
                   <span className="whitespace-nowrap">{phase.label}</span>
-                </button>
+                </Button>
                 {index < phases.length - 1 && (
                   <ChevronRight className="h-6 w-6 text-gray-400 mx-2" />
                 )}

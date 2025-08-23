@@ -193,7 +193,7 @@ const StakeholderTable: React.FC<StakeholderTableProps> = ({
                       onClick={() => handleEdit(stakeholder)}
                     />
                     <Button
-                      variant="danger"
+                      variant="secondary"
                       size="sm"
                       icon={Trash2}
                       onClick={() => handleDelete(stakeholder.id)}

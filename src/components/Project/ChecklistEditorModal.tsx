@@ -107,7 +107,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
         
         {!item.isDefault && (
           <Button
-            variant="danger"
+            variant="secondary"
             size="sm"
             icon={Trash2}
             onClick={() => onDeleteItem(item.id)}

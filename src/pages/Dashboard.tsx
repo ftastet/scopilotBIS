@@ -238,7 +238,7 @@ const Dashboard: React.FC = () => {
                   }}
                 />
                 <Button
-                  variant="danger"
+                  variant="secondary"
                   size="sm"
                   icon={Trash2}
                   onClick={(e) => {
