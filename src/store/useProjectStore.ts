@@ -9,7 +9,10 @@ import {
   where,
   orderBy,
   onSnapshot,
-  getDoc
+  getDoc,
+  type Unsubscribe,
+  type Query,
+  type DocumentData
 } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useAuthStore } from './useAuthStore';
@@ -19,11 +22,13 @@ import { createChecklistSlice, type ChecklistSlice } from './checklistStore';
 import { createSectionSlice, type SectionSlice } from './sectionStore';
 import { createScenarioSlice, type ScenarioSlice } from './scenarioStore';
 
+type Phase = 'initial' | 'options' | 'final';
+
 interface ProjectBaseState {
   projects: Project[];
   currentProject: Project | null;
   isLoadingProjects: boolean;
-  fetchProjects: () => Promise<(() => void) | undefined>;
+  fetchProjects: () => Promise<Unsubscribe | void>;
   createProject: (name: string, description: string) => Promise<string>;
   getProject: (id: string) => Project | undefined;
   setCurrentProject: (project: Project | null) => void;
@@ -34,8 +39,8 @@ interface ProjectBaseState {
 
 export type ProjectState = ProjectBaseState & ChecklistSlice & SectionSlice & ScenarioSlice;
 
-const createDefaultChecklist = (phase: 'initial' | 'options' | 'final'): ChecklistItem[] => {
-  const checklists = {
+const createDefaultChecklist = (phase: Phase): ChecklistItem[] => {
+  const checklists: Record<Phase, string[]> = {
     initial: [
       'Désignation du porteur de projet',
       'Définition des objectifs généraux',
@@ -82,8 +87,11 @@ const createDefaultChecklist = (phase: 'initial' | 'options' | 'final'): Checkli
   }));
 };
 
-const createDefaultSections = (phase: 'initial' | 'options' | 'final'): ProjectSection[] => {
-  const sections = {
+const createDefaultSections = (phase: Phase): ProjectSection[] => {
+  const sections: Record<
+    Phase,
+    Array<{ title: string; placeholder: string; tooltipContent: string }>
+  > = {
     initial: [
       {
         title: 'Contexte & Objectifs',
@@ -244,190 +252,204 @@ const createDefaultSections = (phase: 'initial' | 'options' | 'final'): ProjectS
   }));
 };
 
-const createDefaultProject = (name: string, description: string, userId: string): Omit<Project, 'id'> => {
-  const optionsSections = createDefaultSections('options');
-  
-  // Créer les contenus par défaut pour chaque scénario
-  const createDefaultScenarioContent = (): ScenarioContentData => ({
-    sectionContents: optionsSections.reduce((acc, section) => ({
-      ...acc,
-      [section.id]: { content: '', internalOnly: false }
-    }), {})
-  });
-
-  return ({
-  name,
-  description,
-  userId,
-  createdAt: new Date().toISOString(),
-  currentPhase: 'initial',
-  data: {
-    initial: {
-      checklist: createDefaultChecklist('initial'),
-      validated: false,
-      validationComment: '',
-      approvedBy: [],
-      sections: createDefaultSections('initial')
-    } as any,
-    options: {
-      checklist: createDefaultChecklist('options'),
-      validated: false,
-      validationComment: '',
-      approvedBy: [],
-      sections: optionsSections,
-      selectedScenarioId: '',
-      scenarios: {
-        A: createDefaultScenarioContent(),
-        B: createDefaultScenarioContent()
-      }
+const createDefaultScenarioContent = (
+  sections: ProjectSection[]
+): ScenarioContentData => ({
+  sectionContents: sections.reduce<Record<string, { content: string; internalOnly: boolean }>>(
+    (acc, section) => {
+      acc[section.id] = { content: '', internalOnly: false };
+      return acc;
     },
-    final: {
-      checklist: createDefaultChecklist('final'),
-      validated: false,
-      validationComment: '',
-      approvedBy: [],
-      sections: createDefaultSections('final')
-    } as any,
-    stakeholders: [],
-    notes: ''
-  }
-  });
+    {}
+  )
+});
+
+const createDefaultProject = (
+  name: string,
+  description: string,
+  userId: string
+): Omit<Project, 'id'> => {
+  const optionsSections = createDefaultSections('options');
+
+  return {
+    name,
+    description,
+    userId,
+    createdAt: new Date().toISOString(),
+    currentPhase: 'initial',
+    data: {
+      initial: {
+        checklist: createDefaultChecklist('initial'),
+        validated: false,
+        validationComment: '',
+        approvedBy: [],
+        sections: createDefaultSections('initial')
+      } as any,
+      options: {
+        checklist: createDefaultChecklist('options'),
+        validated: false,
+        validationComment: '',
+        approvedBy: [],
+        sections: optionsSections,
+        selectedScenarioId: '',
+        scenarios: {
+          A: createDefaultScenarioContent(optionsSections),
+          B: createDefaultScenarioContent(optionsSections)
+        }
+      },
+      final: {
+        checklist: createDefaultChecklist('final'),
+        validated: false,
+        validationComment: '',
+        approvedBy: [],
+        sections: createDefaultSections('final')
+      } as any,
+      stakeholders: [],
+      notes: ''
+    }
+  };
 };
 
-export const useProjectStore = create<ProjectState>((set, get, store) => ({
-  projects: [],
-  currentProject: null,
-  isLoadingProjects: false,
+export const useProjectStore = create<ProjectState>((set, get, store) => {
+  const syncCurrentProject = (
+    id: string,
+    updater: (project: Project) => Project | null
+  ) => {
+    const { currentProject } = get();
+    if (currentProject?.id === id) {
+      set({ currentProject: updater(currentProject) });
+    }
+  };
 
-  fetchProjects: async () => {
-    const { user } = useAuthStore.getState();
-    if (!user) return;
+  return {
+    projects: [],
+    currentProject: null,
+    isLoadingProjects: false,
 
-    set({ isLoadingProjects: true });
+    fetchProjects: async (): Promise<Unsubscribe | void> => {
+      const { user } = useAuthStore.getState();
+      if (!user) return;
 
-    try {
-      // Vérifier si l'utilisateur est admin
-      const adminDoc = await getDoc(doc(db, 'admins', user.id));
-      const isAdmin = adminDoc.exists();
+      set({ isLoadingProjects: true });
 
-      // Construire la requête
-      const projectsRef = collection(db, 'projects');
-      let q;
-      
-      if (isAdmin) {
-        // Admin peut voir tous les projets
-        q = query(projectsRef, orderBy('createdAt', 'desc'));
-      } else {
-        // Utilisateur normal ne voit que ses projets
-        q = query(projectsRef, where('userId', '==', user.id));
-      }
+      try {
+        // Vérifier si l'utilisateur est admin
+        const adminDoc = await getDoc(doc(db, 'admins', user.id));
+        const isAdmin = adminDoc.exists();
 
-      // Écouter les changements en temps réel
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        const projects: Project[] = [];
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          const project: Project = {
-            id: doc.id,
-            name: data.name,
-            description: data.description,
-            userId: data.userId,
-            createdAt: data.createdAt,
-            currentPhase: calculateCurrentPhase(data.data),
-            data: data.data
-          };
-          console.log('fetchProjects snapshot - project:', project.id, 'selectedScenario:', project.data.options.selectedScenario);
-          projects.push(project);
+        // Construire la requête
+        const projectsRef = collection(db, 'projects');
+        let q: Query<DocumentData>;
+
+        if (isAdmin) {
+          // Admin peut voir tous les projets
+          q = query(projectsRef, orderBy('createdAt', 'desc'));
+        } else {
+          // Utilisateur normal ne voit que ses projets
+          q = query(projectsRef, where('userId', '==', user.id));
+        }
+
+        // Écouter les changements en temps réel
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+          const projects: Project[] = [];
+          snapshot.forEach((doc) => {
+            const data = doc.data();
+            const project: Project = {
+              id: doc.id,
+              name: data.name,
+              description: data.description,
+              userId: data.userId,
+              createdAt: data.createdAt,
+              currentPhase: calculateCurrentPhase(data.data),
+              data: data.data
+            };
+            projects.push(project);
+          });
+
+          set({ projects, isLoadingProjects: false });
         });
-        
-        set({ projects, isLoadingProjects: false });
-      });
 
-      // Stocker la fonction de désabonnement (optionnel pour un nettoyage ultérieur)
-      return unsubscribe;
-    } catch (error) {
-      console.error('Erreur lors de la récupération des projets:', error);
-      set({ isLoadingProjects: false });
-    }
-  },
-
-  createProject: async (name: string, description: string) => {
-    const { user } = useAuthStore.getState();
-    if (!user) throw new Error('Utilisateur non authentifié');
-
-    try {
-      const projectData = createDefaultProject(name, description, user.id);
-      const docRef = await addDoc(collection(db, 'projects'), projectData);
-      
-      const newProject: Project = {
-        id: docRef.id,
-        ...projectData
-      };
-      
-      set(state => ({
-        currentProject: newProject
-      }));
-      
-      return docRef.id;
-    } catch (error) {
-      console.error('Erreur lors de la création du projet:', error);
-      throw error;
-    }
-  },
-
-  getProject: (id: string) => {
-    return get().projects.find(p => p.id === id);
-  },
-
-  setCurrentProject: (project: Project | null) => {
-    set({ currentProject: project });
-  },
-
-  updateProject: async (id: string, updates: Partial<ProjectData>) => {
-    try {
-      await updateProjectInFirestore(id, updates, get, set);
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour du projet:', error);
-      throw error;
-    }
-  },
-
-  updateProjectDetails: async (id: string, name: string, description: string) => {
-    try {
-      const projectRef = doc(db, 'projects', id);
-      await updateDoc(projectRef, { name, description });
-
-      // Mettre à jour le projet courant si c'est celui qui est modifié
-      const { currentProject } = get();
-      if (currentProject?.id === id) {
-        set({
-          currentProject: {
-            ...currentProject,
-            name,
-            description
-          }
-        });
+        // Stocker la fonction de désabonnement (optionnel pour un nettoyage ultérieur)
+        return unsubscribe;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des projets:', error);
+        set({ isLoadingProjects: false });
       }
-    } catch (error) {
-      console.error('Erreur lors de la mise à jour des détails du projet:', error);
-      throw error;
-    }
-  },
+    },
 
-  deleteProject: async (id: string) => {
-    try {
-      await deleteDoc(doc(db, 'projects', id));
-      
-      const { currentProject } = get();
-      if (currentProject?.id === id) {
-        set({ currentProject: null });
+    createProject: async (name: string, description: string): Promise<string> => {
+      const { user } = useAuthStore.getState();
+      if (!user) throw new Error('Utilisateur non authentifié');
+
+      try {
+        const projectData = createDefaultProject(name, description, user.id);
+        const docRef = await addDoc(collection(db, 'projects'), projectData);
+
+        const newProject: Project = {
+          id: docRef.id,
+          ...projectData
+        };
+
+        set({ currentProject: newProject });
+
+        return docRef.id;
+      } catch (error) {
+        console.error('Erreur lors de la création du projet:', error);
+        throw error;
       }
-    } catch (error) {
-      console.error('Erreur lors de la suppression du projet:', error);
-      throw error;
-    }
-  },
-  ...createChecklistSlice(set, get, store),
-  ...createSectionSlice(set, get, store),
-  ...createScenarioSlice(set, get, store),
-}));
+    },
+
+    getProject: (id: string) => {
+      if (!id) return undefined;
+      return get().projects.find((p) => p.id === id);
+    },
+
+    setCurrentProject: (project: Project | null) => {
+      set({ currentProject: project });
+    },
+
+    updateProject: async (id: string, updates: Partial<ProjectData>) => {
+      if (!id) throw new Error('Project ID is required');
+      if (!updates) return;
+      try {
+        await updateProjectInFirestore(id, updates, get, set);
+      } catch (error) {
+        console.error('Erreur lors de la mise à jour du projet:', error);
+        throw error;
+      }
+    },
+
+    updateProjectDetails: async (
+      id: string,
+      name: string,
+      description: string
+    ) => {
+      if (!id) throw new Error('Project ID is required');
+      try {
+        const projectRef = doc(db, 'projects', id);
+        await updateDoc(projectRef, { name, description });
+
+        // Mettre à jour le projet courant si c'est celui qui est modifié
+        syncCurrentProject(id, (project) => ({ ...project, name, description }));
+      } catch (error) {
+        console.error('Erreur lors de la mise à jour des détails du projet:', error);
+        throw error;
+      }
+    },
+
+    deleteProject: async (id: string) => {
+      if (!id) throw new Error('Project ID is required');
+      try {
+        await deleteDoc(doc(db, 'projects', id));
+
+        syncCurrentProject(id, () => null);
+      } catch (error) {
+        console.error('Erreur lors de la suppression du projet:', error);
+        throw error;
+      }
+    },
+    ...createChecklistSlice(set, get, store),
+    ...createSectionSlice(set, get, store),
+    ...createScenarioSlice(set, get, store),
+  };
+});
