@@ -228,7 +228,7 @@ const Dashboard: React.FC = () => {
               <h3 className="text-lg font-semibold text-foreground truncate">
                 {project.name}
               </h3>
-              <p className="mt-1 text-sm text-muted truncate">
+              <p className="mt-1 text-sm text-gray-700 truncate">
                 {project.description}
               </p>
             </div>
@@ -255,7 +255,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           <div className="mt-auto space-y-3">
-            <div className="flex items-center justify-between text-sm text-muted">
+            <div className="flex items-center justify-between text-sm text-gray-700">
               <div className="flex items-center">
                 <Calendar className="h-4 w-4 mr-1" />
                 {formatDate(project.createdAt)}
@@ -273,14 +273,14 @@ const Dashboard: React.FC = () => {
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <BarChart3 className="h-4 w-4 text-muted" />
+              <BarChart3 className="h-4 w-4 text-gray-700" />
               <div className="w-full bg-muted rounded-full h-1.5">
                 <div
-                  className="bg-accent h-1.5 rounded-full transition-all duration-300"
+                  className="bg-primary h-1.5 rounded-full transition-all duration-300"
                   style={{ width: `${progress.percentage}%` }}
                 />
               </div>
-              <span className="text-xs text-muted font-medium min-w-[2rem]">
+              <span className="text-xs text-gray-700 font-medium min-w-[2rem]">
                 {progress.completed}/{progress.total}
               </span>
             </div>
