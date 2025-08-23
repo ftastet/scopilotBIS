@@ -102,16 +102,20 @@ const Dashboard: React.FC = () => {
   };
 
   const handleDeleteProject = (projectId: string): void => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
-      deleteProject(projectId)
-        .then(() => {
-          showAlert('Projet supprimé', 'Le projet a été supprimé avec succès.');
-        })
-        .catch((error) => {
-          console.error('Erreur lors de la suppression du projet:', error);
-          showAlert('Erreur', 'Erreur lors de la suppression du projet. Veuillez réessayer.');
-        });
-    }
+    showAlert(
+      'Confirmer la suppression',
+      'Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.',
+      () => {
+        deleteProject(projectId)
+          .then(() => {
+            showAlert('Projet supprimé', 'Le projet a été supprimé avec succès.');
+          })
+          .catch((error) => {
+            console.error('Erreur lors de la suppression du projet:', error);
+            showAlert('Erreur', 'Erreur lors de la suppression du projet. Veuillez réessayer.');
+          });
+      }
+    );
   };
 
   const formatDate = (dateString: string): string =>
