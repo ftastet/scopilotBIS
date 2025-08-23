@@ -1,15 +1,17 @@
 import React from 'react';
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label?: string;
   error?: string;
+  children: React.ReactNode;
 }
 
-const Input: React.FC<InputProps> = ({ 
-  label, 
-  error, 
-  className = '', 
-  ...props 
+const Select: React.FC<SelectProps> = ({
+  label,
+  error,
+  className = '',
+  children,
+  ...props
 }) => {
   return (
     <div className="space-y-1">
@@ -18,15 +20,17 @@ const Input: React.FC<InputProps> = ({
           {label}
         </label>
       )}
-      <input
+      <select
         className={`
           block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm
-          placeholder-gray-400 text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary
+          text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary
           ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}
           ${className}
         `}
         {...props}
-      />
+      >
+        {children}
+      </select>
       {error && (
         <p className="text-sm text-red-600">{error}</p>
       )}
@@ -34,4 +38,4 @@ const Input: React.FC<InputProps> = ({
   );
 };
 
-export default Input;
+export default Select;

@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from './Button';
 
 interface Tab {
   id: string;
@@ -14,25 +15,27 @@ interface TabsProps {
   className?: string;
 }
 
-const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabChange, activeTabColorClass = 'border-blue-500 text-blue-600', className = '' }) => {
+const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabChange, activeTabColorClass = 'border-primary text-primary', className = '' }) => {
   return (
     <div className={className}>
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-6">
           {tabs.map((tab) => (
-            <button
+            <Button
               key={tab.id}
               onClick={() => onTabChange(tab.id)}
+              variant="secondary"
+              size="sm"
               className={`
-                py-1.5 px-1 border-b-2 font-medium text-sm whitespace-nowrap
+                border-0 border-b-2 rounded-none bg-transparent whitespace-nowrap
                 ${activeTab === tab.id
-                  ? `${activeTabColorClass} px-3 py-2 rounded-md`
+                  ? `${activeTabColorClass}`
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }
               `}
             >
               {tab.label}
-            </button>
+            </Button>
           ))}
         </nav>
       </div>
