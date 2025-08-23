@@ -22,7 +22,7 @@
   }
 
   .btn-secondary {
-    @apply bg-secondary text-text hover:bg-secondary/80 focus:ring-secondary;
+    @apply bg-white border border-gray-300 text-text hover:bg-gray-50 hover:border-gray-400 focus:ring-secondary shadow-sm;
   }
   
   .btn-success {
