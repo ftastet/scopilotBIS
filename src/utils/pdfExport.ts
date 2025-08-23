@@ -8,28 +8,30 @@ export interface ExportOptions {
   useCORS?: boolean;
 }
 
-export const exportContentToPdf = async (
+const A4_WIDTH = 210; // mm
+const A4_HEIGHT = 297; // mm
+const MARGIN = 10; // mm
+const MM_PER_PX = 0.264583; // conversion
+
+export async function exportContentToPdf(
   element: HTMLElement,
   options: ExportOptions = {}
-): Promise<void> => {
+): Promise<void> {
   const {
     filename = 'export.pdf',
     quality = 1,
     scale = 2,
-    useCORS = true
+    useCORS = true,
   } = options;
 
-  // Store original styles to restore later
   const originalMaxHeight = element.style.maxHeight;
   const originalOverflowY = element.style.overflowY;
-  try {
-    // Add class to hide modals and other UI elements during export
-    document.body.classList.add('is-exporting-pdf');
 
-    // Temporarily remove height constraints and scrolling to capture full content
+  try {
+    document.body.classList.add('is-exporting-pdf');
     element.style.maxHeight = 'none';
     element.style.overflowY = 'visible';
-    // Configuration pour html2canvas
+
     const canvas = await html2canvas(element, {
       scale,
       useCORS,
@@ -37,90 +39,61 @@ export const exportContentToPdf = async (
       backgroundColor: '#ffffff',
       logging: false,
       width: element.scrollWidth,
-      height: element.scrollHeight
+      height: element.scrollHeight,
     });
 
-    // Dimensions du canvas
-    const imgWidth = canvas.width;
-    const imgHeight = canvas.height;
+    const imgWidthPx = canvas.width;
+    const imgHeightPx = canvas.height;
+    const contentWidth = A4_WIDTH - MARGIN * 2;
+    const contentHeight = A4_HEIGHT - MARGIN * 2;
 
-    // Configuration du PDF (format A4)
-    const pdfWidth = 210; // mm
-    const pdfHeight = 297; // mm
-    const margin = 10; // mm
-    const contentWidth = pdfWidth - (margin * 2);
-    const contentHeight = pdfHeight - (margin * 2);
+    const ratio = Math.min(
+      contentWidth / (imgWidthPx * MM_PER_PX),
+      contentHeight / (imgHeightPx * MM_PER_PX),
+    );
+    const scaledWidth = imgWidthPx * MM_PER_PX * ratio;
+    const scaledHeight = imgHeightPx * MM_PER_PX * ratio;
 
-    // Calculer le ratio pour ajuster l'image
-    const ratio = Math.min(contentWidth / (imgWidth * 0.264583), contentHeight / (imgHeight * 0.264583));
-    const scaledWidth = imgWidth * 0.264583 * ratio;
-    const scaledHeight = imgHeight * 0.264583 * ratio;
-
-    // Créer le PDF
     const pdf = new jsPDF('p', 'mm', 'a4');
-    
-    // Convertir le canvas en image
     const imgData = canvas.toDataURL('image/png', quality);
 
-    // Si le contenu tient sur une page
-    if (scaledHeight <= contentHeight) {
-      pdf.addImage(imgData, 'PNG', margin, margin, scaledWidth, scaledHeight);
-    } else {
-      // Si le contenu nécessite plusieurs pages
-      let remainingHeight = scaledHeight;
-      let position = 0;
-      let pageNumber = 1;
+    let heightLeft = scaledHeight;
+    let position = MARGIN;
 
-      while (remainingHeight > 0) {
-        const pageHeight = Math.min(contentHeight, remainingHeight);
-        
-        if (pageNumber > 1) {
-          pdf.addPage();
-        }
+    pdf.addImage(imgData, 'PNG', MARGIN, position, scaledWidth, scaledHeight);
+    heightLeft -= contentHeight;
 
-        // Créer un canvas temporaire pour cette portion
-        const tempCanvas = document.createElement('canvas');
-        const tempCtx = tempCanvas.getContext('2d');
-        
-        if (tempCtx) {
-          const sourceY = (position / ratio) / 0.264583;
-          const sourceHeight = (pageHeight / ratio) / 0.264583;
-          
-          tempCanvas.width = imgWidth;
-          tempCanvas.height = sourceHeight;
-          
-          tempCtx.drawImage(canvas, 0, sourceY, imgWidth, sourceHeight, 0, 0, imgWidth, sourceHeight);
-          
-          const tempImgData = tempCanvas.toDataURL('image/png', quality);
-          pdf.addImage(tempImgData, 'PNG', margin, margin, scaledWidth, pageHeight);
-        }
-
-        remainingHeight -= pageHeight;
-        position += pageHeight;
-        pageNumber++;
-      }
+    while (heightLeft > 0) {
+      position = MARGIN - (scaledHeight - heightLeft);
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', MARGIN, position, scaledWidth, scaledHeight);
+      heightLeft -= contentHeight;
     }
 
-    // Sauvegarder le PDF
     pdf.save(filename);
   } catch (error) {
     console.error('Erreur lors de l\'exportation PDF:', error);
-    throw new Error('Impossible d\'exporter le PDF. Veuillez réessayer.');
+    throw error instanceof Error
+      ? new Error(`Impossible d'exporter le PDF : ${error.message}`)
+      : new Error("Impossible d'exporter le PDF.");
   } finally {
-    // Always remove the PDF export class
+    element.style.maxHeight = originalMaxHeight;
+    element.style.overflowY = originalOverflowY;
     document.body.classList.remove('is-exporting-pdf');
   }
-};
+}
 
-export const generatePhaseFilename = (
+export type Phase = 'initial' | 'options' | 'final';
+
+export function generatePhaseFilename(
   projectName: string,
-  phase: 'initial' | 'options' | 'final',
-  isExternalExport: boolean = false
-): string => {
-  const phaseNames = {
+  phase: Phase,
+  isExternalExport = false,
+): string {
+  const phaseNames: Record<Phase, string> = {
     initial: 'Opportunite',
     options: 'Scenarios',
-    final: 'Engagement'
+    final: 'Engagement',
   };
 
   const sanitizedProjectName = projectName
@@ -129,7 +102,6 @@ export const generatePhaseFilename = (
     .substring(0, 50);
 
   const timestamp = new Date().toISOString().split('T')[0];
-  
   const externalSuffix = isExternalExport ? '_Externe' : '';
   return `${sanitizedProjectName}_${phaseNames[phase]}${externalSuffix}_${timestamp}.pdf`;
-};
+}
