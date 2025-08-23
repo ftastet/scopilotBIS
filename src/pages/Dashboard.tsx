@@ -4,7 +4,6 @@ import {
   Plus,
   Calendar,
   Folder,
-  ChevronRight,
   Edit2,
   Trash2,
   BarChart3,
@@ -15,6 +14,7 @@ import Modal from '../components/UI/Modal';
 import Input from '../components/UI/Input';
 import Textarea from '../components/UI/Textarea';
 import { useProjectStore } from '../store/useProjectStore';
+import { useAlertStore } from '../store/useAlertStore';
 import { Project } from '../types';
 
 interface EditingProject {
@@ -38,6 +38,7 @@ const Dashboard: React.FC = () => {
     deleteProject
   } = useProjectStore();
 
+  const showAlert = useAlertStore(state => state.show);
   const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,10 +61,12 @@ const Dashboard: React.FC = () => {
       setProjectName('');
       setProjectDescription('');
       setIsModalOpen(false);
-      navigate(`/project/${projectId}`);
+      showAlert('Projet créé', 'Le projet a été créé avec succès.', () => {
+        navigate(`/project/${projectId}`);
+      });
     } catch (error) {
       console.error('Erreur lors de la création du projet:', error);
-      alert('Erreur lors de la création du projet. Veuillez réessayer.');
+      showAlert('Erreur', 'Erreur lors de la création du projet. Veuillez réessayer.');
     }
   };
 
@@ -94,17 +97,25 @@ const Dashboard: React.FC = () => {
       setEditingProject(null);
     } catch (error) {
       console.error('Erreur lors de la modification du projet:', error);
-      alert('Erreur lors de la modification du projet. Veuillez réessayer.');
+      showAlert('Erreur', 'Erreur lors de la modification du projet. Veuillez réessayer.');
     }
   };
 
   const handleDeleteProject = (projectId: string): void => {
-    if (window.confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) {
-      deleteProject(projectId).catch((error) => {
-        console.error('Erreur lors de la suppression du projet:', error);
-        alert('Erreur lors de la suppression du projet. Veuillez réessayer.');
-      });
-    }
+    showAlert(
+      'Confirmer la suppression',
+      'Êtes-vous sûr de vouloir supprimer ce projet ? Cette action est irréversible.',
+      () => {
+        deleteProject(projectId)
+          .then(() => {
+            showAlert('Projet supprimé', 'Le projet a été supprimé avec succès.');
+          })
+          .catch((error) => {
+            console.error('Erreur lors de la suppression du projet:', error);
+            showAlert('Erreur', 'Erreur lors de la suppression du projet. Veuillez réessayer.');
+          });
+      }
+    );
   };
 
   const formatDate = (dateString: string): string =>
@@ -181,47 +192,19 @@ const Dashboard: React.FC = () => {
     const progress = calculateCombinedProgress(project);
 
     return (
-      <li key={project.id}>
+      <li
+        key={project.id}
+        className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200"
+      >
         <div
-          className="px-6 py-4 hover:bg-gray-50 cursor-pointer transition-colors duration-200"
+          className="p-6 cursor-pointer flex flex-col h-full"
           onClick={() => navigate(`/project/${project.id}`)}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between mb-4">
             <div className="flex-1 min-w-0">
-              <p className="text-base font-semibold text-gray-900 truncate">
+              <p className="text-lg font-semibold text-gray-900 truncate">
                 {project.name}
               </p>
-              <div className="flex items-center space-x-4 mt-1">
-                <div className="flex items-center text-sm text-gray-500">
-                  <Calendar className="h-4 w-4 mr-1" />
-                  {formatDate(project.createdAt)}
-                </div>
-                <div className="flex items-center space-x-3">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPhaseColor(
-                      project
-                    )}`}
-                  >
-                    {project.currentPhase === 'final' &&
-                      project.data.final.validated && (
-                        <CheckCircle className="h-3 w-3 mr-1" />
-                      )}
-                    {getPhaseLabel(project)}
-                  </span>
-                  <div className="flex items-center space-x-2">
-                    <BarChart3 className="h-4 w-4 text-gray-400" />
-                    <div className="w-16 bg-gray-200 rounded-full h-1.5">
-                      <div
-                        className="bg-green-600 h-1.5 rounded-full transition-all duration-300"
-                        style={{ width: `${progress.percentage}%` }}
-                      />
-                    </div>
-                    <span className="text-xs text-gray-600 font-medium min-w-[2rem]">
-                      {progress.completed}/{progress.total}
-                    </span>
-                  </div>
-                </div>
-              </div>
               <p className="mt-1 text-sm text-gray-500 truncate">
                 {project.description}
               </p>
@@ -246,7 +229,37 @@ const Dashboard: React.FC = () => {
                     handleDeleteProject(project.id);
                   }}
                 />
-                <ChevronRight className="h-5 w-5 text-gray-400" />
+              </div>
+            </div>
+          </div>
+          <div className="mt-auto flex items-center justify-between text-sm text-gray-500">
+            <div className="flex items-center">
+              <Calendar className="h-4 w-4 mr-1" />
+              {formatDate(project.createdAt)}
+            </div>
+            <div className="flex items-center space-x-3">
+              <span
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPhaseColor(
+                  project
+                )}`}
+              >
+                {project.currentPhase === 'final' &&
+                  project.data.final.validated && (
+                    <CheckCircle className="h-3 w-3 mr-1" />
+                  )}
+                {getPhaseLabel(project)}
+              </span>
+              <div className="flex items-center space-x-2">
+                <BarChart3 className="h-4 w-4 text-gray-400" />
+                <div className="w-16 bg-gray-200 rounded-full h-1.5">
+                  <div
+                    className="bg-green-600 h-1.5 rounded-full transition-all duration-300"
+                    style={{ width: `${progress.percentage}%` }}
+                  />
+                </div>
+                <span className="text-xs text-gray-600 font-medium min-w-[2rem]">
+                  {progress.completed}/{progress.total}
+                </span>
               </div>
             </div>
           </div>
@@ -298,13 +311,11 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="card overflow-hidden">
-          <ul className="divide-y divide-gray-200">
-            {projects.map((project) => (
-              <ProjectItem key={project.id} project={project} />
-            ))}
-          </ul>
-        </div>
+        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+          {projects.map((project) => (
+            <ProjectItem key={project.id} project={project} />
+          ))}
+        </ul>
       )}
 
       <Modal

@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Project from './pages/Project';
 import Header from './components/Layout/Header';
+import AlertDialog from './components/UI/AlertDialog';
 
 const App: React.FC = () => {
   const { isAuthenticated, isLoading } = useAuthStore(state => ({
@@ -50,6 +51,7 @@ const App: React.FC = () => {
           <Route path="/project/:id" element={withAuth(<Project />)} />
           <Route path="/" element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} />} />
         </Routes>
+        <AlertDialog />
       </div>
     </Router>
   );

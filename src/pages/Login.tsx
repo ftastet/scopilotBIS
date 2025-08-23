@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useNavigate } from 'react-router-dom';
+import { useAlertStore } from '../store/useAlertStore';
 import { LogIn, AlertCircle } from 'lucide-react';
 import Button from '../components/UI/Button';
 import Input from '../components/UI/Input';
@@ -12,6 +13,7 @@ const Login: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const login = useAuthStore(state => state.login);
   const navigate = useNavigate();
+  const showAlert = useAlertStore(state => state.show);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +22,9 @@ const Login: React.FC = () => {
     
     try {
       await login(email, password);
-      navigate('/dashboard');
+      showAlert('Connexion réussie', 'Vous êtes maintenant connecté à Scopilot.', () => {
+        navigate('/dashboard');
+      });
     } catch (error: any) {
       // Gestion des erreurs Firebase spécifiques
       switch (error.code) {

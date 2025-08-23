@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Project, ProjectSection } from '../../types';
 import Modal from '../UI/Modal';
+import { useAlertStore } from '../../store/useAlertStore';
 import Button from '../UI/Button';
 import RichTextEditor from '../UI/RichTextEditor';
 import TooltipIcon from '../UI/TooltipIcon';
@@ -29,6 +30,7 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
   const [previewSections, setPreviewSections] = useState<PreviewSection[]>([]);
   const [filterMode, setFilterMode] = useState<'internal' | 'external' | 'custom'>('internal');
   const [isCustomFilterModalOpen, setIsCustomFilterModalOpen] = useState(false);
+  const showAlert = useAlertStore(state => state.show);
 
   // Initialiser les sections de prévisualisation
   useEffect(() => {
@@ -120,7 +122,7 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
       onClose();
     } catch (error) {
       console.error('Erreur lors de l\'exportation PDF:', error);
-      alert('Erreur lors de l\'exportation PDF. Veuillez réessayer.');
+      showAlert('Erreur d\'exportation', 'Erreur lors de l\'exportation PDF. Veuillez réessayer.');
     }
   };
 

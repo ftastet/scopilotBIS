@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useProjectStore } from '../../store/useProjectStore';
 import { Project, OptionsPhaseData, ScenarioContentData, ProjectSection } from '../../types';
+import { useAlertStore } from '../../store/useAlertStore';
 import Tabs from '../../components/UI/Tabs';
 import Checklist from '../../components/Project/Checklist';
 import ChecklistEditorModal from '../../components/Project/ChecklistEditorModal';
@@ -87,6 +88,8 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
     reorderProjectSections
   } = useProjectStore();
   
+  const showAlert = useAlertStore(state => state.show);
+
   const [activeTab, setActiveTab] = useState('validation');
   const [isSectionEditorOpen, setIsSectionEditorOpen] = useState(false);
   const [isInitialPhaseModalOpen, setIsInitialPhaseModalOpen] = useState(false);
@@ -244,109 +247,104 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
           <PhaseValidation
             validated={project.data.options.validated}
             validationComment={project.data.options.validationComment}
-            onValidationChange={(validated) => {
-              if (!validated) {
-                // Dévalidation en cascade : annule la phase finale
-                updateProject(project.id, {
-                  options: { ...project.data.options, validated: false },
-                  final: { ...project.data.final, validated: false }
-                });
-              } else {
-                // Validation de la phase options avec réplication vers la phase finale
-                const selectedScenarioId = project.data.options.selectedScenarioId;
-                if (selectedScenarioId && project.data.options.scenarios[selectedScenarioId]) {
-                  const selectedScenario = project.data.options.scenarios[selectedScenarioId];
-                  
-                  // Mapping des sections par défaut entre Options et Final
-                  const sectionMapping = {
-                    'options-section-0': 'final-section-0', // Description & Périmètre du scénario -> Description & Périmètre définitif
-                    'options-section-1': 'final-section-1', // Hypothèses & Contraintes -> Hypothèses & Contraintes validées
-                    'options-section-2': 'final-section-2', // Livrables attendus -> Livrables définitifs
-                    'options-section-3': 'final-section-3', // Budget estimatif (±30%) -> Budget validé (±15%)
-                    'options-section-4': 'final-section-4'  // Jalons du scénario -> Planning détaillé
-                  };
-                  
-                  // Créer des maps pour retrouver les sections existantes de la phase finale
-                  const existingFinalSectionsById = {};
-                  const existingFinalSectionsByTitle = {};
-                  
-                  project.data.final.sections.forEach(section => {
-                    if (section.isDefault) {
-                      existingFinalSectionsById[section.id] = section;
-                    } else {
-                      existingFinalSectionsByTitle[section.title] = section;
-                    }
+            onValidationChange={async (validated) => {
+              try {
+                if (!validated) {
+                  await updateProject(project.id, {
+                    options: { ...project.data.options, validated: false },
+                    final: { ...project.data.final, validated: false }
                   });
-                  
-                  // Construire le nouveau tableau de sections finales en respectant l'ordre des sections options
-                  const newFinalSections = [];
-                  let orderCounter = 0;
-                  
-                  // Parcourir les sections options dans leur ordre actuel (triées par order)
-                  const sortedOptionsSection = [...project.data.options.sections].sort((a, b) => a.order - b.order);
-                  
-                  sortedOptionsSection.forEach(optionsSection => {
-                    // Ignorer les sections masquées - seules les sections visibles sont répliquées
-                    if (optionsSection.isHidden) return;
-                    
-                    const scenarioContent = selectedScenario.sectionContents[optionsSection.id];
-                    
-                    if (optionsSection.isDefault && sectionMapping[optionsSection.id]) {
-                      // Section par défaut : mapper vers la section correspondante dans Final
-                      const finalSectionId = sectionMapping[optionsSection.id];
-                      const existingFinalSection = existingFinalSectionsById[finalSectionId];
-                      
-                      if (existingFinalSection) {
-                        newFinalSections.push({
-                          ...existingFinalSection,
-                          content: scenarioContent?.content || '',
-                          internalOnly: scenarioContent?.internalOnly || false,
-                          isHidden: false, // La section est visible puisqu'on l'ajoute
-                          order: orderCounter++
-                        });
-                      }
-                    } else if (!optionsSection.isDefault) {
-                      // Section personnalisée : créer ou mettre à jour
-                      const existingCustomSection = existingFinalSectionsByTitle[optionsSection.title];
-                      
-                      if (existingCustomSection) {
-                        // Réutiliser la section personnalisée existante
-                        newFinalSections.push({
-                          ...existingCustomSection,
-                          content: scenarioContent?.content || '',
-                          internalOnly: scenarioContent?.internalOnly || false,
-                          isHidden: false, // La section est visible puisqu'on l'ajoute
-                          order: orderCounter++
-                        });
-                      } else {
-                        // Créer une nouvelle section personnalisée
-                        newFinalSections.push({
-                          id: `final-section-custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-                          title: optionsSection.title,
-                          content: scenarioContent?.content || '',
-                          internalOnly: scenarioContent?.internalOnly || false,
-                          placeholder: optionsSection.placeholder,
-                          tooltipContent: optionsSection.tooltipContent,
-                          isDefault: false,
-                          isHidden: false,
-                          order: orderCounter++
-                        });
-                      }
-                    }
-                  });
-                  
-                  // Mettre à jour le projet avec les nouvelles sections finales ordonnées
-                  updateProject(project.id, {
-                    options: { ...project.data.options, validated: true },
-                    final: { 
-                      ...project.data.final, 
-                      sections: newFinalSections
-                    }
-                  });
+                  showAlert('Phase dévalidée', 'La phase scénarios a été dévalidée.');
                 } else {
-                  // Pas de scénario sélectionné, validation simple
-                  updateOptionsData({ validated: true });
+                  const selectedScenarioId = project.data.options.selectedScenarioId;
+                  if (selectedScenarioId && project.data.options.scenarios[selectedScenarioId]) {
+                    const selectedScenario = project.data.options.scenarios[selectedScenarioId];
+
+                    const sectionMapping = {
+                      'options-section-0': 'final-section-0',
+                      'options-section-1': 'final-section-1',
+                      'options-section-2': 'final-section-2',
+                      'options-section-3': 'final-section-3',
+                      'options-section-4': 'final-section-4'
+                    };
+
+                    const existingFinalSectionsById = {} as Record<string, any>;
+                    const existingFinalSectionsByTitle = {} as Record<string, any>;
+
+                    project.data.final.sections.forEach(section => {
+                      if (section.isDefault) {
+                        existingFinalSectionsById[section.id] = section;
+                      } else {
+                        existingFinalSectionsByTitle[section.title] = section;
+                      }
+                    });
+
+                    const newFinalSections: any[] = [];
+                    let orderCounter = 0;
+                    const sortedOptionsSection = [...project.data.options.sections].sort((a, b) => a.order - b.order);
+
+                    sortedOptionsSection.forEach(optionsSection => {
+                      if (optionsSection.isHidden) return;
+
+                      const scenarioContent = selectedScenario.sectionContents[optionsSection.id];
+
+                      if (optionsSection.isDefault && sectionMapping[optionsSection.id]) {
+                        const finalSectionId = sectionMapping[optionsSection.id];
+                        const existingFinalSection = existingFinalSectionsById[finalSectionId];
+
+                        if (existingFinalSection) {
+                          newFinalSections.push({
+                            ...existingFinalSection,
+                            content: scenarioContent?.content || '',
+                            internalOnly: scenarioContent?.internalOnly || false,
+                            isHidden: false,
+                            order: orderCounter++
+                          });
+                        }
+                      } else if (!optionsSection.isDefault) {
+                        const existingCustomSection = existingFinalSectionsByTitle[optionsSection.title];
+
+                        if (existingCustomSection) {
+                          newFinalSections.push({
+                            ...existingCustomSection,
+                            content: scenarioContent?.content || '',
+                            internalOnly: scenarioContent?.internalOnly || false,
+                            isHidden: false,
+                            order: orderCounter++
+                          });
+                        } else {
+                          newFinalSections.push({
+                            id: `final-section-custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                            title: optionsSection.title,
+                            content: scenarioContent?.content || '',
+                            internalOnly: scenarioContent?.internalOnly || false,
+                            placeholder: optionsSection.placeholder,
+                            tooltipContent: optionsSection.tooltipContent,
+                            isDefault: false,
+                            isHidden: false,
+                            order: orderCounter++
+                          });
+                        }
+                      }
+                    });
+
+                    await updateProject(project.id, {
+                      options: { ...project.data.options, validated: true },
+                      final: {
+                        ...project.data.final,
+                        sections: newFinalSections
+                      }
+                    });
+                  } else {
+                    await updateProject(project.id, {
+                      options: { ...project.data.options, validated: true }
+                    });
+                  }
+                  showAlert('Phase validée', 'La phase scénarios a été validée avec succès.');
                 }
+              } catch (error) {
+                console.error('Erreur lors de la mise à jour de la phase options:', error);
+                showAlert('Erreur', 'Erreur lors de la mise à jour de la phase. Veuillez réessayer.');
               }
             }}
             onCommentChange={(validationComment) => updateOptionsData({ validationComment })}
