@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useProjectStore } from '../../store/useProjectStore';
-import { Project, OptionsPhaseData, ScenarioContentData } from '../../types';
+import { Project, OptionsPhaseData, ScenarioContentData, ProjectSection } from '../../types';
 import Tabs from '../../components/UI/Tabs';
 import Checklist from '../../components/Project/Checklist';
 import ChecklistEditorModal from '../../components/Project/ChecklistEditorModal';
@@ -13,7 +12,6 @@ import Textarea from '../../components/UI/Textarea';
 import RichTextEditor from '../../components/UI/RichTextEditor';
 import Checkbox from '../../components/UI/Checkbox';
 import Button from '../../components/UI/Button';
-import Modal from '../../components/UI/Modal';
 import TooltipIcon from '../../components/UI/TooltipIcon';
 import InitialPhaseViewModal from '../../components/Project/InitialPhaseViewModal';
 import { Download, Edit2, Folder } from 'lucide-react';
@@ -22,56 +20,56 @@ interface OptionsPhaseProps {
   project: Project;
 }
 
-const ScenarioForm = React.memo(({ 
-  scenarioId,
-  scenarioTitle,
-  scenarioContent,
-  optionsSections,
-  selectedScenario, 
-  onUpdateContent, 
-  onSelect 
-}: {
+interface ScenarioFormProps {
   scenarioId: string;
   scenarioTitle: string;
   scenarioContent: ScenarioContentData;
-  optionsSections: any[];
+  optionsSections: ProjectSection[];
   selectedScenario: string | null;
   onUpdateContent: (sectionId: string, content: string) => void;
   onSelect: () => void;
-}) => {
-  const isSelected = selectedScenario === scenarioId;
+}
 
-  return (
-    <div className={`border rounded-lg p-6 ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">{scenarioTitle}</h3>
-        <Button
-          onClick={onSelect}
-          variant={isSelected ? "primary" : "secondary"}
-          size="sm"
-        >
-          {isSelected ? "Sélectionné" : "Sélectionner"}
-        </Button>
-      </div>
-      
-      {optionsSections?.filter(section => !section.isHidden).map((section) => (
-        <div key={section.id} className="mb-6">
-          <div className="flex items-center mb-2">
-            <h4 className="text-md font-medium">{section.title}</h4>
-            {section.tooltipContent && (
-              <TooltipIcon content={section.tooltipContent} />
-            )}
-          </div>
-          <RichTextEditor
-            value={scenarioContent.sectionContents?.[section.id]?.content || ''}
-            onChange={(content) => onUpdateContent(section.id, content)}
-            placeholder={section.placeholder}
-          />
+const ScenarioForm: React.FC<ScenarioFormProps> = React.memo(
+  ({
+    scenarioId,
+    scenarioTitle,
+    scenarioContent,
+    optionsSections,
+    selectedScenario,
+    onUpdateContent,
+    onSelect
+  }) => {
+    const isSelected = selectedScenario === scenarioId;
+
+    return (
+      <div className={`border rounded-lg p-6 ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">{scenarioTitle}</h3>
+          <Button onClick={onSelect} variant={isSelected ? 'primary' : 'secondary'} size="sm">
+            {isSelected ? 'Sélectionné' : 'Sélectionner'}
+          </Button>
         </div>
-      ))}
-    </div>
-  );
-});
+
+        {optionsSections
+          .filter(({ isHidden }) => !isHidden)
+          .map(({ id, title, placeholder, tooltipContent }) => (
+            <div key={id} className="mb-6">
+              <div className="flex items-center mb-2">
+                <h4 className="text-md font-medium">{title}</h4>
+                {tooltipContent && <TooltipIcon content={tooltipContent} />}
+              </div>
+              <RichTextEditor
+                value={scenarioContent.sectionContents?.[id]?.content || ''}
+                onChange={(content) => onUpdateContent(id, content)}
+                placeholder={placeholder}
+              />
+            </div>
+          ))}
+      </div>
+    );
+  }
+);
 
 const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
   const { 
@@ -96,9 +94,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
   const [isExportPreviewModalOpen, setIsExportPreviewModalOpen] = useState(false);
   
   // État local pour le contenu des sections
-  const [localScenariosData, setLocalScenariosData] = useState<{
-    [scenarioId: string]: ScenarioContentData;
-  }>({});
+  const [localScenariosData, setLocalScenariosData] = useState<Record<string, ScenarioContentData>>({});
 
   // Synchroniser l'état local avec les données du projet
   useEffect(() => {
@@ -107,64 +103,87 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
     }
   }, [project.data.options.scenarios]);
 
-  const updateOptionsData = (updates: Partial<OptionsPhaseData>) => {
-    updateProject(project.id, {
-      options: { ...project.data.options, ...updates }
-    });
-  };
+  const updateOptionsData = useCallback(
+    (updates: Partial<OptionsPhaseData>) => {
+      updateProject(project.id, {
+        options: { ...project.data.options, ...updates }
+      });
+    },
+    [project.id, project.data.options, updateProject]
+  );
 
-  const updateStakeholders = (stakeholders: any[]) => {
-    updateProject(project.id, { stakeholders });
-  };
+  const updateStakeholders = useCallback(
+    (stakeholders: any[]) => {
+      updateProject(project.id, { stakeholders });
+    },
+    [project.id, updateProject]
+  );
 
-  const updateNotes = (notes: string) => {
-    updateProject(project.id, { notes });
-  };
+  const updateNotes = useCallback(
+    (notes: string) => {
+      updateProject(project.id, { notes });
+    },
+    [project.id, updateProject]
+  );
 
-  const handleChecklistChange = (itemId: string, checked: boolean) => {
-    const updatedChecklist = project.data.options.checklist.map(item =>
-      item.id === itemId ? { ...item, checked } : item
-    );
-    updateOptionsData({ checklist: updatedChecklist });
-  };
+  const handleChecklistChange = useCallback(
+    (itemId: string, checked: boolean) => {
+      const updatedChecklist = project.data.options.checklist.map(item =>
+        item.id === itemId ? { ...item, checked } : item
+      );
+      updateOptionsData({ checklist: updatedChecklist });
+    },
+    [project.data.options.checklist, updateOptionsData]
+  );
 
-  const handleStakeholderApprovalChange = (stakeholderId: string, approved: boolean) => {
-    const currentApprovedBy = project.data.options.approvedBy || [];
-    const updatedApprovedBy = approved
-      ? [...currentApprovedBy, stakeholderId]
-      : currentApprovedBy.filter(id => id !== stakeholderId);
-    updateOptionsData({ approvedBy: updatedApprovedBy });
-  };
+  const handleStakeholderApprovalChange = useCallback(
+    (stakeholderId: string, approved: boolean) => {
+      const currentApprovedBy = project.data.options.approvedBy || [];
+      const updatedApprovedBy = approved
+        ? [...currentApprovedBy, stakeholderId]
+        : currentApprovedBy.filter(id => id !== stakeholderId);
+      updateOptionsData({ approvedBy: updatedApprovedBy });
+    },
+    [project.data.options.approvedBy, updateOptionsData]
+  );
 
-  const handleUpdateLocalContent = (scenarioId: string, sectionId: string, content: string) => {
-    // Mise à jour immédiate de l'état local
-    setLocalScenariosData(prev => ({
-      ...prev,
-      [scenarioId]: {
-        ...prev[scenarioId],
-        sectionContents: {
-          ...prev[scenarioId]?.sectionContents,
-          [sectionId]: { content, internalOnly: false }
+  const handleUpdateLocalContent = useCallback(
+    (scenarioId: 'A' | 'B', sectionId: string, content: string) => {
+      setLocalScenariosData(prev => ({
+        ...prev,
+        [scenarioId]: {
+          ...prev[scenarioId],
+          sectionContents: {
+            ...prev[scenarioId]?.sectionContents,
+            [sectionId]: { content, internalOnly: false }
+          }
         }
-      }
-    }));
+      }));
 
-    // Sauvegarde asynchrone
-    updateScenarioSectionContent(project.id, scenarioId as 'A' | 'B', sectionId, { content });
-  };
+      updateScenarioSectionContent(project.id, scenarioId, sectionId, { content });
+    },
+    [project.id, updateScenarioSectionContent]
+  );
 
-  const handleUpdateSelectedScenario = (scenarioId: string) => {
-    const currentSelected = project.data.options.selectedScenarioId;
-    const newScenarioId = currentSelected === scenarioId ? '' : scenarioId;
-    
-    updateOptionsSelectedScenario(project.id, newScenarioId);
-  };
+  const handleUpdateSelectedScenario = useCallback(
+    (scenarioId: string) => {
+      updateOptionsSelectedScenario(
+        project.id,
+        project.data.options.selectedScenarioId === scenarioId ? '' : scenarioId
+      );
+    },
+    [project.id, project.data.options.selectedScenarioId, updateOptionsSelectedScenario]
+  );
 
   // Filtrer les parties prenantes obligatoires pour cette phase
   const mandatoryStakeholders = project.data.stakeholders.filter(s => s.mandatoryOptions);
-  const approvedCount = mandatoryStakeholders.filter(s => 
+  const approvedCount = mandatoryStakeholders.filter(s =>
     project.data.options.approvedBy?.includes(s.id)
   ).length;
+  const approvalProgress =
+    mandatoryStakeholders.length > 0
+      ? (approvedCount / mandatoryStakeholders.length) * 100
+      : 100;
 
   const checklistCompleted = project.data.options.checklist
     .filter(item => !item.isHidden)
@@ -174,6 +193,9 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
 
   const scenarios = Object.entries(localScenariosData);
   const selectedScenario = project.data.options.selectedScenarioId;
+  const scenarioStatusClass = scenarioSelected
+    ? 'bg-green-100 text-green-800'
+    : 'bg-yellow-100 text-yellow-800';
 
   const tabs = [
     {
@@ -195,9 +217,9 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
                 <h3 className="text-lg font-medium text-gray-900">Contenu phase approuvé par :</h3>
                 <div className="flex items-center space-x-3">
                   <div className="w-32 bg-gray-200 rounded-full h-2">
-                    <div 
+                    <div
                       className="bg-green-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${mandatoryStakeholders.length > 0 ? (approvedCount / mandatoryStakeholders.length) * 100 : 100}%` }}
+                      style={{ width: `${approvalProgress}%` }}
                     />
                   </div>
                   <span className="text-sm text-gray-600 font-medium min-w-[3rem]">
@@ -377,8 +399,8 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
                 scenarioContent={scenarioContent}
                 optionsSections={project.data.options.sections}
                 selectedScenario={selectedScenario}
-                onUpdateContent={(sectionId, content) => 
-                  handleUpdateLocalContent(scenarioId, sectionId, content)
+                onUpdateContent={(sectionId, content) =>
+                  handleUpdateLocalContent(scenarioId as 'A' | 'B', sectionId, content)
                 }
                 onSelect={() => handleUpdateSelectedScenario(scenarioId)}
               />
@@ -396,12 +418,8 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
                   }
                 </p>
               </div>
-              <div className={`px-3 py-1 rounded-full text-sm ${
-                scenarioSelected 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-yellow-100 text-yellow-800'
-              }`}>
-                {scenarioSelected ? "Scénario sélectionné" : "En attente de sélection"}
+              <div className={`px-3 py-1 rounded-full text-sm ${scenarioStatusClass}`}>
+                {scenarioSelected ? 'Scénario sélectionné' : 'En attente de sélection'}
               </div>
             </div>
           </div>
