@@ -8,7 +8,7 @@
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-background text-text;
   }
 }
 
@@ -18,11 +18,11 @@
   }
   
   .btn-primary {
-    @apply bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500;
+    @apply bg-primary text-background hover:bg-primary/90 focus:ring-accent;
   }
-  
+
   .btn-secondary {
-    @apply bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500;
+    @apply bg-secondary text-text hover:bg-secondary/80 focus:ring-secondary;
   }
   
   .btn-success {
@@ -31,6 +31,10 @@
   
   .btn-danger {
     @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
+  }
+
+  .card {
+    @apply bg-secondary text-text rounded-lg shadow-sm;
   }
 }
 

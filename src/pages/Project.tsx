@@ -120,7 +120,7 @@ const Project: React.FC = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       {/* Navigation des phases */}
-      <div className="mb-4 bg-white rounded-xl shadow-sm border border-gray-200 py-3 px-8">
+      <div className="mb-4 card border border-primary/20 py-3 px-8 rounded-xl">
         <nav className="grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center justify-center gap-x-8">
           {phases.map((phase, index) => {
             const isActive = activeProjectTab === phase.id;
@@ -175,7 +175,7 @@ const Project: React.FC = () => {
       </div>
 
       {/* Contenu de la phase */}
-      <div className="bg-white shadow-sm rounded-lg p-4">
+      <div className="card p-4">
         {renderPhaseContent()}
       </div>
     </div>
