@@ -20,20 +20,20 @@ const Header: React.FC = () => {
   const isOnProject = location.pathname.startsWith('/project/');
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-white shadow-sm border-b border-gray-200">
+    <header className="fixed top-0 w-full z-50 bg-primary text-background shadow-sm border-b border-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Folder className="h-4 w-4 text-white" />
+              <div className="h-8 w-8 bg-accent rounded-lg flex items-center justify-center">
+                <Folder className="h-4 w-4 text-background" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Scopilot</h1>
-                <p className="text-xs text-gray-600 italic">Cadrez. Engagez. Avancez.</p>
+                <h1 className="text-xl font-bold">Scopilot</h1>
+                <p className="text-xs italic text-background/80">Cadrez. Engagez. Avancez.</p>
               </div>
             </div>
-            
+
             {!isOnDashboard && (
               <Button
                 variant="secondary"
@@ -47,17 +47,17 @@ const Header: React.FC = () => {
 
             {isOnProject && currentProject && (
               <>
-                <div className="h-6 border-l border-gray-300 mx-4" />
+                <div className="h-6 border-l border-background mx-4" />
                 <div className="flex-1 text-center">
-                  <span className="font-bold text-2xl text-gray-900">{currentProject.name}</span>
+                  <span className="font-bold text-2xl">{currentProject.name}</span>
                 </div>
               </>
             )}
           </div>
 
           <div className="flex items-center space-x-4">
-            <div className="h-6 border-l border-gray-300 mx-4" />
-            <span className="text-sm text-gray-600">
+            <div className="h-6 border-l border-background mx-4" />
+            <span className="text-sm text-background/80">
               Connecté en tant que <span className="font-medium">{user?.username}</span>
             </span>
             <Button

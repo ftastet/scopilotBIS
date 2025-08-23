@@ -298,7 +298,7 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       ) : (
-        <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+        <div className="card overflow-hidden">
           <ul className="divide-y divide-gray-200">
             {projects.map((project) => (
               <ProjectItem key={project.id} project={project} />
