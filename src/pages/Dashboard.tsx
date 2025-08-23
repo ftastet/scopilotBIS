@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useProjectStore } from '../store/useProjectStore';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Calendar, Folder, ChevronRight, Edit2, Trash2, BarChart3 } from 'lucide-react';
+import { Plus, Calendar, Folder, ChevronRight, Edit2, Trash2, BarChart3, CheckCircle } from 'lucide-react';
 import Button from '../components/UI/Button';
 import Modal from '../components/UI/Modal';
 import Input from '../components/UI/Input';
@@ -71,6 +71,12 @@ const Dashboard: React.FC = () => {
   };
 
   const getPhaseLabel = (phase: string) => {
+    // Vérifier si le projet est complètement validé (phase finale validée)
+    const project = projects.find(p => p.currentPhase === phase);
+    if (phase === 'final' && project?.data.final.validated) {
+      return 'Projet cadré et validé';
+    }
+    
     const labels = {
       initial: 'Opportunité',
       options: 'Scénarios',
@@ -80,6 +86,12 @@ const Dashboard: React.FC = () => {
   };
 
   const getPhaseColor = (phase: string) => {
+    // Utiliser la couleur verte pour les projets validés
+    const project = projects.find(p => p.currentPhase === phase);
+    if (phase === 'final' && project?.data.final.validated) {
+      return 'bg-green-100 text-green-800';
+    }
+    
     const colors = {
       initial: 'bg-blue-100 text-blue-800',
       options: 'bg-orange-100 text-orange-800',
@@ -204,8 +216,11 @@ const Dashboard: React.FC = () => {
                               </div>
                             </div>
                           </div>
-                        </div>
-                        <p className="text-sm text-gray-600 truncate mt-1">
+                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPhaseColor(project.currentPhase)}`}>
+                                {project.currentPhase === 'final' && project.data.final.validated && (
+                                  <CheckCircle className="h-3 w-3 mr-1" />
+                                )}
+                                {getPhaseLabel(project.currentPhase)}
                           {project.description}
                         </p>
                       </div>
