@@ -33,22 +33,20 @@
 /* RichTextEditor custom styles */
 .quill-editor-wrapper .ql-editor {
   min-height: 120px;
-  background-color: #ffffff;
+  @apply bg-surface dark:bg-surface-dark;
 }
 
 .quill-editor-wrapper .ql-toolbar {
-  background-color: #f3f4f6;
-  border-bottom: 1px solid #e5e7eb;
+  @apply bg-surface dark:bg-surface-dark border-b border-border dark:border-border-dark;
 }
 
 /* Read-only editor styles */
 .quill-editor-wrapper .ql-container.ql-disabled {
-  background-color: #f9fafb;
-  border-color: #e5e7eb;
+  @apply bg-surface dark:bg-surface-dark border border-border dark:border-border-dark;
 }
 
 .quill-editor-wrapper .ql-editor.ql-disabled {
-  color: #6b7280;
+  @apply text-muted dark:text-muted-dark;
 }
 
 .quill-editor-wrapper.read-only .ql-toolbar {
@@ -56,7 +54,7 @@
 }
 
 .quill-editor-wrapper.read-only .ql-container {
-  border-top: 1px solid #e5e7eb;
+  @apply border-t border-border dark:border-border-dark;
 }
 
 .is-exporting-pdf .ql-toolbar {
