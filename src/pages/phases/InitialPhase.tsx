@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useRef } from 'react';
 import { useProjectStore } from '../../store/useProjectStore';
 import { Project, InitialPhaseData, ProjectSection } from '../../types';
 import Tabs from '../../components/UI/Tabs';
@@ -13,7 +12,6 @@ import Textarea from '../../components/UI/Textarea';
 import RichTextEditor from '../../components/UI/RichTextEditor';
 import Checkbox from '../../components/UI/Checkbox';
 import Button from '../../components/UI/Button';
-import Modal from '../../components/UI/Modal';
 import TooltipIcon from '../../components/UI/TooltipIcon';
 import { Download, Edit2 } from 'lucide-react';
 
@@ -22,11 +20,12 @@ interface InitialPhaseProps {
 }
 
 const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
-  const { 
-    updateProject, 
-    addChecklistItem, 
-    deleteChecklistItem, 
-    toggleChecklistItemHidden, 
+  const phase = 'initial';
+  const {
+    updateProject,
+    addChecklistItem,
+    deleteChecklistItem,
+    toggleChecklistItemHidden,
     reorderChecklistItems,
     addProjectSection,
     updateProjectSection,
@@ -34,60 +33,59 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
     toggleProjectSectionHidden,
     reorderProjectSections
   } = useProjectStore();
+
   const [activeTab, setActiveTab] = useState('validation');
   const [isChecklistEditorOpen, setIsChecklistEditorOpen] = useState(false);
   const [isSectionEditorOpen, setIsSectionEditorOpen] = useState(false);
   const [isExportPreviewModalOpen, setIsExportPreviewModalOpen] = useState(false);
 
+  const { id: projectId, data } = project;
+  const { initial, options, final, stakeholders, notes } = data;
+
   const updateInitialData = (updates: Partial<InitialPhaseData>) => {
-    updateProject(project.id, {
-      initial: { ...project.data.initial, ...updates }
+    updateProject(projectId, {
+      initial: { ...initial, ...updates }
     });
   };
 
-  const updateStakeholders = (stakeholders: any[]) => {
-    updateProject(project.id, {
-      stakeholders
-    });
+  const updateStakeholders = (updated: typeof stakeholders) => {
+    updateProject(projectId, { stakeholders: updated });
   };
 
-  const updateSectionContent = (sectionId: string, content: string) => {
-    updateProjectSection(project.id, 'initial', sectionId, { content });
+  const updateSection = (sectionId: string, updates: Partial<ProjectSection>) => {
+    updateProjectSection(projectId, phase, sectionId, updates);
   };
 
-  const updateSectionInternalOnly = (sectionId: string, internalOnly: boolean) => {
-    updateProjectSection(project.id, 'initial', sectionId, { internalOnly });
-  };
-
-  const updateNotes = (notes: string) => {
-    updateProject(project.id, { notes });
+  const updateNotes = (text: string) => {
+    updateProject(projectId, { notes: text });
   };
 
   const handleChecklistChange = (itemId: string, checked: boolean) => {
-    const updatedChecklist = project.data.initial.checklist.map(item =>
+    const checklist = initial.checklist.map(item =>
       item.id === itemId ? { ...item, checked } : item
     );
-    updateInitialData({ checklist: updatedChecklist });
+    updateInitialData({ checklist });
   };
 
   const handleStakeholderApprovalChange = (stakeholderId: string, approved: boolean) => {
-    const currentApprovedBy = project.data.initial.approvedBy || [];
+    const approvedBy = initial.approvedBy ?? [];
     const updatedApprovedBy = approved
-      ? [...currentApprovedBy, stakeholderId]
-      : currentApprovedBy.filter(id => id !== stakeholderId);
+      ? [...approvedBy, stakeholderId]
+      : approvedBy.filter(id => id !== stakeholderId);
     updateInitialData({ approvedBy: updatedApprovedBy });
   };
 
-  // Filtrer les parties prenantes obligatoires pour cette phase
-  const mandatoryStakeholders = project.data.stakeholders.filter(s => s.mandatoryInitial);
-  const approvedCount = mandatoryStakeholders.filter(s => 
-    project.data.initial.approvedBy?.includes(s.id)
-  ).length;
+  const mandatoryStakeholders = stakeholders.filter(s => s.mandatoryInitial);
+  const approvedCount = mandatoryStakeholders.filter(s => initial.approvedBy?.includes(s.id)).length;
+  const approvalRate = mandatoryStakeholders.length
+    ? (approvedCount / mandatoryStakeholders.length) * 100
+    : 100;
 
-  const checklistCompleted = project.data.initial.checklist
+  const checklistCompleted = initial.checklist
     .filter(item => !item.isHidden)
     .every(item => item.checked);
-  const stakeholdersApproved = mandatoryStakeholders.length === 0 || approvedCount === mandatoryStakeholders.length;
+  const stakeholdersApproved =
+    mandatoryStakeholders.length === 0 || approvedCount === mandatoryStakeholders.length;
 
   const tabs = [
     {
@@ -98,9 +96,9 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
           <div className="grid grid-cols-2 gap-6">
             <div>
               <Checklist
-                items={project.data.initial.checklist}
+                items={initial.checklist}
                 onItemChange={handleChecklistChange}
-                isDisabled={project.data.initial.validated}
+                isDisabled={initial.validated}
                 onOpenEditor={() => setIsChecklistEditorOpen(true)}
               />
             </div>
@@ -109,9 +107,9 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
                 <h3 className="text-lg font-medium text-gray-900">Contenu phase approuvé par :</h3>
                 <div className="flex items-center space-x-3">
                   <div className="w-32 bg-gray-200 rounded-full h-2">
-                    <div 
+                    <div
                       className="bg-green-600 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${mandatoryStakeholders.length > 0 ? (approvedCount / mandatoryStakeholders.length) * 100 : 100}%` }}
+                      style={{ width: `${approvalRate}%` }}
                     />
                   </div>
                   <span className="text-sm text-gray-600 font-medium min-w-[3rem]">
@@ -120,16 +118,19 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
                 </div>
               </div>
               <div className="space-y-2">
-                {mandatoryStakeholders.map((stakeholder) => (
-                  <Checkbox
-                    key={stakeholder.id}
-                    label={`${stakeholder.firstName} ${stakeholder.lastName} (${stakeholder.company} - ${stakeholder.role})`}
-                    checked={project.data.initial.approvedBy?.includes(stakeholder.id) || false}
-                    disabled={project.data.initial.validated}
-                    onChange={(e) => handleStakeholderApprovalChange(stakeholder.id, e.target.checked)}
-                  />
-                ))}
-                {mandatoryStakeholders.length === 0 && (
+                {mandatoryStakeholders.length ? (
+                  mandatoryStakeholders.map(stakeholder => (
+                    <Checkbox
+                      key={stakeholder.id}
+                      label={`${stakeholder.firstName} ${stakeholder.lastName} (${stakeholder.company} - ${stakeholder.role})`}
+                      checked={initial.approvedBy?.includes(stakeholder.id) || false}
+                      disabled={initial.validated}
+                      onChange={e =>
+                        handleStakeholderApprovalChange(stakeholder.id, e.target.checked)
+                      }
+                    />
+                  ))
+                ) : (
                   <p className="text-sm text-gray-500 italic">
                     Aucune partie prenante obligatoire pour cette phase
                   </p>
@@ -138,22 +139,22 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
             </div>
           </div>
           <PhaseValidation
-            validated={project.data.initial.validated}
-            validationComment={project.data.initial.validationComment}
-            onValidationChange={(validated) => {
+            validated={initial.validated}
+            validationComment={initial.validationComment}
+            onValidationChange={validated => {
               if (!validated) {
-                // Dévalidation en cascade : annule toutes les phases suivantes
-                updateProject(project.id, {
-                  initial: { ...project.data.initial, validated: false },
-                  options: { ...project.data.options, validated: false },
-                  final: { ...project.data.final, validated: false }
+                updateProject(projectId, {
+                  initial: { ...initial, validated: false },
+                  options: { ...options, validated: false },
+                  final: { ...final, validated: false }
                 });
               } else {
-                // Validation simple de la phase initiale
                 updateInitialData({ validated: true });
               }
             }}
-            onCommentChange={(validationComment) => updateInitialData({ validationComment })}
+            onCommentChange={validationComment =>
+              updateInitialData({ validationComment })
+            }
             checklistCompleted={checklistCompleted}
             stakeholdersApproved={stakeholdersApproved}
           />
@@ -186,10 +187,10 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
           </div>
           
           <div className="grid grid-cols-1 gap-6">
-            {project.data.initial.sections
+            {initial.sections
               .filter(section => !section.isHidden)
               .sort((a, b) => a.order - b.order)
-              .map((section) => (
+              .map(section => (
                 <div key={section.id} className={section.internalOnly ? 'internal-content-block' : ''}>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center">
@@ -203,12 +204,14 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
                     <Checkbox
                       label="Usage interne uniquement"
                       checked={section.internalOnly}
-                      onChange={(e) => updateSectionInternalOnly(section.id, e.target.checked)}
+                      onChange={e =>
+                        updateSection(section.id, { internalOnly: e.target.checked })
+                      }
                     />
                   </div>
                   <RichTextEditor
                     value={section.content}
-                    onChange={(value) => updateSectionContent(section.id, value)}
+                    onChange={value => updateSection(section.id, { content: value })}
                     placeholder={section.placeholder}
                   />
                 </div>
@@ -222,11 +225,11 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
       label: 'Parties prenantes',
       content: (
         <StakeholderTable
-          stakeholders={project.data.stakeholders}
+          stakeholders={stakeholders}
           onStakeholdersChange={updateStakeholders}
-          initialPhaseValidated={project.data.initial.validated}
-          optionsPhaseValidated={project.data.options.validated}
-          finalPhaseValidated={project.data.final.validated}
+          initialPhaseValidated={initial.validated}
+          optionsPhaseValidated={options.validated}
+          finalPhaseValidated={final.validated}
         />
       )
     },
@@ -237,8 +240,8 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
         <div className="space-y-4">
           <h3 className="text-lg font-medium text-gray-900">Notes du projet</h3>
           <Textarea
-            value={project.data.notes}
-            onChange={(e) => updateNotes(e.target.value)}
+            value={notes}
+            onChange={e => updateNotes(e.target.value)}
             placeholder="Ajoutez vos notes et commentaires sur le projet..."
             rows={8}
           />
@@ -260,30 +263,38 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
         isOpen={isChecklistEditorOpen}
         onClose={() => setIsChecklistEditorOpen(false)}
         project={project}
-        phase="initial"
-        onAddItem={(text) => addChecklistItem(project.id, 'initial', text)}
-        onDeleteItem={(itemId) => deleteChecklistItem(project.id, 'initial', itemId)}
-        onToggleHidden={(itemId, isHidden) => toggleChecklistItemHidden(project.id, 'initial', itemId, isHidden)}
-        onReorderItems={(sourceIndex, destinationIndex) => reorderChecklistItems(project.id, 'initial', sourceIndex, destinationIndex)}
+        phase={phase}
+        onAddItem={text => addChecklistItem(projectId, phase, text)}
+        onDeleteItem={itemId => deleteChecklistItem(projectId, phase, itemId)}
+        onToggleHidden={(itemId, isHidden) => toggleChecklistItemHidden(projectId, phase, itemId, isHidden)}
+        onReorderItems={(sourceIndex, destinationIndex) =>
+          reorderChecklistItems(projectId, phase, sourceIndex, destinationIndex)
+        }
       />
 
       <SectionEditorModal
         isOpen={isSectionEditorOpen}
         onClose={() => setIsSectionEditorOpen(false)}
         project={project}
-        phase="initial"
-        onAddSection={(newSection) => addProjectSection(project.id, 'initial', newSection)}
-        onUpdateSection={(sectionId, updates) => updateProjectSection(project.id, 'initial', sectionId, updates)}
-        onDeleteSection={(sectionId) => deleteProjectSection(project.id, 'initial', sectionId)}
-        onToggleHidden={(sectionId, isHidden) => toggleProjectSectionHidden(project.id, 'initial', sectionId, isHidden)}
-        onReorderSections={(sourceIndex, destinationIndex) => reorderProjectSections(project.id, 'initial', sourceIndex, destinationIndex)}
+        phase={phase}
+        onAddSection={newSection => addProjectSection(projectId, phase, newSection)}
+        onUpdateSection={(sectionId, updates) =>
+          updateProjectSection(projectId, phase, sectionId, updates)
+        }
+        onDeleteSection={sectionId => deleteProjectSection(projectId, phase, sectionId)}
+        onToggleHidden={(sectionId, isHidden) =>
+          toggleProjectSectionHidden(projectId, phase, sectionId, isHidden)
+        }
+        onReorderSections={(sourceIndex, destinationIndex) =>
+          reorderProjectSections(projectId, phase, sourceIndex, destinationIndex)
+        }
       />
 
       <ExportPreviewModal
         isOpen={isExportPreviewModalOpen}
         onClose={() => setIsExportPreviewModalOpen(false)}
         project={project}
-        phase="initial"
+        phase={phase}
       />
     </div>
   );
