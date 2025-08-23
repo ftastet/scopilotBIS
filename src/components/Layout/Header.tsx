@@ -5,6 +5,7 @@ import { useAlertStore } from '../../store/useAlertStore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, Home, Folder } from 'lucide-react';
 import Button from '../UI/Button';
+import ThemeToggle from '../UI/ThemeToggle';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuthStore();
@@ -65,6 +66,7 @@ const Header: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-4">
+            <ThemeToggle />
             <div className="h-6 border-l border-background mx-4" />
             <span className="text-sm text-background/80">
               Connecté en tant que <span className="font-medium">{user?.username}</span>

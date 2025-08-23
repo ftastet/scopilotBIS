@@ -3,10 +3,26 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --color-primary: 37 99 235; /* #2563eb */
+    --color-secondary: 226 232 240; /* #e2e8f0 */
+    --color-background: 248 250 252; /* #f8fafc */
+    --color-text: 30 41 59; /* #1e293b */
+    --color-accent: 14 165 233; /* #0ea5e9 */
+  }
+
+  .dark {
+    --color-primary: 59 130 246; /* #3b82f6 */
+    --color-secondary: 30 41 59; /* #1e293b */
+    --color-background: 15 23 42; /* #0f172a */
+    --color-text: 241 245 249; /* #f1f5f9 */
+    --color-accent: 45 212 191; /* #2dd4bf */
+  }
+
   html {
     font-family: 'Inter', system-ui, sans-serif;
   }
-  
+
   body {
     @apply bg-background text-text;
   }
@@ -22,7 +38,7 @@
   }
 
   .btn-secondary {
-    @apply bg-white border border-gray-300 text-text hover:bg-gray-50 hover:border-gray-400 focus:ring-secondary shadow-sm;
+    @apply bg-secondary border border-text/10 text-text hover:bg-secondary/80 focus:ring-accent shadow-sm;
   }
   
   .card {
@@ -33,22 +49,23 @@
 /* RichTextEditor custom styles */
 .quill-editor-wrapper .ql-editor {
   min-height: 120px;
-  background-color: #ffffff;
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-text));
 }
 
 .quill-editor-wrapper .ql-toolbar {
-  background-color: #f3f4f6;
-  border-bottom: 1px solid #e5e7eb;
+  background-color: rgb(var(--color-secondary));
+  border-bottom: 1px solid rgb(var(--color-secondary) / 0.5);
 }
 
 /* Read-only editor styles */
 .quill-editor-wrapper .ql-container.ql-disabled {
-  background-color: #f9fafb;
-  border-color: #e5e7eb;
+  background-color: rgb(var(--color-background));
+  border-color: rgb(var(--color-secondary) / 0.5);
 }
 
 .quill-editor-wrapper .ql-editor.ql-disabled {
-  color: #6b7280;
+  color: rgb(var(--color-text) / 0.7);
 }
 
 .quill-editor-wrapper.read-only .ql-toolbar {
@@ -56,7 +73,7 @@
 }
 
 .quill-editor-wrapper.read-only .ql-container {
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid rgb(var(--color-secondary) / 0.5);
 }
 
 .is-exporting-pdf .ql-toolbar {
