@@ -25,6 +25,7 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { useAlertStore } from '../../store/useAlertStore';
 
 interface SectionEditorModalProps {
   isOpen: boolean;
@@ -159,13 +160,16 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
   const [newSectionTitle, setNewSectionTitle] = useState('');
   const [newSectionPlaceholder, setNewSectionPlaceholder] = useState('');
   const [newSectionTooltip, setNewSectionTooltip] = useState('');
+  const [newSectionError, setNewSectionError] = useState('');
   const [editingSection, setEditingSection] = useState<ProjectSection | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [editPlaceholder, setEditPlaceholder] = useState('');
   const [editTooltip, setEditTooltip] = useState('');
+  const [editError, setEditError] = useState('');
 
   const sections = project.data[phase].sections;
   const isDisabled = project.data[phase].validated;
+  const showAlert = useAlertStore(state => state.show);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -195,20 +199,24 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
   };
 
   const handleAddSection = () => {
-    if (newSectionTitle.trim()) {
-      onAddSection({
-        title: newSectionTitle.trim(),
-        content: '',
-        internalOnly: false,
-        placeholder: newSectionPlaceholder.trim() || 'Saisissez le contenu de cette section...',
-        tooltipContent: newSectionTooltip.trim() || null,
-        isDefault: false,
-        isHidden: false
-      });
-      setNewSectionTitle('');
-      setNewSectionPlaceholder('');
-      setNewSectionTooltip('');
+    if (!newSectionTitle.trim()) {
+      setNewSectionError('Le titre est requis');
+      return;
     }
+    onAddSection({
+      title: newSectionTitle.trim(),
+      content: '',
+      internalOnly: false,
+      placeholder: newSectionPlaceholder.trim() || 'Saisissez le contenu de cette section...',
+      tooltipContent: newSectionTooltip.trim() || null,
+      isDefault: false,
+      isHidden: false
+    });
+    setNewSectionTitle('');
+    setNewSectionPlaceholder('');
+    setNewSectionTooltip('');
+    setNewSectionError('');
+    showAlert('Section ajoutée', 'La section a été ajoutée.');
   };
 
   const handleEditSection = (section: ProjectSection) => {
@@ -219,7 +227,11 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
   };
 
   const handleSaveEdit = () => {
-    if (editingSection && editTitle.trim()) {
+    if (editingSection && !editTitle.trim()) {
+      setEditError('Le titre est requis');
+      return;
+    }
+    if (editingSection) {
       onUpdateSection(editingSection.id, {
         title: editTitle.trim(),
         placeholder: editPlaceholder.trim() || 'Saisissez le contenu de cette section...',
@@ -229,6 +241,8 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
       setEditTitle('');
       setEditPlaceholder('');
       setEditTooltip('');
+      setEditError('');
+      showAlert('Section mise à jour', 'La section a été mise à jour.');
     }
   };
 
@@ -237,6 +251,7 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
     setEditTitle('');
     setEditPlaceholder('');
     setEditTooltip('');
+    setEditError('');
   };
 
   const visibleCount = sections.filter(section => !section.isHidden).length;
@@ -310,8 +325,14 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
               <Input
                 label="Titre de la section"
                 value={editTitle}
-                onChange={(e) => setEditTitle(e.target.value)}
+                onChange={(e) => {
+                  setEditTitle(e.target.value);
+                  if (editError) {
+                    setEditError('');
+                  }
+                }}
                 placeholder="Titre de la section"
+                error={editError}
               />
               <Textarea
                 label="Texte d'aide (placeholder)"
@@ -353,8 +374,14 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
               <Input
                 label="Titre de la section"
                 value={newSectionTitle}
-                onChange={(e) => setNewSectionTitle(e.target.value)}
+                onChange={(e) => {
+                  setNewSectionTitle(e.target.value);
+                  if (newSectionError) {
+                    setNewSectionError('');
+                  }
+                }}
                 placeholder="Titre de la nouvelle section"
+                error={newSectionError}
               />
               <Textarea
                 label="Texte d'aide (placeholder)"

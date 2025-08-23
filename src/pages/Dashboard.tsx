@@ -44,14 +44,30 @@ const Dashboard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [projectName, setProjectName] = useState('');
   const [projectDescription, setProjectDescription] = useState('');
+  const [projectErrors, setProjectErrors] = useState({
+    name: '',
+    description: ''
+  });
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<EditingProject | null>(
     null
   );
+  const [editErrors, setEditErrors] = useState({
+    name: '',
+    description: ''
+  });
 
   const handleCreateProject = async (): Promise<void> => {
-    if (!projectName.trim() || !projectDescription.trim()) return;
+    if (!projectName.trim() || !projectDescription.trim()) {
+      setProjectErrors({
+        name: !projectName.trim() ? 'Le nom du projet est requis' : '',
+        description: !projectDescription.trim()
+          ? 'La description du projet est requise'
+          : ''
+      });
+      return;
+    }
 
     try {
       const projectId = await createProject(
@@ -60,6 +76,7 @@ const Dashboard: React.FC = () => {
       );
       setProjectName('');
       setProjectDescription('');
+      setProjectErrors({ name: '', description: '' });
       setIsModalOpen(false);
       showAlert('Projet créé', 'Le projet a été créé avec succès.', () => {
         navigate(`/project/${projectId}`);
@@ -84,8 +101,15 @@ const Dashboard: React.FC = () => {
       !editingProject ||
       !editingProject.name.trim() ||
       !editingProject.description.trim()
-    )
+    ) {
+      setEditErrors({
+        name: !editingProject?.name.trim() ? 'Le nom du projet est requis' : '',
+        description: !editingProject?.description.trim()
+          ? 'La description du projet est requise'
+          : ''
+      });
       return;
+    }
 
     try {
       await updateProjectDetails(
@@ -95,6 +119,8 @@ const Dashboard: React.FC = () => {
       );
       setIsEditModalOpen(false);
       setEditingProject(null);
+      setEditErrors({ name: '', description: '' });
+      showAlert('Projet modifié', 'Les modifications ont été enregistrées.');
     } catch (error) {
       console.error('Erreur lors de la modification du projet:', error);
       showAlert('Erreur', 'Erreur lors de la modification du projet. Veuillez réessayer.');
@@ -324,6 +350,7 @@ const Dashboard: React.FC = () => {
           setIsModalOpen(false);
           setProjectName('');
           setProjectDescription('');
+          setProjectErrors({ name: '', description: '' });
         }}
         title="Nouveau projet"
       >
@@ -331,16 +358,28 @@ const Dashboard: React.FC = () => {
           <Input
             label="Nom du projet"
             value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
+            onChange={(e) => {
+              setProjectName(e.target.value);
+              if (projectErrors.name) {
+                setProjectErrors(prev => ({ ...prev, name: '' }));
+              }
+            }}
             placeholder="Entrez le nom du projet"
+            error={projectErrors.name}
             required
           />
           <Textarea
             label="Description du projet"
             value={projectDescription}
-            onChange={(e) => setProjectDescription(e.target.value)}
+            onChange={(e) => {
+              setProjectDescription(e.target.value);
+              if (projectErrors.description) {
+                setProjectErrors(prev => ({ ...prev, description: '' }));
+              }
+            }}
             placeholder="Décrivez brièvement le projet..."
             rows={3}
+            error={projectErrors.description}
             required
           />
           <div className="flex justify-end space-x-3">
@@ -370,6 +409,7 @@ const Dashboard: React.FC = () => {
         onClose={() => {
           setIsEditModalOpen(false);
           setEditingProject(null);
+          setEditErrors({ name: '', description: '' });
         }}
         title="Modifier le projet"
       >
@@ -378,23 +418,31 @@ const Dashboard: React.FC = () => {
             label="Nom du projet"
             value={editingProject?.name ?? ''}
             onChange={(e) =>
-              setEditingProject((prev) =>
-                prev ? { ...prev, name: e.target.value } : prev
-              )
+              setEditingProject((prev) => {
+                if (editErrors.name) {
+                  setEditErrors(err => ({ ...err, name: '' }));
+                }
+                return prev ? { ...prev, name: e.target.value } : prev;
+              })
             }
             placeholder="Entrez le nom du projet"
+            error={editErrors.name}
             required
           />
           <Textarea
             label="Description du projet"
             value={editingProject?.description ?? ''}
             onChange={(e) =>
-              setEditingProject((prev) =>
-                prev ? { ...prev, description: e.target.value } : prev
-              )
+              setEditingProject((prev) => {
+                if (editErrors.description) {
+                  setEditErrors(err => ({ ...err, description: '' }));
+                }
+                return prev ? { ...prev, description: e.target.value } : prev;
+              })
             }
             placeholder="Décrivez brièvement le projet..."
             rows={3}
+            error={editErrors.description}
             required
           />
           <div className="flex justify-end space-x-3">
