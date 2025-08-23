@@ -191,13 +191,13 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
                 await updateProject(project.id, {
                   final: { ...final, validated }
                 });
-               showAlert(
-                 validated ? 'Phase validée' : 'Phase dévalidée',
-                 validated ? 'La phase engagement a été validée avec succès.' : 'La phase engagement a été dévalidée.'
-               );
+                showAlert(
+                  validated ? 'Phase validée' : 'Phase dévalidée',
+                  validated ? 'La phase engagement a été validée avec succès.' : 'La phase engagement a été dévalidée.'
+                );
               } catch (error) {
                 console.error('Erreur lors de la mise à jour de la phase finale:', error);
-               showAlert('Erreur', 'Erreur lors de la mise à jour de la phase. Veuillez réessayer.');
+                showAlert('Erreur', 'Erreur lors de la mise à jour de la phase. Veuillez réessayer.');
               }
             }}
             onCommentChange={validationComment => updateFinalData({ validationComment })}
