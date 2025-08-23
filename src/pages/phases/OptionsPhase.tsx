@@ -208,7 +208,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
                   <Checkbox
                     key={stakeholder.id}
                     id={`stakeholder-${stakeholder.id}`}
-                    label={stakeholder.name}
+                    label={`${stakeholder.firstName} ${stakeholder.lastName} (${stakeholder.company} - ${stakeholder.role})`}
                     checked={project.data.options.approvedBy?.includes(stakeholder.id) || false}
                     onChange={(checked) => handleStakeholderApprovalChange(stakeholder.id, checked)}
                     disabled={project.data.options.validated}
@@ -462,12 +462,13 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
         <SectionEditorModal
           isOpen={isSectionEditorOpen}
           onClose={() => setIsSectionEditorOpen(false)}
-          sections={project.data.options.sections}
-          onAddSection={(section) => addProjectSection(project.id, 'options', section)}
+          project={project}
+          phase="options"
+          onAddSection={(newSection) => addProjectSection(project.id, 'options', newSection)}
           onUpdateSection={(sectionId, updates) => updateProjectSection(project.id, 'options', sectionId, updates)}
           onDeleteSection={(sectionId) => deleteProjectSection(project.id, 'options', sectionId)}
-          onToggleHidden={(sectionId) => toggleProjectSectionHidden(project.id, 'options', sectionId)}
-          onReorderSections={(sections) => reorderProjectSections(project.id, 'options', sections)}
+          onToggleHidden={(sectionId, isHidden) => toggleProjectSectionHidden(project.id, 'options', sectionId, isHidden)}
+          onReorderSections={(sourceIndex, destinationIndex) => reorderProjectSections(project.id, 'options', sourceIndex, destinationIndex)}
         />
       )}
 
