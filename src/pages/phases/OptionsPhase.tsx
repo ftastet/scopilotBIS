@@ -448,17 +448,16 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
       />
 
       {/* Modals */}
-      {isChecklistEditorOpen && (
-        <ChecklistEditorModal
-          isOpen={isChecklistEditorOpen}
-          onClose={() => setIsChecklistEditorOpen(false)}
-          checklist={project.data.options.checklist}
-          onAddItem={(item) => addChecklistItem(project.id, 'options', item)}
-          onDeleteItem={(itemId) => deleteChecklistItem(project.id, 'options', itemId)}
-          onToggleHidden={(itemId) => toggleChecklistItemHidden(project.id, 'options', itemId)}
-          onReorderItems={(items) => reorderChecklistItems(project.id, 'options', items)}
-        />
-      )}
+      <ChecklistEditorModal
+        isOpen={isChecklistEditorOpen}
+        onClose={() => setIsChecklistEditorOpen(false)}
+        project={project}
+        phase="options"
+        onAddItem={(text) => addChecklistItem(project.id, 'options', text)}
+        onDeleteItem={(itemId) => deleteChecklistItem(project.id, 'options', itemId)}
+        onToggleHidden={(itemId, isHidden) => toggleChecklistItemHidden(project.id, 'options', itemId, isHidden)}
+        onReorderItems={(sourceIndex, destinationIndex) => reorderChecklistItems(project.id, 'options', sourceIndex, destinationIndex)}
+      />
 
       {isSectionEditorOpen && (
         <SectionEditorModal
