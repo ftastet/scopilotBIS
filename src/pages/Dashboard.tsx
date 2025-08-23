@@ -295,7 +295,7 @@ const Dashboard: React.FC = () => {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Mes projets</h1>
-          <p className="mt-2 text-muted">
+          <p className="mt-2 text-gray-700">
             Formalisez vos projets pas à pas, avant démarrage
           </p>
         </div>
