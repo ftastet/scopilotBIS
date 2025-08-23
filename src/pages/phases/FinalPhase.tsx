@@ -159,6 +159,7 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
                       style={{ width: `${approvalRate}%` }}
                     />
                   </div>
+                  <span className="text-sm text-muted font-medium min-w-[3rem]">
                     {approvedCount}/{mandatoryStakeholders.length}
                   </span>
                 </div>
