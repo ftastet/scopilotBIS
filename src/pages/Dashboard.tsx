@@ -199,6 +199,9 @@ const Dashboard: React.FC = () => {
                           </div>
                           <div className="flex items-center space-x-3">
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPhaseColor(project.currentPhase)}`}>
+                              {project.currentPhase === 'final' && project.data.final.validated && (
+                                <CheckCircle className="h-3 w-3 mr-1" />
+                              )}
                               {getPhaseLabel(project.currentPhase)}
                             </span>
                             <div className="flex items-center space-x-2">
@@ -216,11 +219,8 @@ const Dashboard: React.FC = () => {
                               </div>
                             </div>
                           </div>
-                              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPhaseColor(project.currentPhase)}`}>
-                                {project.currentPhase === 'final' && project.data.final.validated && (
-                                  <CheckCircle className="h-3 w-3 mr-1" />
-                                )}
-                                {getPhaseLabel(project.currentPhase)}
+                        </div>
+                        <p className="mt-1 text-sm text-gray-500 truncate">
                           {project.description}
                         </p>
                       </div>
