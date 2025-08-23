@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -7,11 +8,17 @@ export default {
   theme: {
     extend: {
       colors: {
+        background: 'hsl(var(--background))',
+        foreground: 'hsl(var(--foreground))',
+        muted: 'hsl(var(--muted))',
+        card: 'hsl(var(--card))',
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
         primary: '#1e40af',
         secondary: '#f3f4f6',
-        background: '#f9fafb',
         text: '#111827',
-        accent: '#f59e0b',
       },
       width: {
         '144': '36rem', // 576px (320px * 1.8 = 576px)
