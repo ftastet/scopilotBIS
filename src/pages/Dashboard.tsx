@@ -172,7 +172,7 @@ const Dashboard: React.FC = () => {
       final: 'bg-green-100 text-green-800'
     };
 
-    return colors[project.currentPhase] || 'bg-gray-100 text-gray-800';
+    return colors[project.currentPhase] || 'bg-secondary text-text dark:bg-text dark:text-background';
   };
 
   interface StakeholderInfo {
@@ -220,7 +220,7 @@ const Dashboard: React.FC = () => {
     return (
       <li
         key={project.id}
-        className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200"
+        className="bg-secondary dark:bg-secondary-dark rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200"
       >
         <div
           className="p-6 cursor-pointer flex flex-col h-full"
@@ -228,10 +228,10 @@ const Dashboard: React.FC = () => {
         >
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1 min-w-0">
-              <p className="text-lg font-semibold text-gray-900 truncate">
+              <p className="text-lg font-semibold text-text dark:text-background truncate">
                 {project.name}
               </p>
-              <p className="mt-1 text-sm text-gray-500 truncate">
+              <p className="mt-1 text-sm text-text/60 dark:text-background/60 truncate">
                 {project.description}
               </p>
             </div>
@@ -258,7 +258,7 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="mt-auto flex items-center justify-between text-sm text-gray-500">
+          <div className="mt-auto flex items-center justify-between text-sm text-text/60 dark:text-background/60">
             <div className="flex items-center">
               <Calendar className="h-4 w-4 mr-1" />
               {formatDate(project.createdAt)}
@@ -276,14 +276,14 @@ const Dashboard: React.FC = () => {
                 {getPhaseLabel(project)}
               </span>
               <div className="flex items-center space-x-2">
-                <BarChart3 className="h-4 w-4 text-gray-400" />
-                <div className="w-16 bg-gray-200 rounded-full h-1.5">
+                <BarChart3 className="h-4 w-4 text-text/40 dark:text-background/40" />
+                <div className="w-16 bg-secondary dark:bg-text rounded-full h-1.5">
                   <div
                     className="bg-green-600 h-1.5 rounded-full transition-all duration-300"
                     style={{ width: `${progress.percentage}%` }}
                   />
                 </div>
-                <span className="text-xs text-gray-600 font-medium min-w-[2rem]">
+                <span className="text-xs text-text/80 dark:text-background/80 font-medium min-w-[2rem]">
                   {progress.completed}/{progress.total}
                 </span>
               </div>
@@ -298,8 +298,8 @@ const Dashboard: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex justify-between items-center mb-8">
       <div>
-          <h1 className="text-3xl font-bold text-gray-900">Mes projets</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-text dark:text-background">Mes projets</h1>
+          <p className="mt-2 text-text/60 dark:text-background/60">
             Formalisez vos projets pas à pas, avant démarrage
           </p>
         </div>
@@ -315,15 +315,15 @@ const Dashboard: React.FC = () => {
       {isLoadingProjects ? (
         <div className="text-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
-          <p className="mt-4 text-gray-600">Chargement des projets...</p>
+          <p className="mt-4 text-text/60 dark:text-background/60">Chargement des projets...</p>
         </div>
       ) : projects.length === 0 ? (
         <div className="text-center py-12">
-          <Folder className="mx-auto h-12 w-12 text-gray-400" />
-          <h3 className="mt-2 text-sm font-medium text-gray-900">
+          <Folder className="mx-auto h-12 w-12 text-text/40 dark:text-background/40" />
+          <h3 className="mt-2 text-sm font-medium text-text dark:text-background">
             Aucun projet
           </h3>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-text/60 dark:text-background/60">
             Commencez par créer votre premier projet FEL.
           </p>
           <div className="mt-6">

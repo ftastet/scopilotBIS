@@ -55,24 +55,24 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900 dark:to-indigo-950">
+      <div className="max-w-md w-full space-y-8 p-8 bg-background dark:bg-text rounded-xl shadow-lg">
         <div className="text-center">
-          <div className="mx-auto h-12 w-12 bg-blue-600 rounded-lg flex items-center justify-center">
-            <LogIn className="h-6 w-6 text-white" />
+          <div className="mx-auto h-12 w-12 bg-primary rounded-lg flex items-center justify-center dark:bg-primary-dark">
+            <LogIn className="h-6 w-6 text-background dark:text-background-dark" />
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">Scopilot</h2>
-          <p className="mt-2 text-sm text-gray-600 italic">Cadrez. Engagez. Avancez.</p>
+          <h2 className="mt-6 text-3xl font-bold text-text dark:text-background">Scopilot</h2>
+          <p className="mt-2 text-sm text-text/60 dark:text-background/60 italic">Cadrez. Engagez. Avancez.</p>
         </div>
-        
+
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg">
+            <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg dark:text-red-400 dark:bg-red-900/20">
               <AlertCircle className="h-4 w-4" />
               <span className="text-sm">{error}</span>
             </div>
           )}
-          
+
           <div className="space-y-4">
             <Input
               label="Email"
@@ -82,7 +82,7 @@ const Login: React.FC = () => {
               placeholder="votre@email.com"
               required
             />
-            
+
             <Input
               label="Mot de passe"
               type="password"
@@ -103,7 +103,7 @@ const Login: React.FC = () => {
             {isLoading ? 'Connexion...' : 'Se connecter'}
           </Button>
         </form>
-        
+
       </div>
     </div>
   );
