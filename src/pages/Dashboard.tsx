@@ -220,7 +220,7 @@ const Dashboard: React.FC = () => {
     return (
       <li
         key={project.id}
-        className="bg-background dark:bg-text rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200"
+        className="bg-secondary dark:bg-secondary-dark rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200"
       >
         <div
           className="p-6 cursor-pointer flex flex-col h-full"

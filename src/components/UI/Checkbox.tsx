@@ -25,7 +25,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
           disabled={disabled}
           {...props}
         />
-        <div 
+        <div
           className={`
             w-5 h-5 border-2 rounded cursor-pointer transition-colors duration-200
             ${checked
@@ -41,7 +41,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
           onClick={() => !disabled && props.onChange?.({ target: { checked: !checked } } as any)}
         >
           {checked && (
-            <Check className="w-3 h-3 text-white absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+            <Check className="w-3 h-3 text-background absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
           )}
         </div>
       </div>
