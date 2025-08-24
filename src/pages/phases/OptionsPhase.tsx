@@ -207,7 +207,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
       content: (
         <div className="space-y-8">
           <div className="grid grid-cols-2 gap-8">
-            <div className="bg-card p-6 rounded-lg shadow-sm">
+            <div className="card bg-base-100 p-6 shadow-sm">
               <Checklist
                 items={project.data.options.checklist}
                 onItemChange={handleChecklistChange}
@@ -215,7 +215,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
                 onOpenEditor={() => setIsChecklistEditorOpen(true)}
               />
             </div>
-            <div className="bg-card p-6 rounded-lg shadow-sm">
+            <div className="card bg-base-100 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-lg font-medium text-foreground">Contenu phase approuvé par :</h3>
                 <div className="flex items-center space-x-3">
@@ -412,7 +412,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
             ))}
           </div>
 
-          <div className="mt-8 p-4 bg-card rounded-lg shadow-sm">
+          <div className="mt-8 card bg-base-100 p-4 shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-medium">Sélection du scénario</h3>
@@ -467,7 +467,6 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeTabColorClass="border-orange-600 text-orange-800"
       />
 
       {/* Modals */}

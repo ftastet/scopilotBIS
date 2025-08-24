@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { HelpCircle } from 'lucide-react';
 import Button from './Button';
 
@@ -8,28 +8,15 @@ interface TooltipIconProps {
 }
 
 const TooltipIcon: React.FC<TooltipIconProps> = ({ content, className = '' }) => {
-  const [isVisible, setIsVisible] = useState(false);
-
   return (
-    <div className={`relative inline-block ${className}`}>
+    <div className={`tooltip ${className}`} data-tip={content}>
       <Button
         type="button"
         variant="secondary"
         size="sm"
         icon={HelpCircle}
-        className="ml-2 p-1 border-0 bg-transparent text-gray-400 hover:text-gray-600"
-        onMouseEnter={() => setIsVisible(true)}
-        onMouseLeave={() => setIsVisible(false)}
-        onFocus={() => setIsVisible(true)}
-        onBlur={() => setIsVisible(false)}
+        className="ml-2 btn-circle btn-ghost"
       />
-      
-      {isVisible && (
-        <div className="absolute left-0 top-6 z-50 w-144 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg">
-          <div className="absolute -top-1 left-2 w-2 h-2 bg-gray-800 transform rotate-45"></div>
-          <div className="whitespace-pre-wrap">{content}</div>
-        </div>
-      )}
     </div>
   );
 };

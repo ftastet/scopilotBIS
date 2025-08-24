@@ -2,39 +2,35 @@ import React from 'react';
 import { DivideIcon as LucideIcon } from 'lucide-react';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary';
+  variant?: 'primary' | 'secondary' | 'error';
   size?: 'sm' | 'md' | 'lg';
   icon?: LucideIcon;
   children?: React.ReactNode;
 }
 
-const Button: React.FC<ButtonProps> = ({ 
-  variant = 'primary', 
-  size = 'md', 
-  icon: Icon, 
-  children, 
-  className = '', 
-  ...props 
+const Button: React.FC<ButtonProps> = ({
+  variant = 'primary',
+  size = 'md',
+  icon: Icon,
+  children,
+  className = '',
+  ...props
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
-
   const variantClasses = {
-    primary: 'bg-primary text-white hover:bg-primary/90 focus:ring-primary',
-    secondary: 'bg-white text-text hover:bg-gray-50 focus:ring-gray-300',
-  };
-  
-  const sizeClasses = {
-    sm: 'px-3 py-1.5 text-sm',
-    md: 'px-4 py-2 text-sm',
-    lg: 'px-6 py-3 text-base'
+    primary: 'btn-primary',
+    secondary: 'btn-secondary',
+    error: 'btn-error',
   };
 
-  const classes = [
-    baseClasses,
-    variantClasses[variant],
-    sizeClasses[size],
-    className,
-  ].join(' ').trim();
+  const sizeClasses = {
+    sm: 'btn-sm',
+    md: '',
+    lg: 'btn-lg',
+  };
+
+  const classes = ['btn', variantClasses[variant], sizeClasses[size], className]
+    .join(' ')
+    .trim();
 
   return (
     <button className={classes} {...props}>

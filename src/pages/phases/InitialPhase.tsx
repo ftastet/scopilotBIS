@@ -97,7 +97,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
       content: (
         <div className="space-y-8">
           <div className="grid grid-cols-2 gap-8">
-            <div className="bg-card p-6 rounded-lg shadow-sm">
+            <div className="card bg-base-100 p-6 shadow-sm">
               <Checklist
                 items={initial.checklist}
                 onItemChange={handleChecklistChange}
@@ -105,7 +105,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
                 onOpenEditor={() => setIsChecklistEditorOpen(true)}
               />
             </div>
-            <div className="bg-card p-6 rounded-lg shadow-sm">
+            <div className="card bg-base-100 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-lg font-medium text-foreground">Contenu phase approuvé par :</h3>
                 <div className="flex items-center space-x-3">
@@ -268,7 +268,6 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeTabColorClass="border-blue-600 text-blue-800"
       />
 
       <ChecklistEditorModal

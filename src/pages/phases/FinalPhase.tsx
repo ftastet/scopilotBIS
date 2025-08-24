@@ -141,7 +141,7 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
       content: (
         <div className="space-y-8">
           <div className="grid grid-cols-2 gap-8">
-            <div className="bg-card p-6 rounded-lg shadow-sm">
+            <div className="card bg-base-100 p-6 shadow-sm">
               <Checklist
                 items={final.checklist}
                 onItemChange={handleChecklistChange}
@@ -149,7 +149,7 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
                 onOpenEditor={() => setIsChecklistEditorOpen(true)}
               />
             </div>
-            <div className="bg-card p-6 rounded-lg shadow-sm">
+            <div className="card bg-base-100 p-6 shadow-sm">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-lg font-medium text-foreground">Contenu phase approuvé par :</h3>
                 <div className="flex items-center space-x-3">
@@ -297,7 +297,6 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeTabColorClass="border-green-600 text-green-800"
       />
 
       <ChecklistEditorModal

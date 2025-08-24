@@ -14,25 +14,15 @@ const Select: React.FC<SelectProps> = ({
   ...props
 }) => {
   return (
-    <div className="space-y-1">
-      {label && (
-        <label className="block text-sm font-medium text-text">
-          {label}
-        </label>
-      )}
-      <select
-        className={`
-          block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm
-          text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary
-          ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}
-          ${className}
-        `}
-        {...props}
-      >
+    <div className="form-control w-full">
+      {label && <label className="label"><span className="label-text">{label}</span></label>}
+      <select className={`select select-bordered w-full ${className}`} {...props}>
         {children}
       </select>
       {error && (
-        <p className="text-sm text-red-600">{error}</p>
+        <label className="label">
+          <span className="label-text-alt text-error">{error}</span>
+        </label>
       )}
     </div>
   );

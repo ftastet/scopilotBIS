@@ -5,6 +5,7 @@ import { useAlertStore } from '../../store/useAlertStore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, Home, Folder } from 'lucide-react';
 import Button from '../UI/Button';
+import ThemeToggle from '../UI/ThemeToggle';
 
 const Header: React.FC = () => {
   const { user, logout } = useAuthStore();
@@ -29,56 +30,48 @@ const Header: React.FC = () => {
   const isOnProject = location.pathname.startsWith('/project/');
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-primary text-background shadow-sm border-b border-primary">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-accent rounded-lg flex items-center justify-center">
-                <Folder className="h-4 w-4 text-background" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold">Scopilot</h1>
-                <p className="text-xs italic text-background/80">Cadrez. Engagez. Avancez.</p>
-              </div>
-            </div>
-
-            {!isOnDashboard && (
-              <Button
-                variant="secondary"
-                size="sm"
-                icon={Home}
-                onClick={() => navigate('/dashboard')}
-              >
-                Accueil
-              </Button>
-            )}
-
-            {isOnProject && currentProject && (
-              <>
-                <div className="h-6 border-l border-background mx-4" />
-                <div className="flex-1 text-center">
-                  <span className="font-bold text-2xl">{currentProject.name}</span>
-                </div>
-              </>
-            )}
+    <header className="navbar bg-base-100 shadow-sm fixed top-0 w-full z-50">
+      <div className="flex-1">
+        <div className="flex items-center space-x-2">
+          <div className="h-8 w-8 bg-primary rounded-lg flex items-center justify-center text-primary-content">
+            <Folder className="h-4 w-4" />
           </div>
-
-          <div className="flex items-center space-x-4">
-            <div className="h-6 border-l border-background mx-4" />
-            <span className="text-sm text-background/80">
-              Connecté en tant que <span className="font-medium">{user?.username}</span>
-            </span>
-            <Button
-              variant="secondary"
-              size="sm"
-              icon={LogOut}
-              onClick={handleLogout}
-            >
-              Déconnexion
-            </Button>
+          <div>
+            <h1 className="text-xl font-bold">Scopilot</h1>
+            <p className="text-xs italic">Cadrez. Engagez. Avancez.</p>
           </div>
         </div>
+
+        {!isOnDashboard && (
+          <Button
+            variant="secondary"
+            size="sm"
+            icon={Home}
+            onClick={() => navigate('/dashboard')}
+            className="ml-4"
+          >
+            Accueil
+          </Button>
+        )}
+
+        {isOnProject && currentProject && (
+          <span className="ml-4 font-bold text-2xl">{currentProject.name}</span>
+        )}
+      </div>
+
+      <div className="flex-none gap-2">
+        <span className="text-sm mr-2">
+          Connecté en tant que <span className="font-medium">{user?.username}</span>
+        </span>
+        <ThemeToggle />
+        <Button
+          variant="secondary"
+          size="sm"
+          icon={LogOut}
+          onClick={handleLogout}
+        >
+          Déconnexion
+        </Button>
       </div>
     </header>
   );

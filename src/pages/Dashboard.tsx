@@ -217,18 +217,18 @@ const Dashboard: React.FC = () => {
   const ProjectItem: React.FC<{ project: Project }> = ({ project }) => {
     const progress = calculateCombinedProgress(project);
 
-    return (
-      <li key={project.id} className="card hover:shadow-md transition-shadow">
-        <div
-          className="p-6 cursor-pointer flex flex-col h-full"
-          onClick={() => navigate(`/project/${project.id}`)}
-        >
-          <div className="flex items-start justify-between mb-4">
+      return (
+        <li key={project.id} className="card bg-base-100 hover:shadow-md transition-shadow">
+          <div
+            className="card-body p-6 cursor-pointer flex flex-col h-full"
+            onClick={() => navigate(`/project/${project.id}`)}
+          >
+            <div className="flex items-start justify-between mb-4">
             <div className="flex-1 min-w-0">
-              <h3 className="text-lg font-semibold text-foreground truncate">
+                <h3 className="card-title truncate">
                 {project.name}
               </h3>
-              <p className="mt-1 text-sm text-gray-700 truncate">
+                <p className="mt-1 text-sm text-base-content/70 truncate">
                 {project.description}
               </p>
             </div>
@@ -254,8 +254,8 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
 
-          <div className="mt-auto space-y-3">
-            <div className="flex items-center justify-between text-sm text-gray-700">
+            <div className="mt-auto space-y-3">
+              <div className="flex items-center justify-between text-sm text-base-content/70">
               <div className="flex items-center">
                 <Calendar className="h-4 w-4 mr-1" />
                 {formatDate(project.createdAt)}
