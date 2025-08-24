@@ -44,7 +44,7 @@ const ScenarioForm: React.FC<ScenarioFormProps> = React.memo(
     const isSelected = selectedScenario === scenarioId;
 
     return (
-      <div className={`border rounded-lg p-6 ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}`}>
+      <div className={`border rounded-lg p-6 ${isSelected ? 'border-accent bg-accent/5' : 'border-muted'}`}>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">{scenarioTitle}</h3>
           <Button onClick={onSelect} variant={isSelected ? 'primary' : 'secondary'} size="sm">
@@ -197,17 +197,17 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
   const scenarios = Object.entries(localScenariosData);
   const selectedScenario = project.data.options.selectedScenarioId;
   const scenarioStatusClass = scenarioSelected
-    ? 'bg-green-100 text-green-800'
-    : 'bg-yellow-100 text-yellow-800';
+    ? 'bg-accent/10 text-accent'
+    : 'bg-muted text-foreground';
 
   const tabs = [
     {
       id: 'validation',
       label: 'Validation',
       content: (
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-6">
-            <div>
+        <div className="space-y-8">
+          <div className="grid grid-cols-2 gap-8">
+            <div className="bg-card p-6 rounded-lg shadow-sm">
               <Checklist
                 items={project.data.options.checklist}
                 onItemChange={handleChecklistChange}
@@ -215,18 +215,20 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
                 onOpenEditor={() => setIsChecklistEditorOpen(true)}
               />
             </div>
-            <div className="border-l border-gray-200 pl-6">
+            <div className="bg-card p-6 rounded-lg shadow-sm">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-medium text-gray-900">Contenu phase approuvé par :</h3>
+                <h3 className="text-lg font-medium text-foreground">Contenu phase approuvé par :</h3>
                 <div className="flex items-center space-x-3">
-                  <div className="w-32 bg-gray-200 rounded-full h-2">
+                  <div className="w-32 bg-muted rounded-full h-2">
                     <div
-                      className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                      className="bg-accent h-2 rounded-full transition-all duration-300"
                       style={{ width: `${approvalProgress}%` }}
                     />
                   </div>
+                  <span className="text-sm text-muted font-medium min-w-[3rem]">
                   <span className="text-sm text-gray-600 font-medium min-w-[3rem]">
                     {approvedCount}/{mandatoryStakeholders.length}
+                  </span>
                   </span>
                 </div>
               </div>
@@ -241,6 +243,11 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
                     disabled={project.data.options.validated}
                   />
                 ))}
+                {mandatoryStakeholders.length === 0 && (
+                  <p className="text-sm text-text italic">
+                    Aucune partie prenante obligatoire pour cette phase
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -360,9 +367,9 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
       id: 'scenarios',
       label: 'Scénarios',
       content: (
-        <div className="space-y-6">
+        <div className="space-y-8">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900">Développement des scénarios</h3>
+            <h3 className="text-lg font-medium text-foreground">Développement des scénarios</h3>
             <div className="flex space-x-3">
               <Button
                 variant="secondary"
@@ -405,11 +412,11 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
             ))}
           </div>
 
-          <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+          <div className="mt-8 p-4 bg-card rounded-lg shadow-sm">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-medium">Sélection du scénario</h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-muted">
                   {scenarioSelected 
                     ? `Scénario ${selectedScenario} sélectionné. Vous pouvez continuer vers la validation.`
                     : "Veuillez sélectionner un scénario pour continuer."
@@ -442,7 +449,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
       label: 'Notes',
       content: (
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900">Notes du projet</h3>
+          <h3 className="text-lg font-medium text-foreground">Notes du projet</h3>
           <Textarea
             value={project.data.notes || ''}
             onChange={(e) => updateNotes(e.target.value)}
@@ -455,12 +462,12 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Tabs
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeTabColorClass="bg-orange-100 text-orange-800 border-orange-500"
+        activeTabColorClass="border-orange-600 text-orange-800"
       />
 
       {/* Modals */}

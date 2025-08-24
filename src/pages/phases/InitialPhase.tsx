@@ -95,9 +95,9 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
       id: 'validation',
       label: 'Validation',
       content: (
-        <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-6">
-            <div>
+        <div className="space-y-8">
+          <div className="grid grid-cols-2 gap-8">
+            <div className="bg-card p-6 rounded-lg shadow-sm">
               <Checklist
                 items={initial.checklist}
                 onItemChange={handleChecklistChange}
@@ -105,13 +105,13 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
                 onOpenEditor={() => setIsChecklistEditorOpen(true)}
               />
             </div>
-            <div className="border-l border-gray-200 pl-6">
+            <div className="bg-card p-6 rounded-lg shadow-sm">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-medium text-gray-900">Contenu phase approuvé par :</h3>
+                <h3 className="text-lg font-medium text-foreground">Contenu phase approuvé par :</h3>
                 <div className="flex items-center space-x-3">
-                  <div className="w-32 bg-gray-200 rounded-full h-2">
+                  <div className="w-32 bg-muted rounded-full h-2">
                     <div
-                      className="bg-green-600 h-2 rounded-full transition-all duration-300"
+                      className="bg-accent h-2 rounded-full transition-all duration-300"
                       style={{ width: `${approvalRate}%` }}
                     />
                   </div>
@@ -134,7 +134,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
                     />
                   ))
                 ) : (
-                  <p className="text-sm text-gray-500 italic">
+                  <p className="text-sm text-text italic">
                     Aucune partie prenante obligatoire pour cette phase
                   </p>
                 )}
@@ -177,9 +177,9 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
       id: 'details',
       label: 'Opportunité',
       content: (
-        <div className="space-y-6">
+        <div className="space-y-8">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-medium text-gray-900">Détails de l'opportunité</h3>
+            <h3 className="text-lg font-medium text-foreground">Détails de l'opportunité</h3>
             <div className="flex space-x-3">
               <Button
                 variant="secondary"
@@ -198,7 +198,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
             </div>
           </div>
           
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 gap-8">
             {initial.sections
               .filter(section => !section.isHidden)
               .sort((a, b) => a.order - b.order)
@@ -206,7 +206,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
                 <div key={section.id} className={section.internalOnly ? 'internal-content-block' : ''}>
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center">
-                      <label className="block text-lg font-medium text-gray-700">
+                      <label className="block text-lg font-medium text-foreground">
                         {section.title}
                       </label>
                       {section.tooltipContent && (
@@ -250,7 +250,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
       label: 'Notes',
       content: (
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900">Notes du projet</h3>
+          <h3 className="text-lg font-medium text-foreground">Notes du projet</h3>
           <Textarea
             value={notes}
             onChange={e => updateNotes(e.target.value)}
@@ -263,12 +263,12 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <Tabs
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeTabColorClass="bg-blue-100 text-blue-800 border-blue-500"
+        activeTabColorClass="border-blue-600 text-blue-800"
       />
 
       <ChecklistEditorModal

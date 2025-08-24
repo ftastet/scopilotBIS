@@ -4,20 +4,22 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%; /* light gray */
-    --foreground: 222 47% 11%; /* dark gray text */
-    --muted: 210 16% 86%;
+    /* Minimal light palette */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --muted: 220 14% 96%;
     --card: 0 0% 100%;
-    --accent: 238 84% 67%; /* indigo accent */
+    --accent: 215 89% 55%;
     --accent-foreground: 0 0% 100%;
   }
 
   .dark {
-    --background: 220 15% 12%; /* anthracite */
-    --foreground: 0 0% 98%; /* light text */
+    /* Minimal dark palette */
+    --background: 222 47% 11%;
+    --foreground: 210 20% 98%;
     --muted: 217 15% 28%;
-    --card: 220 15% 18%;
-    --accent: 238 84% 67%; /* same accent */
+    --card: 222 47% 13%;
+    --accent: 215 89% 65%;
     --accent-foreground: 0 0% 100%;
   }
 
@@ -32,7 +34,7 @@
 
 @layer components {
   .card {
-    @apply bg-secondary text-text rounded-lg shadow-sm;
+    @apply bg-card text-foreground rounded-xl shadow-sm border border-muted;
   }
 }
 
