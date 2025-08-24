@@ -52,7 +52,7 @@ const Project: React.FC = () => {
   }
 
   const phases = [
-    { id: 'initial', label: 'Opportunité', color: 'blue' },
+    { id: 'initial', label: 'Opportunité', color: 'indigo' },
     { id: 'options', label: 'Scénarios', color: 'orange' },
     { id: 'final', label: 'Engagement', color: 'green' }
   ];
@@ -97,7 +97,7 @@ const Project: React.FC = () => {
         title: 'Opportunité',
         boldText: 'Posez les bases pour aligner les parties prenantes avant d\'explorer les options.',
         regularText: 'Cadrez votre projet : raison d\'être, objectifs, périmètre initial, risques majeurs et jalons principaux.',
-        colorClass: 'bg-blue-50 border-blue-200 text-blue-900'
+        colorClass: 'bg-indigo-50 border-indigo-200 text-indigo-900'
       },
       options: {
         title: 'Scénarios',
