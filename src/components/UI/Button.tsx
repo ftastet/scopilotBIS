@@ -41,6 +41,7 @@ const Button: React.FC<ButtonProps> = ({
       {Icon && <Icon className={`${children ? 'mr-2' : ''} h-4 w-4`} />}
       {children}
     </button>
+  )
   secondary: 'bg-white hover:bg-gray-50 focus:ring-gray-300 border border-gray-300 text-gray-700',
 };
 
