@@ -1,59 +1,77 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuthStore } from './store/useAuthStore';
-import { useProjectStore } from './store/useProjectStore';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Project from './pages/Project';
-import Header from './components/Layout/Header';
-import AlertDialog from './components/UI/AlertDialog';
+import { useState } from 'react';
+import ThemeToggle from './components/UI/ThemeToggle';
 
 const App: React.FC = () => {
-  const { isAuthenticated, isLoading } = useAuthStore(state => ({
-    isAuthenticated: state.isAuthenticated,
-    isLoading: state.isLoading,
-  }));
-  const fetchProjects = useProjectStore(state => state.fetchProjects);
-
-  useEffect(() => {
-    let unsubscribe: (() => void) | undefined;
-
-    if (isAuthenticated) {
-      fetchProjects().then(unsub => {
-        unsubscribe = unsub;
-      });
-    }
-
-    return () => unsubscribe?.();
-  }, [isAuthenticated, fetchProjects]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
-          <p className="mt-4 text-gray-600">Chargement...</p>
-        </div>
-      </div>
-    );
-  }
-
-  const withAuth = (element: JSX.Element) =>
-    isAuthenticated ? element : <Navigate to="/login" />;
+  const [modalOpen, setModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'tab1' | 'tab2'>('tab1');
 
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-50 pt-16">
-        {isAuthenticated && <Header />}
-        <Routes>
-          <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
-          <Route path="/dashboard" element={withAuth(<Dashboard />)} />
-          <Route path="/project/:id" element={withAuth(<Project />)} />
-          <Route path="/" element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} />} />
-        </Routes>
-        <AlertDialog />
+    <div className="p-4 space-y-6">
+      <div className="flex justify-end">
+        <ThemeToggle />
       </div>
-    </Router>
+
+      <div className="flex flex-wrap gap-2">
+        <button className="btn btn-primary">Bouton primaire</button>
+        <button className="btn btn-error">Bouton erreur</button>
+        <div className="tooltip" data-tip="Info bouton">
+          <button className="btn btn-secondary">Tooltip</button>
+        </div>
+        <button className="btn">
+          Badge
+          <span className="badge">Nouveau</span>
+        </button>
+      </div>
+
+      <div className="card w-96 bg-base-100 shadow-xl">
+        <div className="card-body">
+          <h2 className="card-title">Titre de la carte <span className="badge badge-secondary">Nouveau</span></h2>
+          <p>Un petit texte dans la carte.</p>
+        </div>
+      </div>
+
+      <div className="card w-96 bg-base-100 shadow-xl">
+        <div className="card-body">
+          <h2 className="card-title">Formulaire</h2>
+          <label className="label">
+            <span className="label-text">Nom</span>
+          </label>
+          <input type="text" placeholder="Votre nom" className="input input-bordered w-full" />
+          <button className="btn btn-primary mt-4">Envoyer</button>
+        </div>
+      </div>
+
+      <button className="btn" onClick={() => setModalOpen(true)}>Ouvrir la modale</button>
+      <dialog className={`modal ${modalOpen ? 'modal-open' : ''}`} onClose={() => setModalOpen(false)}>
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Titre de la modale</h3>
+          <p className="py-4">Contenu de la modale.</p>
+          <div className="modal-action">
+            <button className="btn" onClick={() => setModalOpen(false)}>Fermer</button>
+          </div>
+        </div>
+      </dialog>
+
+      <div role="tablist" className="tabs tabs-bordered">
+        <a role="tab" className={`tab ${activeTab === 'tab1' ? 'tab-active' : ''}`} onClick={() => setActiveTab('tab1')}>
+          Onglet 1
+        </a>
+        <a role="tab" className={`tab ${activeTab === 'tab2' ? 'tab-active' : ''}`} onClick={() => setActiveTab('tab2')}>
+          Onglet 2
+        </a>
+      </div>
+      <div>
+        {activeTab === 'tab1' ? (
+          <div className="p-4">Contenu du premier onglet.</div>
+        ) : (
+          <div className="p-4">Contenu du second onglet.</div>
+        )}
+      </div>
+
+      <div className="alert alert-info">
+        Ceci est une alerte d'information.
+      </div>
+    </div>
   );
 };
 
