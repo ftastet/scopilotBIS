@@ -42,7 +42,6 @@ const Button: React.FC<ButtonProps> = ({
       {children}
     </button>
   )
-  secondary: 'bg-white hover:bg-gray-50 focus:ring-gray-300 border border-gray-300 text-gray-700',
 };
 
 export default Button;
