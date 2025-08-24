@@ -81,13 +81,13 @@ const Project: React.FC = () => {
   const renderPhaseContent = () => {
     switch (activeProjectTab) {
       case 'initial':
-        return <InitialPhase project={project} />;
+        return <InitialPhase project={project} phaseColor={phases.find(p => p.id === 'initial')?.color || 'orange'} />;
       case 'options':
-        return <OptionsPhase project={project} />;
+        return <OptionsPhase project={project} phaseColor={phases.find(p => p.id === 'options')?.color || 'orange'} />;
       case 'final':
-        return <FinalPhase project={project} />;
+        return <FinalPhase project={project} phaseColor={phases.find(p => p.id === 'final')?.color || 'green'} />;
       default:
-        return <InitialPhase project={project} />;
+        return <InitialPhase project={project} phaseColor={phases.find(p => p.id === 'initial')?.color || 'orange'} />;
     }
   };
 

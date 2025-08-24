@@ -18,9 +18,10 @@ import { Download, Edit2 } from 'lucide-react';
 
 interface FinalPhaseProps {
   project: Project;
+  phaseColor: string;
 }
 
-const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
+const FinalPhase: React.FC<FinalPhaseProps> = ({ project, phaseColor }) => {
   const phase = 'final';
   const {
     updateProject,
@@ -297,7 +298,7 @@ const FinalPhase: React.FC<FinalPhaseProps> = ({ project }) => {
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeTabColorClass="border-green-600 text-green-800"
+        activeTabColorClass={`border-${phaseColor}-600 text-${phaseColor}-800`}
       />
 
       <ChecklistEditorModal
