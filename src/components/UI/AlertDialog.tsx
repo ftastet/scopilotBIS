@@ -45,12 +45,12 @@ const AlertDialog: React.FC = () => {
         <div className={`mx-auto flex items-center justify-center h-12 w-12 rounded-full ${getIconBgColor()}`}>
           {getIcon()}
         </div>
-        
+
         <div className="space-y-2">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-foreground">
             {title}
           </h3>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-foreground/80">
             {message}
           </p>
         </div>

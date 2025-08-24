@@ -115,7 +115,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
                       style={{ width: `${approvalRate}%` }}
                     />
                   </div>
-                  <span className="text-sm text-gray-600 font-medium min-w-[3rem]">
+                  <span className="text-sm text-foreground/80 font-medium min-w-[3rem]">
                     {approvedCount}/{mandatoryStakeholders.length}
                   </span>
                 </div>
@@ -263,7 +263,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 text-foreground">
       <Tabs
         tabs={tabs}
         activeTab={activeTab}

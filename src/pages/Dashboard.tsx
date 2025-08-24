@@ -172,7 +172,7 @@ const Dashboard: React.FC = () => {
       final: 'bg-green-100 text-green-800'
     };
 
-    return colors[project.currentPhase] || 'bg-gray-100 text-gray-800';
+    return colors[project.currentPhase] || 'bg-muted text-foreground';
   };
 
   interface StakeholderInfo {
@@ -228,7 +228,7 @@ const Dashboard: React.FC = () => {
               <h3 className="text-lg font-semibold text-foreground truncate">
                 {project.name}
               </h3>
-              <p className="mt-1 text-sm text-gray-700 truncate">
+              <p className="mt-1 text-sm text-foreground/80 truncate">
                 {project.description}
               </p>
             </div>
@@ -255,7 +255,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           <div className="mt-auto space-y-3">
-            <div className="flex items-center justify-between text-sm text-gray-700">
+            <div className="flex items-center justify-between text-sm text-foreground/80">
               <div className="flex items-center">
                 <Calendar className="h-4 w-4 mr-1" />
                 {formatDate(project.createdAt)}
@@ -273,14 +273,14 @@ const Dashboard: React.FC = () => {
               </span>
             </div>
             <div className="flex items-center space-x-2">
-              <BarChart3 className="h-4 w-4 text-gray-700" />
+              <BarChart3 className="h-4 w-4 text-foreground/80" />
               <div className="w-full bg-muted rounded-full h-1.5">
                 <div
                   className="bg-primary h-1.5 rounded-full transition-all duration-300"
                   style={{ width: `${progress.percentage}%` }}
                 />
               </div>
-              <span className="text-xs text-gray-700 font-medium min-w-[2rem]">
+              <span className="text-xs text-foreground/80 font-medium min-w-[2rem]">
                 {progress.completed}/{progress.total}
               </span>
             </div>
@@ -291,11 +291,11 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-foreground">
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-bold text-foreground">Mes projets</h1>
-          <p className="mt-2 text-gray-700">
+          <p className="mt-2 text-foreground/80">
             Formalisez vos projets pas à pas, avant démarrage
           </p>
         </div>

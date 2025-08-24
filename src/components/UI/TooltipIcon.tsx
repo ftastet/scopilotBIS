@@ -17,7 +17,7 @@ const TooltipIcon: React.FC<TooltipIconProps> = ({ content, className = '' }) =>
         variant="secondary"
         size="sm"
         icon={HelpCircle}
-        className="ml-2 p-1 border-0 bg-transparent text-gray-400 hover:text-gray-600"
+        className="ml-2 p-1 border-0 bg-transparent text-muted hover:text-foreground"
         onMouseEnter={() => setIsVisible(true)}
         onMouseLeave={() => setIsVisible(false)}
         onFocus={() => setIsVisible(true)}
@@ -25,8 +25,8 @@ const TooltipIcon: React.FC<TooltipIconProps> = ({ content, className = '' }) =>
       />
       
       {isVisible && (
-        <div className="absolute left-0 top-6 z-50 w-144 p-3 bg-gray-800 text-white text-xs rounded-lg shadow-lg">
-          <div className="absolute -top-1 left-2 w-2 h-2 bg-gray-800 transform rotate-45"></div>
+        <div className="absolute left-0 top-6 z-50 w-144 p-3 bg-foreground text-background text-xs rounded-lg shadow-lg">
+          <div className="absolute -top-1 left-2 w-2 h-2 bg-foreground transform rotate-45"></div>
           <div className="whitespace-pre-wrap">{content}</div>
         </div>
       )}

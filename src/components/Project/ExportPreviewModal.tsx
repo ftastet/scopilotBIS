@@ -138,7 +138,7 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
     >
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h4 className="text-sm font-medium text-gray-900">Mode d'exportation :</h4>
+          <h4 className="text-sm font-medium text-foreground">Mode d'exportation :</h4>
           <div className="flex items-center space-x-3">
             <Button
               variant={filterMode === 'internal' ? 'primary' : 'secondary'}
@@ -163,7 +163,7 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
             </Button>
             
             {/* Séparateur */}
-            <div className="h-6 border-l border-gray-300 mx-2"></div>
+            <div className="h-6 border-l border-muted mx-2"></div>
             
             {/* Bouton Générer PDF */}
             <Button
@@ -178,11 +178,11 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
           </div>
         </div>
 
-        <div ref={pdfContentRef} className="space-y-6 max-h-[50vh] overflow-y-auto border border-gray-200 rounded-lg p-4 bg-white">
+        <div ref={pdfContentRef} className="space-y-6 max-h-[50vh] overflow-y-auto border border-muted rounded-lg p-4 bg-card">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{project.name}</h1>
-            <h2 className="text-lg font-semibold text-gray-700">{getPhaseLabel()}</h2>
-            <div className="mt-2 text-sm text-gray-500">
+            <h1 className="text-2xl font-bold text-foreground mb-2">{project.name}</h1>
+            <h2 className="text-lg font-semibold text-foreground/80">{getPhaseLabel()}</h2>
+            <div className="mt-2 text-sm text-foreground/70">
               Généré le {new Date().toLocaleDateString('fr-FR')}
             </div>
           </div>
@@ -193,7 +193,7 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
               .map((section) => (
                 <div key={section.id} className="space-y-2">
                   <div className="flex items-center space-x-2">
-                    <h3 className="text-lg font-medium text-gray-900">{section.title}</h3>
+                    <h3 className="text-lg font-medium text-foreground">{section.title}</h3>
                     {section.internalOnly && (
                       <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">
                         Usage interne
@@ -212,8 +212,8 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
               ))}
 
             {project.data.notes && (
-              <div className="space-y-2 border-t border-gray-200 pt-6">
-                <h3 className="text-lg font-medium text-gray-900">Notes du projet</h3>
+              <div className="space-y-2 border-t border-muted pt-6">
+                <h3 className="text-lg font-medium text-foreground">Notes du projet</h3>
                 <div className="read-only">
                   <RichTextEditor
                     value={project.data.notes}
@@ -227,7 +227,7 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
 
             {visibleSectionsCount === 0 && (
               <div className="text-center py-8">
-                <p className="text-gray-500 italic">
+                <p className="text-foreground/70 italic">
                   Aucune section sélectionnée pour l'export
                 </p>
               </div>

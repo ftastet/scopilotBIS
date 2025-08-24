@@ -226,7 +226,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
                     />
                   </div>
                   <span className="text-sm text-muted font-medium min-w-[3rem]">
-                  <span className="text-sm text-gray-600 font-medium min-w-[3rem]">
+                  <span className="text-sm text-foreground/80 font-medium min-w-[3rem]">
                     {approvedCount}/{mandatoryStakeholders.length}
                   </span>
                   </span>
@@ -462,7 +462,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
   ];
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 text-foreground">
       <Tabs
         tabs={tabs}
         activeTab={activeTab}

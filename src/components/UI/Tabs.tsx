@@ -18,7 +18,7 @@ interface TabsProps {
 const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabChange, activeTabColorClass = 'border-primary text-primary', className = '' }) => {
   return (
     <div className={className}>
-      <div className="border-b border-gray-200">
+      <div className="border-b border-muted">
         <nav className="-mb-px flex space-x-6">
           {tabs.map((tab) => (
             <Button
@@ -30,7 +30,7 @@ const Tabs: React.FC<TabsProps> = ({ tabs, activeTab, onTabChange, activeTabColo
                 border-0 border-b-2 rounded-none bg-transparent whitespace-nowrap
                 ${activeTab === tab.id
                   ? `${activeTabColorClass}`
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  : 'border-transparent text-foreground/70 hover:text-foreground hover:border-muted'
                 }
               `}
             >

@@ -59,12 +59,12 @@ const CustomFilterModal: React.FC<CustomFilterModalProps> = ({
       title="Sélection personnalisée des sections"
       modalClassName="sm:max-w-2xl sm:max-h-[90vh]"
     >
-      <div className="space-y-4">
+      <div className="space-y-4 text-foreground">
 
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
             {localSections.map((section) => (
-              <div key={section.id} className="flex items-center space-x-2 p-2 bg-white border border-gray-200 rounded">
+              <div key={section.id} className="flex items-center space-x-2 p-2 bg-card border border-muted rounded">
                 <Checkbox
                   checked={section.isVisibleInPreview}
                   onChange={(e) => handleToggleSection(section.id, e.target.checked)}
@@ -82,7 +82,7 @@ const CustomFilterModal: React.FC<CustomFilterModalProps> = ({
           </div>
         </div>
 
-        <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+        <div className="flex justify-end space-x-3 pt-4 border-t border-muted">
           <Button
             variant="secondary"
             onClick={handleCancel}

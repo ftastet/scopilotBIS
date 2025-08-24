@@ -76,21 +76,21 @@ const SortableItem: React.FC<SortableItemProps> = ({
       ref={setNodeRef}
       style={style}
       className={`
-        flex items-center space-x-3 p-3 bg-white border border-gray-200 rounded-lg
-        ${section.isHidden ? 'opacity-60 bg-gray-50' : ''}
+        flex items-center space-x-3 p-3 bg-card border border-muted rounded-lg
+        ${section.isHidden ? 'opacity-60 bg-muted' : ''}
         ${isDragging ? 'shadow-lg' : 'shadow-sm'}
       `}
     >
       <div
         {...attributes}
         {...listeners}
-        className="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
+        className="cursor-grab active:cursor-grabbing text-muted hover:text-foreground"
       >
         <GripVertical className="h-4 w-4" />
       </div>
       
       <div className="flex-1 min-w-0">
-        <span className={`text-sm font-medium ${section.isHidden ? 'text-gray-500 line-through' : 'text-gray-900'}`}>
+        <span className={`text-sm font-medium ${section.isHidden ? 'text-foreground/70 line-through' : 'text-foreground'}`}>
           {section.title}
         </span>
         {section.isDefault && (
@@ -99,7 +99,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
           </span>
         )}
         {section.placeholder && (
-          <p className="text-xs text-gray-500 mt-1 truncate">
+          <p className="text-xs text-foreground/70 mt-1 truncate">
             {section.placeholder.substring(0, 100)}...
           </p>
         )}
@@ -272,22 +272,22 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
           </div>
         )}
 
-        <div className="bg-gray-50 p-3 rounded-lg">
+        <div className="bg-muted p-3 rounded-lg">
           <div className="flex justify-between items-center text-sm">
-            <span className="text-gray-600">
+            <span className="text-foreground/80">
               Sections visibles: <strong>{visibleCount}</strong> sur <strong>{totalCount}</strong>
             </span>
-            <span className="text-gray-600">
+            <span className="text-foreground/80">
               Sections par défaut: <strong>{sections.filter(section => section.isDefault).length}</strong>
             </span>
           </div>
         </div>
 
         <div className="space-y-3">
-          <h4 className="text-sm font-medium text-gray-900">Sections de la fiche projet</h4>
-          
+          <h4 className="text-sm font-medium text-foreground">Sections de la fiche projet</h4>
+
           {sections.length === 0 ? (
-            <p className="text-sm text-gray-500 italic text-center py-4">
+            <p className="text-sm text-foreground/70 italic text-center py-4">
               Aucune section dans cette fiche projet
             </p>
           ) : (
@@ -319,8 +319,8 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
         </div>
 
         {editingSection && (
-          <div className="border-t border-gray-200 pt-4">
-            <h4 className="text-sm font-medium text-gray-900 mb-3">Éditer la section</h4>
+          <div className="border-t border-muted pt-4">
+            <h4 className="text-sm font-medium text-foreground mb-3">Éditer la section</h4>
             <div className="space-y-3">
               <Input
                 label="Titre de la section"
@@ -368,8 +368,8 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
         )}
 
         {!isDisabled && !editingSection && (
-          <div className="border-t border-gray-200 pt-4">
-            <h4 className="text-sm font-medium text-gray-900 mb-3">Ajouter une nouvelle section</h4>
+          <div className="border-t border-muted pt-4">
+            <h4 className="text-sm font-medium text-foreground mb-3">Ajouter une nouvelle section</h4>
             <div className="space-y-3">
               <Input
                 label="Titre de la section"
@@ -409,7 +409,7 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
           </div>
         )}
 
-        <div className="flex justify-end pt-4 border-t border-gray-200">
+        <div className="flex justify-end pt-4 border-t border-muted">
           <Button
             variant="secondary"
             onClick={onClose}

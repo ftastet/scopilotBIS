@@ -62,7 +62,7 @@ const StakeholderTable: React.FC<StakeholderTableProps> = ({
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-gray-900">Parties prenantes</h3>
+        <h3 className="text-lg font-medium text-foreground">Parties prenantes</h3>
         <Button
           variant="primary"
           size="sm"
@@ -74,74 +74,74 @@ const StakeholderTable: React.FC<StakeholderTableProps> = ({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-muted">
+          <thead className="bg-muted">
             <tr>
-              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-foreground/70 uppercase tracking-wider">
                 Prénom
               </th>
-              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-foreground/70 uppercase tracking-wider">
                 Nom
               </th>
-              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-foreground/70 uppercase tracking-wider">
                 Rôle sur le projet
               </th>
-              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-foreground/70 uppercase tracking-wider">
                 Email
               </th>
-              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-foreground/70 uppercase tracking-wider">
                 Société
               </th>
-              <th rowSpan={2} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th rowSpan={2} className="px-4 py-3 text-center text-xs font-medium text-foreground/70 uppercase tracking-wider">
                 Externe
               </th>
-              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-foreground/70 uppercase tracking-wider">
                 Niveau d'engagement
               </th>
-              <th colSpan={3} className="px-4 py-2 text-center text-xs font-medium text-gray-900 uppercase tracking-wider border-b border-gray-300">
+              <th colSpan={3} className="px-4 py-2 text-center text-xs font-medium text-foreground uppercase tracking-wider border-b border-muted">
                 Doit valider les phases
               </th>
-              <th rowSpan={2} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th rowSpan={2} className="px-4 py-3 text-center text-xs font-medium text-foreground/70 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
             <tr>
-              <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-2 text-center text-xs font-medium text-foreground/70 uppercase tracking-wider">
                 Fiche projet initiale
               </th>
-              <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-2 text-center text-xs font-medium text-foreground/70 uppercase tracking-wider">
                 Options de périmètre
               </th>
-              <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-4 py-2 text-center text-xs font-medium text-foreground/70 uppercase tracking-wider">
                 Périmètre final
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-card divide-y divide-muted">
             {stakeholders.map((stakeholder) => (
-              <tr key={stakeholder.id} className="hover:bg-gray-50">
+              <tr key={stakeholder.id} className="hover:bg-muted">
                 <td className="px-4 py-4">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-foreground">
                     {stakeholder.firstName}
                   </div>
                 </td>
                 <td className="px-4 py-4">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-medium text-foreground">
                     {stakeholder.lastName}
                   </div>
                 </td>
                 <td className="px-4 py-4">
-                  <div className="text-sm text-gray-900 truncate max-w-[150px]" title={stakeholder.role}>
+                  <div className="text-sm text-foreground truncate max-w-[150px]" title={stakeholder.role}>
                     {stakeholder.role}
                   </div>
                 </td>
                 <td className="px-4 py-4">
-                  <div className="text-sm text-gray-500 truncate max-w-[120px]" title={stakeholder.email}>
+                  <div className="text-sm text-foreground/70 truncate max-w-[120px]" title={stakeholder.email}>
                     {stakeholder.email}
                   </div>
                 </td>
                 <td className="px-4 py-4">
-                  <div className="text-sm text-gray-900 truncate max-w-[100px]" title={stakeholder.company}>
+                  <div className="text-sm text-foreground truncate max-w-[100px]" title={stakeholder.company}>
                     {stakeholder.company}
                   </div>
                 </td>
@@ -151,11 +151,11 @@ const StakeholderTable: React.FC<StakeholderTableProps> = ({
                       ✓
                     </span>
                   ) : (
-                    <span className="text-gray-400">—</span>
+                    <span className="text-muted">—</span>
                   )}
                 </td>
                 <td className="px-4 py-4">
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-foreground/70">
                     {stakeholder.engagementLevel && (
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                         {stakeholder.engagementLevel}

@@ -52,14 +52,14 @@ const InitialPhaseViewModal: React.FC<InitialPhaseViewModalProps> = ({
         )}
 
         {visibleSections.length === 0 ? (
-          <p className="text-sm text-gray-500 italic text-center py-8">
+          <p className="text-sm text-foreground/70 italic text-center py-8">
             Aucune section visible dans l'opportunité
           </p>
         ) : (
           <div className="space-y-6">
             {visibleSections.map((section) => (
               <div key={section.id} className="space-y-2">
-                <h3 className="text-lg font-medium text-gray-900 flex items-center">
+                <h3 className="text-lg font-medium text-foreground flex items-center">
                   {section.title}
                   {section.internalOnly && (
                     <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">

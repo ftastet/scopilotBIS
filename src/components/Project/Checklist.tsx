@@ -32,16 +32,16 @@ const Checklist: React.FC<ChecklistProps> = ({ items, onItemChange, isDisabled =
                 title="Éditer la checklist"
               />
             )}
-            <h3 className="text-lg font-medium text-gray-900">Checklist de maturité</h3>
+            <h3 className="text-lg font-medium text-foreground">Checklist de maturité</h3>
           </div>
           <div className="flex items-center space-x-3">
-            <div className="w-32 bg-gray-200 rounded-full h-2">
+            <div className="w-32 bg-muted rounded-full h-2">
               <div 
                 className="bg-primary h-2 rounded-full transition-all duration-300"
                 style={{ width: `${progressPercentage}%` }}
               />
             </div>
-            <span className="text-sm text-gray-600 font-medium min-w-[3rem]">
+            <span className="text-sm text-foreground/80 font-medium min-w-[3rem]">
               {completedCount}/{totalCount}
             </span>
           </div>

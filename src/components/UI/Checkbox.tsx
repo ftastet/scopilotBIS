@@ -30,7 +30,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
             w-5 h-5 border-2 rounded cursor-pointer transition-colors duration-200
             ${checked
               ? 'bg-primary border-primary'
-              : 'bg-white border-gray-300 hover:border-gray-400'
+              : 'bg-card border-muted hover:border-foreground/50'
             }
             ${disabled
               ? 'cursor-not-allowed opacity-50'
@@ -48,12 +48,12 @@ const Checkbox: React.FC<CheckboxProps> = ({
       {(label || description) && (
         <div className="flex-1">
           {label && (
-            <label className={`block text-sm font-medium cursor-pointer ${disabled ? 'text-gray-400 cursor-not-allowed' : 'text-text'}`}>
+            <label className={`block text-sm font-medium cursor-pointer ${disabled ? 'text-muted cursor-not-allowed' : 'text-foreground'}`}>
               {label}
             </label>
           )}
           {description && (
-            <p className={`text-sm ${disabled ? 'text-gray-400' : 'text-gray-500'}`}>{description}</p>
+            <p className={`text-sm ${disabled ? 'text-muted' : 'text-foreground/70'}`}>{description}</p>
           )}
         </div>
       )}

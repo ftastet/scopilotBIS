@@ -14,14 +14,14 @@ const Input: React.FC<InputProps> = ({
   return (
     <div className="space-y-1">
       {label && (
-        <label className="block text-sm font-medium text-text">
+        <label className="block text-sm font-medium text-foreground">
           {label}
         </label>
       )}
       <input
         className={`
-          block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm
-          placeholder-gray-400 text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary
+          block w-full rounded-md border border-muted bg-card px-3 py-2 text-sm shadow-sm
+          placeholder-muted/80 text-foreground focus:outline-none focus:ring-2 focus:ring-accent focus:border-accent
           ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}
           ${className}
         `}

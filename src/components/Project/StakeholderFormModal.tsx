@@ -116,8 +116,8 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
     <Modal isOpen={isOpen} onClose={handleClose} title={title}>
       <div className="space-y-6">
         {/* Informations personnelles */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-900 mb-4">Informations personnelles</h4>
+        <div className="bg-muted p-4 rounded-lg">
+          <h4 className="text-sm font-medium text-foreground mb-4">Informations personnelles</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input
               label="Prénom *"
@@ -173,8 +173,8 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
         </div>
 
         {/* Rôle et engagement */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-900 mb-4">Rôle et engagement</h4>
+        <div className="bg-muted p-4 rounded-lg">
+          <h4 className="text-sm font-medium text-foreground mb-4">Rôle et engagement</h4>
           <div className="space-y-4">
             <Input
               label="Rôle sur le projet *"
@@ -206,8 +206,8 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
         </div>
 
         {/* Participation aux phases */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-900 mb-4">Doit valider les phases :</h4>
+        <div className="bg-muted p-4 rounded-lg">
+          <h4 className="text-sm font-medium text-foreground mb-4">Doit valider les phases :</h4>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Checkbox
               label="Phase Opportunité"
@@ -231,7 +231,7 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
         </div>
 
         {/* Actions */}
-        <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+        <div className="flex justify-end space-x-3 pt-4 border-t border-muted">
           <Button
             variant="secondary"
             onClick={handleClose}

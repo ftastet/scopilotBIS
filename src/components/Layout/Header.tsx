@@ -3,7 +3,7 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { useProjectStore } from '../../store/useProjectStore';
 import { useAlertStore } from '../../store/useAlertStore';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LogOut, Home, Folder } from 'lucide-react';
+import { LogOut, Home, Folder, Sun, Moon } from 'lucide-react';
 import Button from '../UI/Button';
 
 const Header: React.FC = () => {
@@ -12,6 +12,18 @@ const Header: React.FC = () => {
   const showAlert = useAlertStore(state => state.show);
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [theme, setTheme] = React.useState<'light' | 'dark'>(
+    (localStorage.getItem('theme') as 'light' | 'dark') || 'light'
+  );
+
+  React.useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () =>
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
 
   const handleLogout = async () => {
     try {
@@ -69,6 +81,14 @@ const Header: React.FC = () => {
             <span className="text-sm text-background/80">
               Connecté en tant que <span className="font-medium">{user?.username}</span>
             </span>
+            <Button
+              variant="secondary"
+              size="sm"
+              icon={theme === 'light' ? Moon : Sun}
+              onClick={toggleTheme}
+            >
+              {theme === 'light' ? 'Sombre' : 'Clair'}
+            </Button>
             <Button
               variant="secondary"
               size="sm"

@@ -55,14 +55,14 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="max-w-md w-full space-y-8 p-8 bg-card rounded-xl shadow-lg text-foreground">
         <div className="text-center">
           <div className="mx-auto h-12 w-12 bg-blue-600 rounded-lg flex items-center justify-center">
             <LogIn className="h-6 w-6 text-white" />
           </div>
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">Scopilot</h2>
-          <p className="mt-2 text-sm text-gray-600 italic">Cadrez. Engagez. Avancez.</p>
+          <h2 className="mt-6 text-3xl font-bold text-foreground">Scopilot</h2>
+          <p className="mt-2 text-sm text-foreground/80 italic">Cadrez. Engagez. Avancez.</p>
         </div>
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
