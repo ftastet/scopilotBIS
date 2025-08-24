@@ -18,10 +18,9 @@ import { Download, Edit2 } from 'lucide-react';
 
 interface InitialPhaseProps {
   project: Project;
-  phaseColor: string;
 }
 
-const InitialPhase: React.FC<InitialPhaseProps> = ({ project, phaseColor }) => {
+const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
   const phase = 'initial';
   const {
     updateProject,
@@ -269,7 +268,7 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project, phaseColor }) => {
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeTabColorClass={`border-${phaseColor}-600 text-${phaseColor}-800`}
+        activeTabColorClass="border-blue-600 text-blue-800"
       />
 
       <ChecklistEditorModal

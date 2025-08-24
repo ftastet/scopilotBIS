@@ -19,7 +19,6 @@ import { Download, Edit2, Folder } from 'lucide-react';
 
 interface OptionsPhaseProps {
   project: Project;
-  phaseColor: string;
 }
 
 interface ScenarioFormProps {
@@ -73,7 +72,7 @@ const ScenarioForm: React.FC<ScenarioFormProps> = React.memo(
   }
 );
 
-const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project, phaseColor }) => {
+const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
   const { 
     updateProject, 
     updateScenarioSectionContent, 
@@ -468,7 +467,7 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project, phaseColor }) => {
         tabs={tabs}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        activeTabColorClass={`border-${phaseColor}-600 text-${phaseColor}-800`}
+        activeTabColorClass="border-orange-600 text-orange-800"
       />
 
       {/* Modals */}

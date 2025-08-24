@@ -52,7 +52,7 @@ const Project: React.FC = () => {
   }
 
   const phases = [
-    { id: 'initial', label: 'Opportunité', color: 'orange' },
+    { id: 'initial', label: 'Opportunité', color: 'blue' },
     { id: 'options', label: 'Scénarios', color: 'orange' },
     { id: 'final', label: 'Engagement', color: 'green' }
   ];
@@ -81,13 +81,13 @@ const Project: React.FC = () => {
   const renderPhaseContent = () => {
     switch (activeProjectTab) {
       case 'initial':
-        return <InitialPhase project={project} phaseColor={phases.find(p => p.id === 'initial')?.color || 'orange'} />;
+        return <InitialPhase project={project} />;
       case 'options':
-        return <OptionsPhase project={project} phaseColor={phases.find(p => p.id === 'options')?.color || 'orange'} />;
+        return <OptionsPhase project={project} />;
       case 'final':
-        return <FinalPhase project={project} phaseColor={phases.find(p => p.id === 'final')?.color || 'green'} />;
+        return <FinalPhase project={project} />;
       default:
-        return <InitialPhase project={project} phaseColor={phases.find(p => p.id === 'initial')?.color || 'orange'} />;
+        return <InitialPhase project={project} />;
     }
   };
 
@@ -97,7 +97,7 @@ const Project: React.FC = () => {
         title: 'Opportunité',
         boldText: 'Posez les bases pour aligner les parties prenantes avant d\'explorer les options.',
         regularText: 'Cadrez votre projet : raison d\'être, objectifs, périmètre initial, risques majeurs et jalons principaux.',
-        colorClass: 'bg-orange-50 border-orange-200 text-orange-900'
+        colorClass: 'bg-blue-50 border-blue-200 text-blue-900'
       },
       options: {
         title: 'Scénarios',
@@ -136,7 +136,7 @@ const Project: React.FC = () => {
                   className={`
                     flex items-center justify-center px-5 py-2 rounded-xl text-base font-semibold transition-all duration-300 transform hover:scale-105 w-full
                     ${isActive
-                      ? `bg-white text-${phase.color}-800 border-0 border-b-4 border-${phase.color}-600`
+                      ? `bg-white text-${phase.color}-800 border-b-4 border-${phase.color}-600`
                       : canAccess
                         ? `bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 hover:border-gray-400 shadow-sm`
                         : `bg-gray-100 text-gray-400 border-2 border-gray-200 cursor-not-allowed opacity-60`

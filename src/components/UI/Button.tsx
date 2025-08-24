@@ -20,7 +20,7 @@ const Button: React.FC<ButtonProps> = ({
 
   const variantClasses = {
     primary: 'bg-primary text-white hover:bg-primary/90 focus:ring-primary',
-    secondary: 'bg-white hover:bg-gray-50 focus:ring-gray-300 border border-gray-300 text-text',
+    secondary: 'bg-white text-text hover:bg-gray-50 focus:ring-gray-300 border border-gray-300',
   };
   
   const sizeClasses = {
@@ -41,7 +41,7 @@ const Button: React.FC<ButtonProps> = ({
       {Icon && <Icon className={`${children ? 'mr-2' : ''} h-4 w-4`} />}
       {children}
     </button>
-  )
+  );
 };
 
 export default Button;
