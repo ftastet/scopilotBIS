@@ -1,38 +1,16 @@
-import React from 'react';
+import { Textarea as FlowbiteTextarea, Label, type TextareaProps } from 'flowbite-react';
 
-interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface Props extends TextareaProps {
   label?: string;
   error?: string;
 }
 
-const Textarea: React.FC<TextareaProps> = ({ 
-  label, 
-  error, 
-  className = '', 
-  ...props 
-}) => {
-  return (
-    <div className="space-y-1">
-      {label && (
-        <label className="block text-sm font-medium text-text">
-          {label}
-        </label>
-      )}
-      <textarea
-        className={`
-          block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm
-          placeholder-gray-400 text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary
-          ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}
-          ${className}
-        `}
-        rows={4}
-        {...props}
-      />
-      {error && (
-        <p className="text-sm text-red-600">{error}</p>
-      )}
-    </div>
-  );
-};
+const Textarea = ({ label, error, id, ...props }: Props) => (
+  <div className="space-y-1">
+    {label && <Label htmlFor={id}>{label}</Label>}
+    <FlowbiteTextarea id={id} color={error ? 'failure' : undefined} {...props} />
+    {error && <p className="text-sm text-red-600">{error}</p>}
+  </div>
+);
 
 export default Textarea;

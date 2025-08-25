@@ -182,14 +182,14 @@ const InitialPhase: React.FC<InitialPhaseProps> = ({ project }) => {
             <h3 className="text-lg font-medium text-foreground">Détails de l'opportunité</h3>
             <div className="flex space-x-3">
               <Button
-                variant="secondary"
+                color="light"
                 icon={Edit2}
                 onClick={() => setIsSectionEditorOpen(true)}
               >
                 Éditer les sections
               </Button>
               <Button
-                variant="primary"
+                color="blue"
                 icon={Download}
                 onClick={() => setIsExportPreviewModalOpen(true)}
               >

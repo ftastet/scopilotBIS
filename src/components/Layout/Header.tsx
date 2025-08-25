@@ -1,15 +1,15 @@
-import React from 'react';
+import { Navbar, Button } from 'flowbite-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { useProjectStore } from '../../store/useProjectStore';
 import { useAlertStore } from '../../store/useAlertStore';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LogOut, Home, Folder } from 'lucide-react';
-import Button from '../UI/Button';
+import ThemeToggle from '../ThemeToggle';
 
-const Header: React.FC = () => {
+const Header = () => {
   const { user, logout } = useAuthStore();
-  const currentProject = useProjectStore(state => state.currentProject);
-  const showAlert = useAlertStore(state => state.show);
+  const currentProject = useProjectStore((state) => state.currentProject);
+  const showAlert = useAlertStore((state) => state.show);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -29,58 +29,36 @@ const Header: React.FC = () => {
   const isOnProject = location.pathname.startsWith('/project/');
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-primary text-background shadow-sm border-b border-primary">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className="h-8 w-8 bg-accent rounded-lg flex items-center justify-center">
-                <Folder className="h-4 w-4 text-background" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold">Scopilot</h1>
-                <p className="text-xs italic text-background/80">Cadrez. Engagez. Avancez.</p>
-              </div>
-            </div>
-
-            {!isOnDashboard && (
-              <Button
-                variant="secondary"
-                size="sm"
-                icon={Home}
-                onClick={() => navigate('/dashboard')}
-              >
-                Accueil
-              </Button>
-            )}
-
-            {isOnProject && currentProject && (
-              <>
-                <div className="h-6 border-l border-background mx-4" />
-                <div className="flex-1 text-center">
-                  <span className="font-bold text-2xl">{currentProject.name}</span>
-                </div>
-              </>
-            )}
-          </div>
-
-          <div className="flex items-center space-x-4">
-            <div className="h-6 border-l border-background mx-4" />
-            <span className="text-sm text-background/80">
-              Connecté en tant que <span className="font-medium">{user?.username}</span>
-            </span>
-            <Button
-              variant="secondary"
-              size="sm"
-              icon={LogOut}
-              onClick={handleLogout}
-            >
-              Déconnexion
-            </Button>
-          </div>
+    <Navbar fluid rounded className="fixed top-0 z-50 w-full">
+      <Navbar.Brand href="/dashboard" className="cursor-pointer" onClick={() => navigate('/dashboard')}>
+        <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">
+          <Folder className="h-4 w-4 text-white" />
         </div>
+        <span className="self-center whitespace-nowrap text-xl font-bold">Scopilot</span>
+      </Navbar.Brand>
+      <div className="flex items-center gap-2 md:order-2">
+        <ThemeToggle />
+        <span className="text-sm text-gray-600 dark:text-gray-300 hidden sm:block">
+          {user ? `Connecté en tant que ${user.username}` : ''}
+        </span>
+        <Button color="light" size="xs" onClick={handleLogout}>
+          <LogOut className="mr-1 h-4 w-4" /> Déconnexion
+        </Button>
+        <Navbar.Toggle />
       </div>
-    </header>
+      <Navbar.Collapse>
+        {!isOnDashboard && (
+          <Navbar.Link href="#" onClick={() => navigate('/dashboard')}>
+            <Home className="mr-1 h-4 w-4" /> Accueil
+          </Navbar.Link>
+        )}
+        {isOnProject && currentProject && (
+          <Navbar.Link href="#" active>
+            {currentProject.name}
+          </Navbar.Link>
+        )}
+      </Navbar.Collapse>
+    </Navbar>
   );
 };
 

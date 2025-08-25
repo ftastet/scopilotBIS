@@ -233,14 +233,14 @@ const StakeholderFormModal: React.FC<StakeholderFormModalProps> = ({
         {/* Actions */}
         <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
           <Button
-            variant="secondary"
+            color="light"
             onClick={handleClose}
             icon={X}
           >
             Annuler
           </Button>
           <Button
-            variant="primary"
+            color="blue"
             onClick={handleSave}
             disabled={!isFormValid}
             icon={Save}

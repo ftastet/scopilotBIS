@@ -98,7 +98,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
 
       <div className="flex items-center space-x-2">
         <Button
-          variant="secondary"
+          color="light"
           size="sm"
           icon={item.isHidden ? EyeOff : Eye}
           onClick={() => onToggleHidden(item.id, !item.isHidden)}
@@ -108,7 +108,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
         
         {!item.isDefault && (
           <Button
-            variant="secondary"
+            color="light"
             size="sm"
             icon={Trash2}
             onClick={() => onDeleteItem(item.id)}
@@ -261,7 +261,7 @@ const ChecklistEditorModal: React.FC<ChecklistEditorModalProps> = ({
                 />
               </div>
               <Button
-                variant="primary"
+                color="blue"
                 icon={Plus}
                 onClick={handleAddItem}
                 disabled={!newItemText.trim()}
@@ -274,7 +274,7 @@ const ChecklistEditorModal: React.FC<ChecklistEditorModalProps> = ({
 
         <div className="flex justify-end pt-4 border-t border-gray-200">
           <Button
-            variant="secondary"
+            color="light"
             onClick={onClose}
           >
             Fermer

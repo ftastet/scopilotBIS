@@ -84,14 +84,14 @@ const CustomFilterModal: React.FC<CustomFilterModalProps> = ({
 
         <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
           <Button
-            variant="secondary"
+            color="light"
             onClick={handleCancel}
             icon={X}
           >
             Annuler
           </Button>
           <Button
-            variant="primary"
+            color="blue"
             onClick={handleSave}
             icon={Save}
             disabled={selectedCount === 0}

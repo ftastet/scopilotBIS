@@ -5,6 +5,7 @@ import { useAlertStore } from '../store/useAlertStore';
 import { LogIn, AlertCircle } from 'lucide-react';
 import Button from '../components/UI/Button';
 import Input from '../components/UI/Input';
+import { Alert } from 'flowbite-react';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -67,10 +68,9 @@ const Login: React.FC = () => {
         
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           {error && (
-            <div className="flex items-center space-x-2 text-red-600 bg-red-50 p-3 rounded-lg">
-              <AlertCircle className="h-4 w-4" />
-              <span className="text-sm">{error}</span>
-            </div>
+            <Alert color="failure" icon={AlertCircle}>
+              {error}
+            </Alert>
           )}
           
           <div className="space-y-4">
@@ -95,7 +95,7 @@ const Login: React.FC = () => {
 
           <Button
             type="submit"
-            variant="primary"
+            color="blue"
             className="w-full"
             icon={LogIn}
             disabled={isLoading}

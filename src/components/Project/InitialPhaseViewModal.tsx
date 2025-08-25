@@ -3,6 +3,7 @@ import { InitialPhaseData } from '../../types';
 import Modal from '../UI/Modal';
 import RichTextEditor from '../UI/RichTextEditor';
 import { FileText, AlertCircle } from 'lucide-react';
+import { Alert } from 'flowbite-react';
 
 interface InitialPhaseViewModalProps {
   isOpen: boolean;
@@ -31,24 +32,16 @@ const InitialPhaseViewModal: React.FC<InitialPhaseViewModalProps> = ({
     >
       <div className="space-y-6 max-h-[30rem] overflow-y-auto">
         {!initialPhaseData.validated ? (
-          <div className="flex items-center space-x-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <AlertCircle className="h-5 w-5 text-yellow-600 flex-shrink-0" />
+          <Alert color="warning" icon={AlertCircle}>
+            <span className="font-medium">Phase Opportunité non validée</span>
             <div>
-              <p className="text-sm font-medium text-yellow-800">
-                Phase Opportunité non validée
-              </p>
-              <p className="text-sm text-yellow-700">
-                L'opportunité n'a pas encore été validée. Le contenu affiché peut être incomplet ou en cours de modification.
-              </p>
+              L'opportunité n'a pas encore été validée. Le contenu affiché peut être incomplet ou en cours de modification.
             </div>
-          </div>
+          </Alert>
         ) : (
-          <div className="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg">
-            <FileText className="h-4 w-4 text-green-600" />
-            <span className="text-sm font-medium text-green-800">
-              Opportunité validée
-            </span>
-          </div>
+          <Alert color="success" icon={FileText}>
+            Opportunité validée
+          </Alert>
         )}
 
         {visibleSections.length === 0 ? (

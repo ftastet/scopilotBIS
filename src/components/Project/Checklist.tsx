@@ -25,7 +25,7 @@ const Checklist: React.FC<ChecklistProps> = ({ items, onItemChange, isDisabled =
           <div className="flex items-center space-x-3">
             {onOpenEditor && !isDisabled && (
               <Button
-                variant="secondary"
+                color="light"
                 size="sm"
                 icon={Edit2}
                 onClick={onOpenEditor}

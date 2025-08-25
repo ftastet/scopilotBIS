@@ -234,7 +234,7 @@ const Dashboard: React.FC = () => {
             </div>
             <div className="flex-shrink-0 flex items-center space-x-2">
               <Button
-                variant="secondary"
+                color="light"
                 size="sm"
                 icon={Edit2}
                 onClick={(e) => {
@@ -243,7 +243,7 @@ const Dashboard: React.FC = () => {
                 }}
               />
               <Button
-                variant="secondary"
+                color="light"
                 size="sm"
                 icon={Trash2}
                 onClick={(e) => {
@@ -300,7 +300,7 @@ const Dashboard: React.FC = () => {
           </p>
         </div>
         <Button
-          variant="primary"
+          color="blue"
           icon={Plus}
           onClick={() => setIsModalOpen(true)}
         >
@@ -324,7 +324,7 @@ const Dashboard: React.FC = () => {
           </p>
           <div className="mt-6">
             <Button
-              variant="primary"
+              color="blue"
               icon={Plus}
               onClick={() => setIsModalOpen(true)}
             >
@@ -380,7 +380,7 @@ const Dashboard: React.FC = () => {
           />
           <div className="flex justify-end space-x-3">
             <Button
-              variant="secondary"
+              color="light"
               onClick={() => {
                 setIsModalOpen(false);
                 setProjectName('');
@@ -390,7 +390,7 @@ const Dashboard: React.FC = () => {
               Annuler
             </Button>
             <Button
-              variant="primary"
+              color="blue"
               onClick={handleCreateProject}
               disabled={!projectName.trim() || !projectDescription.trim()}
             >
@@ -443,7 +443,7 @@ const Dashboard: React.FC = () => {
           />
           <div className="flex justify-end space-x-3">
             <Button
-              variant="secondary"
+              color="light"
               onClick={() => {
                 setIsEditModalOpen(false);
                 setEditingProject(null);
@@ -452,7 +452,7 @@ const Dashboard: React.FC = () => {
               Annuler
             </Button>
             <Button
-              variant="primary"
+              color="blue"
               onClick={handleSaveEdit}
               disabled={
                 !editingProject?.name.trim() ||

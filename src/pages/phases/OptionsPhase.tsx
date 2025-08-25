@@ -47,7 +47,7 @@ const ScenarioForm: React.FC<ScenarioFormProps> = React.memo(
       <div className={`border rounded-lg p-6 ${isSelected ? 'border-accent bg-accent/5' : 'border-muted'}`}>
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold">{scenarioTitle}</h3>
-          <Button onClick={onSelect} variant={isSelected ? 'primary' : 'secondary'} size="sm">
+          <Button onClick={onSelect} color={isSelected ? 'blue' : 'light'} size="sm">
             {isSelected ? 'Sélectionné' : 'Sélectionner'}
           </Button>
         </div>
@@ -372,21 +372,21 @@ const OptionsPhase: React.FC<OptionsPhaseProps> = ({ project }) => {
             <h3 className="text-lg font-medium text-foreground">Développement des scénarios</h3>
             <div className="flex space-x-3">
               <Button
-                variant="secondary"
+                color="light"
                 icon={Edit2}
                 onClick={() => setIsSectionEditorOpen(true)}
               >
                 Éditer les sections
               </Button>
               <Button
-                variant="secondary"
+                color="light"
                 icon={Folder}
                 onClick={() => setIsInitialPhaseModalOpen(true)}
               >
                 Opportunité
               </Button>
               <Button
-                variant="primary"
+                color="blue"
                 icon={Download}
                 onClick={() => setIsExportPreviewModalOpen(true)}
               >

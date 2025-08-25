@@ -3,6 +3,7 @@ import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { Stakeholder } from '../../types';
 import Button from '../UI/Button';
 import StakeholderFormModal from './StakeholderFormModal';
+import { Table } from 'flowbite-react';
 
 interface StakeholderTableProps {
   stakeholders: Stakeholder[];
@@ -64,7 +65,7 @@ const StakeholderTable: React.FC<StakeholderTableProps> = ({
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-medium text-gray-900">Parties prenantes</h3>
         <Button
-          variant="primary"
+          color="blue"
           size="sm"
           icon={Plus}
           onClick={handleAdd}
@@ -74,87 +75,55 @@ const StakeholderTable: React.FC<StakeholderTableProps> = ({
       </div>
 
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Prénom
-              </th>
-              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Nom
-              </th>
-              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Rôle sur le projet
-              </th>
-              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Email
-              </th>
-              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Société
-              </th>
-              <th rowSpan={2} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Externe
-              </th>
-              <th rowSpan={2} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Niveau d'engagement
-              </th>
-              <th colSpan={3} className="px-4 py-2 text-center text-xs font-medium text-gray-900 uppercase tracking-wider border-b border-gray-300">
-                Doit valider les phases
-              </th>
-              <th rowSpan={2} className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-            <tr>
-              <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Fiche projet initiale
-              </th>
-              <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Options de périmètre
-              </th>
-              <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Périmètre final
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+        <Table>
+          <Table.Head>
+            <Table.HeadCell rowSpan={2}>Prénom</Table.HeadCell>
+            <Table.HeadCell rowSpan={2}>Nom</Table.HeadCell>
+            <Table.HeadCell rowSpan={2}>Rôle sur le projet</Table.HeadCell>
+            <Table.HeadCell rowSpan={2}>Email</Table.HeadCell>
+            <Table.HeadCell rowSpan={2}>Société</Table.HeadCell>
+            <Table.HeadCell rowSpan={2} className="text-center">Externe</Table.HeadCell>
+            <Table.HeadCell rowSpan={2}>Niveau d'engagement</Table.HeadCell>
+            <Table.HeadCell colSpan={3} className="text-center">Doit valider les phases</Table.HeadCell>
+            <Table.HeadCell rowSpan={2} className="text-center">Actions</Table.HeadCell>
+          </Table.Head>
+          <Table.Head>
+            <Table.HeadCell className="text-center">Fiche projet initiale</Table.HeadCell>
+            <Table.HeadCell className="text-center">Options de périmètre</Table.HeadCell>
+            <Table.HeadCell className="text-center">Périmètre final</Table.HeadCell>
+          </Table.Head>
+          <Table.Body className="divide-y">
             {stakeholders.map((stakeholder) => (
-              <tr key={stakeholder.id} className="hover:bg-gray-50">
-                <td className="px-4 py-4">
-                  <div className="text-sm font-medium text-gray-900">
-                    {stakeholder.firstName}
-                  </div>
-                </td>
-                <td className="px-4 py-4">
-                  <div className="text-sm font-medium text-gray-900">
-                    {stakeholder.lastName}
-                  </div>
-                </td>
-                <td className="px-4 py-4">
+              <Table.Row key={stakeholder.id} className="hover:bg-gray-50">
+                <Table.Cell>
+                  <div className="text-sm font-medium text-gray-900">{stakeholder.firstName}</div>
+                </Table.Cell>
+                <Table.Cell>
+                  <div className="text-sm font-medium text-gray-900">{stakeholder.lastName}</div>
+                </Table.Cell>
+                <Table.Cell>
                   <div className="text-sm text-gray-900 truncate max-w-[150px]" title={stakeholder.role}>
                     {stakeholder.role}
                   </div>
-                </td>
-                <td className="px-4 py-4">
+                </Table.Cell>
+                <Table.Cell>
                   <div className="text-sm text-gray-500 truncate max-w-[120px]" title={stakeholder.email}>
                     {stakeholder.email}
                   </div>
-                </td>
-                <td className="px-4 py-4">
+                </Table.Cell>
+                <Table.Cell>
                   <div className="text-sm text-gray-900 truncate max-w-[100px]" title={stakeholder.company}>
                     {stakeholder.company}
                   </div>
-                </td>
-                <td className="px-4 py-4 text-center">
+                </Table.Cell>
+                <Table.Cell className="text-center">
                   {stakeholder.isExternal ? (
-                    <span className="inline-flex items-center justify-center w-5 h-5 bg-orange-100 text-orange-600 rounded-full">
-                      ✓
-                    </span>
+                    <span className="inline-flex items-center justify-center w-5 h-5 bg-orange-100 text-orange-600 rounded-full">✓</span>
                   ) : (
                     <span className="text-gray-400">—</span>
                   )}
-                </td>
-                <td className="px-4 py-4">
+                </Table.Cell>
+                <Table.Cell>
                   <div className="text-sm text-gray-500">
                     {stakeholder.engagementLevel && (
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -162,48 +131,42 @@ const StakeholderTable: React.FC<StakeholderTableProps> = ({
                       </span>
                     )}
                   </div>
-                </td>
-                <td className="px-4 py-4 text-center">
+                </Table.Cell>
+                <Table.Cell className="text-center">
                   {stakeholder.mandatoryInitial && (
-                    <span className="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-600 rounded-full">
-                      ✓
-                    </span>
+                    <span className="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-600 rounded-full">✓</span>
                   )}
-                </td>
-                <td className="px-4 py-4 text-center">
+                </Table.Cell>
+                <Table.Cell className="text-center">
                   {stakeholder.mandatoryOptions && (
-                    <span className="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-600 rounded-full">
-                      ✓
-                    </span>
+                    <span className="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-600 rounded-full">✓</span>
                   )}
-                </td>
-                <td className="px-4 py-4 text-center">
+                </Table.Cell>
+                <Table.Cell className="text-center">
                   {stakeholder.mandatoryFinal && (
-                    <span className="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-600 rounded-full">
-                      ✓
-                    </span>
+                    <span className="inline-flex items-center justify-center w-5 h-5 bg-green-100 text-green-600 rounded-full">✓</span>
                   )}
-                </td>
-                <td className="px-4 py-4 text-center">
+                </Table.Cell>
+                <Table.Cell className="text-center">
                   <div className="flex justify-center space-x-2">
                     <Button
-                      variant="secondary"
+                      color="light"
                       size="sm"
                       icon={Edit2}
                       onClick={() => handleEdit(stakeholder)}
                     />
                     <Button
-                      variant="secondary"
+                      color="light"
                       size="sm"
                       icon={Trash2}
                       onClick={() => handleDelete(stakeholder.id)}
                     />
                   </div>
-                </td>
-              </tr>
+                </Table.Cell>
+              </Table.Row>
             ))}
-          </tbody>
-        </table>
+          </Table.Body>
+        </Table>
       </div>
 
       <StakeholderFormModal

@@ -67,7 +67,7 @@ const PhaseValidation: React.FC<PhaseValidationProps> = ({
 
         <div className="flex space-x-3">
           <Button
-            variant={validated ? 'secondary' : 'primary'}
+            color={validated ? 'light' : 'blue'}
             onClick={() => onValidationChange(!validated)}
             disabled={!checklistCompleted || !stakeholdersApproved}
             icon={validated ? XCircle : CheckCircle}

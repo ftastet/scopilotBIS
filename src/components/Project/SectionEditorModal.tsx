@@ -108,7 +108,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
       <div className="flex items-center space-x-2">
         {!section.isDefault && (
           <Button
-            variant="secondary"
+            color="light"
             size="sm"
             icon={Edit2}
             onClick={() => onEditSection(section)}
@@ -118,7 +118,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
         )}
         
         <Button
-          variant="secondary"
+          color="light"
           size="sm"
           icon={section.isHidden ? EyeOff : Eye}
           onClick={() => onToggleHidden(section.id, !section.isHidden)}
@@ -128,7 +128,7 @@ const SortableItem: React.FC<SortableItemProps> = ({
         
         {!section.isDefault && (
           <Button
-            variant="secondary"
+            color="light"
             size="sm"
             icon={Trash2}
             onClick={() => onDeleteSection(section.id)}
@@ -350,14 +350,14 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
               />
               <div className="flex space-x-3">
                 <Button
-                  variant="primary"
+                  color="blue"
                   onClick={handleSaveEdit}
                   disabled={!editTitle.trim()}
                 >
                   Enregistrer
                 </Button>
                 <Button
-                  variant="secondary"
+                  color="light"
                   onClick={handleCancelEdit}
                 >
                   Annuler
@@ -398,7 +398,7 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
                 rows={2}
               />
               <Button
-                variant="primary"
+                color="blue"
                 icon={Plus}
                 onClick={handleAddSection}
                 disabled={!newSectionTitle.trim()}
@@ -411,7 +411,7 @@ const SectionEditorModal: React.FC<SectionEditorModalProps> = ({
 
         <div className="flex justify-end pt-4 border-t border-gray-200">
           <Button
-            variant="secondary"
+            color="light"
             onClick={onClose}
           >
             Fermer

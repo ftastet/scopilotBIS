@@ -1,41 +1,19 @@
-import React from 'react';
+import { Select as FlowbiteSelect, Label, type SelectProps } from 'flowbite-react';
 
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+interface Props extends SelectProps {
   label?: string;
   error?: string;
   children: React.ReactNode;
 }
 
-const Select: React.FC<SelectProps> = ({
-  label,
-  error,
-  className = '',
-  children,
-  ...props
-}) => {
-  return (
-    <div className="space-y-1">
-      {label && (
-        <label className="block text-sm font-medium text-text">
-          {label}
-        </label>
-      )}
-      <select
-        className={`
-          block w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm shadow-sm
-          text-text focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary
-          ${error ? 'border-red-300 focus:ring-red-500 focus:border-red-500' : ''}
-          ${className}
-        `}
-        {...props}
-      >
-        {children}
-      </select>
-      {error && (
-        <p className="text-sm text-red-600">{error}</p>
-      )}
-    </div>
-  );
-};
+const Select = ({ label, error, id, children, ...props }: Props) => (
+  <div className="space-y-1">
+    {label && <Label htmlFor={id}>{label}</Label>}
+    <FlowbiteSelect id={id} color={error ? 'failure' : undefined} {...props}>
+      {children}
+    </FlowbiteSelect>
+    {error && <p className="text-sm text-red-600">{error}</p>}
+  </div>
+);
 
 export default Select;

@@ -40,7 +40,7 @@ const Project: React.FC = () => {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Projet non trouvé</h1>
           <Button
-            variant="primary"
+            color="blue"
             icon={ArrowLeft}
             onClick={() => navigate('/dashboard')}
           >
@@ -132,7 +132,7 @@ const Project: React.FC = () => {
                 <Button
                   onClick={() => handlePhaseChange(phase.id as 'initial' | 'options' | 'final')}
                   disabled={!canAccess}
-                  variant="secondary"
+                  color="light"
                   className={`
                     flex items-center justify-center px-5 py-2 rounded-xl text-base font-semibold transition-all duration-300 transform hover:scale-105 w-full
                     ${isActive

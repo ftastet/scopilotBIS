@@ -141,21 +141,21 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
           <h4 className="text-sm font-medium text-gray-900">Mode d'exportation :</h4>
           <div className="flex items-center space-x-3">
             <Button
-              variant={filterMode === 'internal' ? 'primary' : 'secondary'}
+              color={filterMode === 'internal' ? 'blue' : 'light'}
               onClick={() => handleApplyFilter('internal')}
               size="sm"
             >
               Interne
             </Button>
             <Button
-              variant={filterMode === 'external' ? 'primary' : 'secondary'}
+              color={filterMode === 'external' ? 'blue' : 'light'}
               onClick={() => handleApplyFilter('external')}
               size="sm"
             >
               Externe
             </Button>
             <Button
-              variant={filterMode === 'custom' ? 'primary' : 'secondary'}
+              color={filterMode === 'custom' ? 'blue' : 'light'}
               onClick={() => setIsCustomFilterModalOpen(true)}
               size="sm"
             >
@@ -167,7 +167,7 @@ const ExportPreviewModal: React.FC<ExportPreviewModalProps> = ({
             
             {/* Bouton Générer PDF */}
             <Button
-              variant="primary"
+              color="blue"
               icon={Download}
               onClick={handleGeneratePDF}
               disabled={visibleSectionsCount === 0}
